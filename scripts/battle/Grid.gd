@@ -54,11 +54,50 @@ func _scatter_terrain():
 			if x <= 2 and y <= 2:   continue
 			if x >= grid_width-3 and y >= grid_height-3: continue
 			var roll = rng.randf()
-			if   roll < 0.07: tiles[Vector2i(x,y)].terrain_type = Tile.TerrainType.FOREST
+			if   roll < 0.07:
+				tiles[Vector2i(x,y)].terrain_type = Tile.TerrainType.FOREST
+				# Scatter tree objects on forest tiles
+				var tree_roll = rng.randf()
+				if tree_roll < 0.4:
+					tiles[Vector2i(x,y)].terrain_object = Tile.TerrainObject.TREE_PINE
+				elif tree_roll < 0.7:
+					tiles[Vector2i(x,y)].terrain_object = Tile.TerrainObject.TREE_OAK
+				elif tree_roll < 0.85:
+					tiles[Vector2i(x,y)].terrain_object = Tile.TerrainObject.BUSH
 			elif roll < 0.11:
 				tiles[Vector2i(x,y)].terrain_type = Tile.TerrainType.WATER
 				tiles[Vector2i(x,y)].is_passable   = false
-			elif roll < 0.14: tiles[Vector2i(x,y)].terrain_type = Tile.TerrainType.RUINS
+			elif roll < 0.14:
+				tiles[Vector2i(x,y)].terrain_type = Tile.TerrainType.RUINS
+				if rng.randf() < 0.4:
+					tiles[Vector2i(x,y)].terrain_object = Tile.TerrainObject.RUINS_PILLAR
+
+func load_chapter_terrain(terrain_data: Array, width: int, height: int):
+	# Load terrain from chapter JSON 2D array
+	grid_width = width
+	grid_height = height
+	tiles.clear()
+	for x in range(width):
+		for y in range(height):
+			var t = Tile.new()
+			t.grid_pos = Vector2i(x, y)
+			if y < terrain_data.size() and x < terrain_data[y].size():
+				t.set_terrain(terrain_data[y][x])
+			tiles[Vector2i(x, y)] = t
+
+func place_terrain_object(pos: Vector2i, obj_str: String):
+	if tiles.has(pos):
+		tiles[pos].set_object(obj_str)
+
+func place_object_template(origin: Vector2i, template_id: String):
+	var tpl = DataLoader.terrain_objects_data.get(template_id, {})
+	var objects: Array = tpl.get("objects", [])
+	for obj in objects:
+		var off = obj.get("offset", [0, 0])
+		var pos = origin + Vector2i(int(off[0]), int(off[1]))
+		var obj_type = obj.get("object", "")
+		if obj_type != "":
+			place_terrain_object(pos, obj_type)
 
 # ─── Drawing ──────────────────────────────────────────────────────────────────
 
@@ -231,43 +270,301 @@ func _draw_unit_shape(ux: int, uy: int, pad: int, col: Color, shape: String):
 # ─── Terrain Detail Drawing ───────────────────────────────────────────────────
 
 func _draw_terrain_detail(pos: Vector2i, tile: Tile, rx: int, ry: int):
-	if tile.elemental_state != Tile.ElementalState.NEUTRAL: return
 	var seed_val = pos.x * 7919 + pos.y * 4391
 
-	match tile.terrain_type:
-		Tile.TerrainType.FOREST:
-			var dark = Color(0.06, 0.24, 0.04, 0.6)
-			for i in 3:
-				var ox = ((seed_val + i * 2917) % 26) + 5
-				var oy = ((seed_val + i * 1723) % 22) + 6
-				var sz = 5 + ((seed_val + i * 3571) % 4)
-				var pts = PackedVector2Array([
-					Vector2(rx + ox, ry + oy),
-					Vector2(rx + ox - sz / 2, ry + oy + sz),
-					Vector2(rx + ox + sz / 2, ry + oy + sz)
+	# Draw terrain-type details (unless overridden by elemental state)
+	if tile.elemental_state == Tile.ElementalState.NEUTRAL:
+		match tile.terrain_type:
+			Tile.TerrainType.FOREST:
+				var dark = Color(0.06, 0.24, 0.04, 0.6)
+				for i in 3:
+					var ox = ((seed_val + i * 2917) % 26) + 5
+					var oy = ((seed_val + i * 1723) % 22) + 6
+					var sz = 5 + ((seed_val + i * 3571) % 4)
+					var pts = PackedVector2Array([
+						Vector2(rx + ox, ry + oy),
+						Vector2(rx + ox - sz / 2, ry + oy + sz),
+						Vector2(rx + ox + sz / 2, ry + oy + sz)
+					])
+					draw_colored_polygon(pts, dark)
+
+			Tile.TerrainType.WATER:
+				var wave_col = Color(0.22, 0.38, 0.70, 0.25)
+				for w in 2:
+					var base_y = ry + 14 + w * 14
+					var points = PackedVector2Array()
+					for seg in 9:
+						var px = rx + seg * 5
+						var py = base_y + sin(float(seg + seed_val % 6) * 1.2) * 3.0
+						points.append(Vector2(px, py))
+					if points.size() > 1:
+						draw_polyline(points, wave_col, 1.5)
+
+			Tile.TerrainType.RUINS:
+				var rubble = Color(0.44, 0.38, 0.30, 0.45)
+				for i in 4:
+					var ox = ((seed_val + i * 3137) % 28) + 5
+					var oy = ((seed_val + i * 2269) % 28) + 5
+					var sw = 3 + ((seed_val + i * 1093) % 5)
+					var sh = 2 + ((seed_val + i * 2741) % 4)
+					draw_rect(Rect2(rx + ox, ry + oy, sw, sh), rubble)
+
+			Tile.TerrainType.RIVER:
+				var river_col = Color(0.25, 0.45, 0.75, 0.35)
+				var flow_col  = Color(0.35, 0.55, 0.85, 0.25)
+				# Flowing water lines
+				for w in 3:
+					var base_y = ry + 8 + w * 12
+					var pts = PackedVector2Array()
+					for seg in 9:
+						var px = rx + seg * 5
+						var py = base_y + sin(float(seg + seed_val % 5) * 0.9 + float(w)) * 2.5
+						pts.append(Vector2(px, py))
+					if pts.size() > 1:
+						draw_polyline(pts, river_col if w != 1 else flow_col, 1.5)
+
+			Tile.TerrainType.BRIDGE:
+				# Wooden planks
+				var plank_col = Color(0.45, 0.32, 0.15, 0.5)
+				for i in 4:
+					var py = ry + 6 + i * 10
+					draw_rect(Rect2(rx + 4, py, TILE_SIZE - 8, 3), plank_col)
+				# Railings
+				var rail_col = Color(0.35, 0.25, 0.10, 0.4)
+				draw_rect(Rect2(rx + 2, ry + 2, 2, TILE_SIZE - 4), rail_col)
+				draw_rect(Rect2(rx + TILE_SIZE - 4, ry + 2, 2, TILE_SIZE - 4), rail_col)
+
+			Tile.TerrainType.ROAD:
+				# Path markings
+				var path_col = Color(0.28, 0.26, 0.20, 0.3)
+				draw_rect(Rect2(rx + TILE_SIZE/2 - 1, ry + 4, 2, 6), path_col)
+				draw_rect(Rect2(rx + TILE_SIZE/2 - 1, ry + 18, 2, 6), path_col)
+				draw_rect(Rect2(rx + TILE_SIZE/2 - 1, ry + 32, 2, 6), path_col)
+
+			Tile.TerrainType.VILLAGE:
+				# Small house outline
+				var house_col = Color(0.35, 0.30, 0.20, 0.4)
+				draw_rect(Rect2(rx + 10, ry + 16, 24, 18), house_col)
+				# Roof
+				var roof_pts = PackedVector2Array([
+					Vector2(rx + 8, ry + 16), Vector2(rx + 22, ry + 6), Vector2(rx + 36, ry + 16)
 				])
-				draw_colored_polygon(pts, dark)
+				draw_colored_polygon(roof_pts, Color(0.45, 0.20, 0.10, 0.5))
 
-		Tile.TerrainType.WATER:
-			var wave_col = Color(0.22, 0.38, 0.70, 0.25)
-			for w in 2:
-				var base_y = ry + 14 + w * 14
-				var points = PackedVector2Array()
-				for seg in 9:
-					var px = rx + seg * 5
-					var py = base_y + sin(float(seg + seed_val % 6) * 1.2) * 3.0
-					points.append(Vector2(px, py))
-				if points.size() > 1:
-					draw_polyline(points, wave_col, 1.5)
+			Tile.TerrainType.FORT:
+				# Battlements
+				var fort_col = Color(0.35, 0.32, 0.25, 0.4)
+				draw_rect(Rect2(rx + 6, ry + 8, 32, 28), fort_col)
+				# Crenellations
+				for i in 4:
+					draw_rect(Rect2(rx + 6 + i * 9, ry + 4, 5, 6), fort_col)
 
-		Tile.TerrainType.RUINS:
-			var rubble = Color(0.44, 0.38, 0.30, 0.45)
+			Tile.TerrainType.THRONE:
+				# Throne seat
+				var throne_col = Color(0.65, 0.50, 0.15, 0.5)
+				draw_rect(Rect2(rx + 14, ry + 12, 16, 22), throne_col)
+				# Back
+				draw_rect(Rect2(rx + 12, ry + 6, 20, 8), throne_col)
+				# Gem
+				draw_circle(Vector2(rx + 22, ry + 10), 3, Color(0.9, 0.2, 0.2, 0.6))
+
+			Tile.TerrainType.SAND:
+				# Sand dots
+				var sand_col = Color(0.6, 0.52, 0.30, 0.25)
+				for i in 5:
+					var ox = ((seed_val + i * 1999) % 30) + 5
+					var oy = ((seed_val + i * 3121) % 30) + 5
+					draw_circle(Vector2(rx + ox, ry + oy), 1.5, sand_col)
+
+			Tile.TerrainType.LAVA:
+				# Lava glow bubbles
+				var lava_col = Color(1.0, 0.4, 0.0, 0.4)
+				for i in 3:
+					var ox = ((seed_val + i * 2333) % 28) + 6
+					var oy = ((seed_val + i * 1777) % 28) + 6
+					draw_circle(Vector2(rx + ox, ry + oy), 3 + ((seed_val + i) % 3), lava_col)
+				# Cracks
+				var crack_col = Color(1.0, 0.6, 0.1, 0.35)
+				draw_line(Vector2(rx + 8, ry + 12), Vector2(rx + 20, ry + 30), crack_col, 1.5)
+				draw_line(Vector2(rx + 28, ry + 8), Vector2(rx + 18, ry + 25), crack_col, 1.5)
+
+			Tile.TerrainType.WALL:
+				# Stone blocks
+				var stone_col = Color(0.28, 0.26, 0.22, 0.4)
+				for row in 3:
+					var off = 0 if row % 2 == 0 else 10
+					for col in 3:
+						draw_rect(Rect2(rx + 4 + off + col * 14, ry + 4 + row * 13, 12, 11), stone_col)
+
+			Tile.TerrainType.ELEVATION:
+				# Mountain ridges
+				var mt_col = Color(0.50, 0.44, 0.32, 0.4)
+				var peak_pts = PackedVector2Array([
+					Vector2(rx + 10, ry + 32), Vector2(rx + 22, ry + 8), Vector2(rx + 34, ry + 32)
+				])
+				draw_colored_polygon(peak_pts, mt_col)
+				# Snow cap
+				var snow_pts = PackedVector2Array([
+					Vector2(rx + 18, ry + 14), Vector2(rx + 22, ry + 8), Vector2(rx + 26, ry + 14)
+				])
+				draw_colored_polygon(snow_pts, Color(0.8, 0.82, 0.85, 0.5))
+
+	# Draw terrain objects (always visible regardless of elemental state)
+	_draw_terrain_object(tile, rx, ry, seed_val)
+
+func _draw_terrain_object(tile: Tile, rx: int, ry: int, seed_val: int):
+	match tile.terrain_object:
+		Tile.TerrainObject.NONE: return
+
+		Tile.TerrainObject.TREE_PINE:
+			var trunk = Color(0.35, 0.22, 0.08, 0.7)
+			var leaves = Color(0.08, 0.30, 0.06, 0.75)
+			draw_rect(Rect2(rx + 20, ry + 26, 4, 12), trunk)
+			for i in 3:
+				var w = 16 - i * 4
+				var h = 10
+				var ty = ry + 6 + i * 7
+				var pts = PackedVector2Array([
+					Vector2(rx + 22, ty), Vector2(rx + 22 - w/2, ty + h), Vector2(rx + 22 + w/2, ty + h)
+				])
+				draw_colored_polygon(pts, leaves)
+
+		Tile.TerrainObject.TREE_OAK:
+			var trunk = Color(0.32, 0.20, 0.06, 0.7)
+			var canopy = Color(0.12, 0.32, 0.08, 0.75)
+			draw_rect(Rect2(rx + 19, ry + 24, 6, 14), trunk)
+			draw_circle(Vector2(rx + 22, ry + 18), 12, canopy)
+			draw_circle(Vector2(rx + 16, ry + 20), 8, canopy)
+			draw_circle(Vector2(rx + 28, ry + 20), 8, canopy)
+
+		Tile.TerrainObject.TREE_DEAD:
+			var trunk = Color(0.28, 0.22, 0.16, 0.65)
+			draw_rect(Rect2(rx + 20, ry + 14, 4, 24), trunk)
+			# Bare branches
+			draw_line(Vector2(rx + 22, ry + 18), Vector2(rx + 32, ry + 10), trunk, 2.0)
+			draw_line(Vector2(rx + 22, ry + 22), Vector2(rx + 12, ry + 14), trunk, 2.0)
+			draw_line(Vector2(rx + 22, ry + 16), Vector2(rx + 28, ry + 6), trunk, 1.5)
+
+		Tile.TerrainObject.BUSH:
+			var bush_col = Color(0.10, 0.30, 0.08, 0.6)
+			draw_circle(Vector2(rx + 16, ry + 28), 7, bush_col)
+			draw_circle(Vector2(rx + 28, ry + 26), 8, bush_col)
+			draw_circle(Vector2(rx + 22, ry + 22), 6, bush_col)
+
+		Tile.TerrainObject.HOUSE:
+			var wall_col = Color(0.40, 0.35, 0.25, 0.7)
+			var roof_col = Color(0.50, 0.22, 0.08, 0.7)
+			var door_col = Color(0.25, 0.18, 0.08, 0.8)
+			# Walls
+			draw_rect(Rect2(rx + 8, ry + 18, 28, 18), wall_col)
+			# Roof
+			var roof_pts = PackedVector2Array([
+				Vector2(rx + 5, ry + 18), Vector2(rx + 22, ry + 6), Vector2(rx + 39, ry + 18)
+			])
+			draw_colored_polygon(roof_pts, roof_col)
+			# Door
+			draw_rect(Rect2(rx + 18, ry + 26, 8, 10), door_col)
+			# Window
+			draw_rect(Rect2(rx + 12, ry + 22, 4, 4), Color(0.7, 0.65, 0.4, 0.6))
+
+		Tile.TerrainObject.TOWER:
+			var stone = Color(0.35, 0.32, 0.28, 0.75)
+			var top   = Color(0.28, 0.25, 0.22, 0.7)
+			draw_rect(Rect2(rx + 14, ry + 10, 16, 28), stone)
+			# Battlements
+			for i in 3:
+				draw_rect(Rect2(rx + 12 + i * 7, ry + 6, 5, 6), top)
+			# Window slit
+			draw_rect(Rect2(rx + 20, ry + 18, 4, 8), Color(0.1, 0.1, 0.12, 0.6))
+
+		Tile.TerrainObject.CHURCH:
+			var wall = Color(0.42, 0.38, 0.30, 0.7)
+			var roof = Color(0.30, 0.18, 0.08, 0.7)
+			draw_rect(Rect2(rx + 10, ry + 18, 24, 18), wall)
+			var roof_pts = PackedVector2Array([
+				Vector2(rx + 7, ry + 18), Vector2(rx + 22, ry + 8), Vector2(rx + 37, ry + 18)
+			])
+			draw_colored_polygon(roof_pts, roof)
+			# Cross
+			draw_rect(Rect2(rx + 21, ry + 2, 2, 8), Color(0.8, 0.7, 0.3, 0.7))
+			draw_rect(Rect2(rx + 18, ry + 4, 8, 2), Color(0.8, 0.7, 0.3, 0.7))
+
+		Tile.TerrainObject.WELL:
+			var stone = Color(0.38, 0.35, 0.28, 0.6)
+			draw_circle(Vector2(rx + 22, ry + 24), 8, stone)
+			draw_circle(Vector2(rx + 22, ry + 24), 5, Color(0.12, 0.22, 0.45, 0.5))
+			# Post
+			draw_rect(Rect2(rx + 28, ry + 14, 2, 14), stone)
+			draw_rect(Rect2(rx + 16, ry + 14, 16, 2), stone)
+
+		Tile.TerrainObject.FENCE_H:
+			var fence = Color(0.38, 0.28, 0.12, 0.5)
+			draw_rect(Rect2(rx + 2, ry + 20, TILE_SIZE - 4, 3), fence)
 			for i in 4:
-				var ox = ((seed_val + i * 3137) % 28) + 5
-				var oy = ((seed_val + i * 2269) % 28) + 5
-				var sw = 3 + ((seed_val + i * 1093) % 5)
-				var sh = 2 + ((seed_val + i * 2741) % 4)
-				draw_rect(Rect2(rx + ox, ry + oy, sw, sh), rubble)
+				draw_rect(Rect2(rx + 6 + i * 10, ry + 16, 2, 12), fence)
+
+		Tile.TerrainObject.FENCE_V:
+			var fence = Color(0.38, 0.28, 0.12, 0.5)
+			draw_rect(Rect2(rx + 20, ry + 2, 3, TILE_SIZE - 4), fence)
+			for i in 4:
+				draw_rect(Rect2(rx + 16, ry + 6 + i * 10, 12, 2), fence)
+
+		Tile.TerrainObject.SIGNPOST:
+			var wood = Color(0.35, 0.25, 0.10, 0.6)
+			draw_rect(Rect2(rx + 20, ry + 16, 3, 20), wood)
+			draw_rect(Rect2(rx + 12, ry + 14, 20, 8), wood)
+
+		Tile.TerrainObject.BARREL:
+			var barrel = Color(0.38, 0.25, 0.10, 0.6)
+			draw_circle(Vector2(rx + 22, ry + 24), 7, barrel)
+			# Bands
+			draw_arc(Vector2(rx + 22, ry + 24), 7, 0, TAU, 12, Color(0.3, 0.28, 0.22, 0.5), 1.5)
+
+		Tile.TerrainObject.CRATE:
+			var crate = Color(0.42, 0.32, 0.15, 0.6)
+			draw_rect(Rect2(rx + 14, ry + 16, 16, 16), crate)
+			# Cross mark
+			draw_line(Vector2(rx + 14, ry + 16), Vector2(rx + 30, ry + 32), Color(0.3, 0.22, 0.08, 0.4), 1.5)
+			draw_line(Vector2(rx + 30, ry + 16), Vector2(rx + 14, ry + 32), Color(0.3, 0.22, 0.08, 0.4), 1.5)
+
+		Tile.TerrainObject.BRIDGE_H:
+			var plank = Color(0.40, 0.28, 0.12, 0.6)
+			for i in 5:
+				draw_rect(Rect2(rx + 3 + i * 8, ry + 8, 6, TILE_SIZE - 16), plank)
+			var rail = Color(0.30, 0.20, 0.08, 0.5)
+			draw_rect(Rect2(rx + 2, ry + 6, TILE_SIZE - 4, 2), rail)
+			draw_rect(Rect2(rx + 2, ry + TILE_SIZE - 8, TILE_SIZE - 4, 2), rail)
+
+		Tile.TerrainObject.BRIDGE_V:
+			var plank = Color(0.40, 0.28, 0.12, 0.6)
+			for i in 5:
+				draw_rect(Rect2(rx + 8, ry + 3 + i * 8, TILE_SIZE - 16, 6), plank)
+			var rail = Color(0.30, 0.20, 0.08, 0.5)
+			draw_rect(Rect2(rx + 6, ry + 2, 2, TILE_SIZE - 4), rail)
+			draw_rect(Rect2(rx + TILE_SIZE - 8, ry + 2, 2, TILE_SIZE - 4), rail)
+
+		Tile.TerrainObject.RUINS_PILLAR:
+			var pillar = Color(0.42, 0.38, 0.32, 0.65)
+			draw_rect(Rect2(rx + 18, ry + 10, 8, 26), pillar)
+			# Capital
+			draw_rect(Rect2(rx + 16, ry + 8, 12, 4), pillar)
+			# Cracks
+			draw_line(Vector2(rx + 20, ry + 16), Vector2(rx + 24, ry + 28), Color(0.2, 0.18, 0.14, 0.4), 1.0)
+
+		Tile.TerrainObject.RUINS_ARCH:
+			var arch = Color(0.40, 0.36, 0.28, 0.6)
+			draw_rect(Rect2(rx + 8, ry + 12, 6, 26), arch)
+			draw_rect(Rect2(rx + 30, ry + 12, 6, 26), arch)
+			draw_arc(Vector2(rx + 22, ry + 14), 12, PI, TAU, 8, arch, 3.0)
+
+		Tile.TerrainObject.STATUE:
+			var stone = Color(0.45, 0.42, 0.38, 0.65)
+			# Base
+			draw_rect(Rect2(rx + 14, ry + 30, 16, 6), stone)
+			# Figure
+			draw_rect(Rect2(rx + 18, ry + 14, 8, 16), stone)
+			# Head
+			draw_circle(Vector2(rx + 22, ry + 12), 5, stone)
 
 func _draw_unit_shadow(unit):
 	var p = unit.grid_position

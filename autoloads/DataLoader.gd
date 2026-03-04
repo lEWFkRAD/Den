@@ -3,30 +3,35 @@ extends Node
 # Centralized JSON data loader — all game content comes from data/*.json
 # Dashboard edits these files, game reads them at startup.
 
-var weapons_data:    Dictionary = {}
-var items_data:      Dictionary = {}
-var classes_data:    Dictionary = {}
-var characters_data: Dictionary = {}
-var enemies_data:    Dictionary = {}
-var kips_data:       Dictionary = {}
-var dialogue_data:   Dictionary = {}
-var chapters_data:   Dictionary = {}
+var weapons_data:        Dictionary = {}
+var items_data:          Dictionary = {}
+var classes_data:        Dictionary = {}
+var characters_data:     Dictionary = {}
+var enemies_data:        Dictionary = {}
+var kips_data:           Dictionary = {}
+var dialogue_data:       Dictionary = {}
+var chapters_data:       Dictionary = {}
+var kip_evolutions_data: Dictionary = {}
+var terrain_objects_data: Dictionary = {}
 
 func _ready():
 	_load_all()
 
 func _load_all():
-	weapons_data    = _load_json("res://data/weapons.json")
-	items_data      = _load_json("res://data/items.json")
-	classes_data    = _load_json("res://data/classes.json")
-	characters_data = _load_json("res://data/characters.json")
-	enemies_data    = _load_json("res://data/enemies.json")
-	kips_data       = _load_json("res://data/kips.json")
-	dialogue_data   = _load_json("res://data/dialogue.json")
-	chapters_data   = _load_json("res://data/chapters.json")
-	print("DataLoader: Loaded %d weapons, %d items, %d classes, %d chars, %d enemies, %d kips" % [
+	weapons_data        = _load_json("res://data/weapons.json")
+	items_data          = _load_json("res://data/items.json")
+	classes_data        = _load_json("res://data/classes.json")
+	characters_data     = _load_json("res://data/characters.json")
+	enemies_data        = _load_json("res://data/enemies.json")
+	kips_data           = _load_json("res://data/kips.json")
+	dialogue_data       = _load_json("res://data/dialogue.json")
+	chapters_data       = _load_json("res://data/chapters.json")
+	kip_evolutions_data = _load_json("res://data/kip_evolutions.json")
+	terrain_objects_data = _load_json("res://data/terrain_objects.json")
+	print("DataLoader: Loaded %d weapons, %d items, %d classes, %d chars, %d enemies, %d kips, %d evolutions" % [
 		weapons_data.size(), items_data.size(), classes_data.size(),
-		characters_data.size(), enemies_data.size(), kips_data.size()
+		characters_data.size(), enemies_data.size(), kips_data.size(),
+		kip_evolutions_data.size()
 	])
 
 func reload():

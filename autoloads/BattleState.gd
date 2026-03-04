@@ -9,6 +9,8 @@ signal battle_resumed
 signal turn_changed(turn_num: int, player_phase: bool)
 signal kip_speaks(kip_name: String, line: String)
 signal unit_died(unit_name: String, was_player: bool)
+signal kip_evolved(kip_name: String, evolution_name: String)
+signal kip_memory_event(kip_id: String, event_key: String, amount: int)
 
 func pause():
 	is_paused = true

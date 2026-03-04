@@ -1,0 +1,113 @@
+{
+	"_doc": "Terrain object placement templates for chapter maps. Each entry defines a layout of objects to scatter on the map.",
+
+	"village_cluster": {
+		"description": "A small village with houses, well, and fences",
+		"objects": [
+			{ "offset": [0, 0], "object": "house" },
+			{ "offset": [1, 0], "object": "house" },
+			{ "offset": [2, 0], "object": "fence_h" },
+			{ "offset": [0, 1], "object": "well" },
+			{ "offset": [1, 1], "object": "signpost" },
+			{ "offset": [2, 1], "object": "barrel" }
+		]
+	},
+	"forest_thick": {
+		"description": "Dense forest with mixed tree types",
+		"objects": [
+			{ "offset": [0, 0], "object": "tree_pine" },
+			{ "offset": [1, 0], "object": "tree_oak" },
+			{ "offset": [0, 1], "object": "bush" },
+			{ "offset": [1, 1], "object": "tree_pine" },
+			{ "offset": [2, 0], "object": "bush" },
+			{ "offset": [2, 1], "object": "tree_oak" }
+		]
+	},
+	"forest_sparse": {
+		"description": "Scattered trees",
+		"objects": [
+			{ "offset": [0, 0], "object": "tree_pine" },
+			{ "offset": [2, 1], "object": "tree_oak" },
+			{ "offset": [1, 2], "object": "bush" }
+		]
+	},
+	"dead_woods": {
+		"description": "Withered forest area",
+		"objects": [
+			{ "offset": [0, 0], "object": "tree_dead" },
+			{ "offset": [1, 0], "object": "tree_dead" },
+			{ "offset": [0, 1], "object": "bush" },
+			{ "offset": [2, 1], "object": "tree_dead" }
+		]
+	},
+	"bridge_horizontal": {
+		"description": "A horizontal bridge crossing water/river",
+		"objects": [
+			{ "offset": [0, 0], "object": "bridge_h" },
+			{ "offset": [1, 0], "object": "bridge_h" },
+			{ "offset": [2, 0], "object": "bridge_h" }
+		]
+	},
+	"bridge_vertical": {
+		"description": "A vertical bridge crossing water/river",
+		"objects": [
+			{ "offset": [0, 0], "object": "bridge_v" },
+			{ "offset": [0, 1], "object": "bridge_v" },
+			{ "offset": [0, 2], "object": "bridge_v" }
+		]
+	},
+	"ruins_site": {
+		"description": "Ancient ruins with pillars and archway",
+		"objects": [
+			{ "offset": [0, 0], "object": "ruins_pillar" },
+			{ "offset": [2, 0], "object": "ruins_pillar" },
+			{ "offset": [1, 0], "object": "ruins_arch" },
+			{ "offset": [0, 1], "object": "crate" },
+			{ "offset": [2, 1], "object": "barrel" }
+		]
+	},
+	"fort_entrance": {
+		"description": "Fortified position with tower and crates",
+		"objects": [
+			{ "offset": [0, 0], "object": "tower" },
+			{ "offset": [1, 0], "object": "fence_h" },
+			{ "offset": [2, 0], "object": "tower" },
+			{ "offset": [0, 1], "object": "barrel" },
+			{ "offset": [1, 1], "object": "crate" },
+			{ "offset": [2, 1], "object": "barrel" }
+		]
+	},
+	"church_grounds": {
+		"description": "A church with surrounding features",
+		"objects": [
+			{ "offset": [1, 0], "object": "church" },
+			{ "offset": [0, 0], "object": "tree_oak" },
+			{ "offset": [2, 0], "object": "statue" },
+			{ "offset": [0, 1], "object": "fence_v" },
+			{ "offset": [2, 1], "object": "fence_v" }
+		]
+	},
+	"supply_depot": {
+		"description": "Military supply area",
+		"objects": [
+			{ "offset": [0, 0], "object": "crate" },
+			{ "offset": [1, 0], "object": "crate" },
+			{ "offset": [2, 0], "object": "barrel" },
+			{ "offset": [0, 1], "object": "barrel" },
+			{ "offset": [1, 1], "object": "crate" },
+			{ "offset": [2, 1], "object": "fence_h" }
+		]
+	},
+	"monument": {
+		"description": "A statue or monument",
+		"objects": [
+			{ "offset": [0, 0], "object": "statue" }
+		]
+	},
+	"watchtower": {
+		"description": "A lone watchtower",
+		"objects": [
+			{ "offset": [0, 0], "object": "tower" }
+		]
+	}
+}

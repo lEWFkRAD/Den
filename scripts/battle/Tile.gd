@@ -1,15 +1,58 @@
 class_name Tile
 extends RefCounted
 
-enum TerrainType   { OPEN, FOREST, WATER, RUINS, ELEVATION }
+enum TerrainType   { OPEN, FOREST, WATER, RUINS, ELEVATION, WALL, FORT, BRIDGE, VILLAGE, THRONE, SAND, LAVA, RIVER, ROAD }
 enum ElementalState { NEUTRAL, FROZEN, OVERGROWN, CHARGED, BLOODSOAKED, VOIDED, RADIANT, DARKENED }
+enum TerrainObject { NONE, TREE_PINE, TREE_OAK, TREE_DEAD, BUSH, HOUSE, TOWER, CHURCH, WELL, FENCE_H, FENCE_V, SIGNPOST, BARREL, CRATE, BRIDGE_H, BRIDGE_V, RUINS_PILLAR, RUINS_ARCH, STATUE }
 
 var grid_pos:              Vector2i
 var terrain_type:          TerrainType   = TerrainType.OPEN
 var elemental_state:       ElementalState = ElementalState.NEUTRAL
+var terrain_object:        TerrainObject = TerrainObject.NONE
 var elemental_turns_remaining: int = 0
 var occupant = null
 var is_passable: bool = true
+var defense_bonus: int = 0
+var avoid_bonus:   int = 0
+var heal_bonus:    int = 0   # HP restored per turn when standing on this tile
+
+func set_terrain(type_str: String):
+	match type_str:
+		"plain":     terrain_type = TerrainType.OPEN
+		"forest":    terrain_type = TerrainType.FOREST;    defense_bonus = 1; avoid_bonus = 20
+		"mountain":  terrain_type = TerrainType.ELEVATION; defense_bonus = 2; avoid_bonus = 30; is_passable = true
+		"water":     terrain_type = TerrainType.WATER;     is_passable = false
+		"wall":      terrain_type = TerrainType.WALL;      is_passable = false
+		"fort":      terrain_type = TerrainType.FORT;      defense_bonus = 2; avoid_bonus = 20; heal_bonus = 2
+		"ruins":     terrain_type = TerrainType.RUINS;     defense_bonus = 1; avoid_bonus = 10
+		"bridge":    terrain_type = TerrainType.BRIDGE
+		"village":   terrain_type = TerrainType.VILLAGE;   defense_bonus = 1; avoid_bonus = 10; heal_bonus = 1
+		"throne":    terrain_type = TerrainType.THRONE;    defense_bonus = 3; avoid_bonus = 30; heal_bonus = 3
+		"sand":      terrain_type = TerrainType.SAND
+		"lava":      terrain_type = TerrainType.LAVA;      is_passable = false
+		"river":     terrain_type = TerrainType.RIVER
+		"road":      terrain_type = TerrainType.ROAD
+
+func set_object(obj_str: String):
+	match obj_str:
+		"tree_pine":     terrain_object = TerrainObject.TREE_PINE
+		"tree_oak":      terrain_object = TerrainObject.TREE_OAK
+		"tree_dead":     terrain_object = TerrainObject.TREE_DEAD
+		"bush":          terrain_object = TerrainObject.BUSH
+		"house":         terrain_object = TerrainObject.HOUSE;   defense_bonus += 1; avoid_bonus += 10
+		"tower":         terrain_object = TerrainObject.TOWER;   defense_bonus += 2; avoid_bonus += 15
+		"church":        terrain_object = TerrainObject.CHURCH;  defense_bonus += 1; heal_bonus += 2
+		"well":          terrain_object = TerrainObject.WELL;    heal_bonus += 1
+		"fence_h":       terrain_object = TerrainObject.FENCE_H
+		"fence_v":       terrain_object = TerrainObject.FENCE_V
+		"signpost":      terrain_object = TerrainObject.SIGNPOST
+		"barrel":        terrain_object = TerrainObject.BARREL
+		"crate":         terrain_object = TerrainObject.CRATE
+		"bridge_h":      terrain_object = TerrainObject.BRIDGE_H; is_passable = true
+		"bridge_v":      terrain_object = TerrainObject.BRIDGE_V; is_passable = true
+		"ruins_pillar":  terrain_object = TerrainObject.RUINS_PILLAR; defense_bonus += 1
+		"ruins_arch":    terrain_object = TerrainObject.RUINS_ARCH;   avoid_bonus += 5
+		"statue":        terrain_object = TerrainObject.STATUE
 
 func set_elemental_state(elem: String, duration: int = 3):
 	match elem:
@@ -33,9 +76,21 @@ func get_movement_cost(unit_element: String = "") -> int:
 	var cost: int = 1
 	match terrain_type:
 		TerrainType.FOREST:    cost = 2
-		TerrainType.WATER:     cost = 3
+		TerrainType.WATER:     cost = 4
 		TerrainType.RUINS:     cost = 2
-		TerrainType.ELEVATION: cost = 2
+		TerrainType.ELEVATION: cost = 3
+		TerrainType.SAND:      cost = 2
+		TerrainType.RIVER:     cost = 3
+		TerrainType.ROAD:      cost = 1
+		TerrainType.BRIDGE:    cost = 1
+		TerrainType.FORT:      cost = 1
+		TerrainType.VILLAGE:   cost = 1
+		TerrainType.THRONE:    cost = 1
+	# Objects can slow movement
+	match terrain_object:
+		TerrainObject.BUSH:    cost += 1
+		TerrainObject.FENCE_H, TerrainObject.FENCE_V: cost += 1
+		TerrainObject.BARREL, TerrainObject.CRATE:     cost += 1
 	match elemental_state:
 		ElementalState.FROZEN:
 			cost = 1 if unit_element == "ice" else cost + 2
@@ -59,4 +114,31 @@ func get_color() -> Color:
 		TerrainType.WATER:     return Color(0.08, 0.18, 0.42)
 		TerrainType.RUINS:     return Color(0.26, 0.23, 0.18)
 		TerrainType.ELEVATION: return Color(0.40, 0.36, 0.26)
+		TerrainType.WALL:      return Color(0.18, 0.16, 0.14)
+		TerrainType.FORT:      return Color(0.22, 0.20, 0.16)
+		TerrainType.BRIDGE:    return Color(0.30, 0.22, 0.12)
+		TerrainType.VILLAGE:   return Color(0.20, 0.22, 0.14)
+		TerrainType.THRONE:    return Color(0.45, 0.35, 0.15)
+		TerrainType.SAND:      return Color(0.52, 0.45, 0.28)
+		TerrainType.LAVA:      return Color(0.55, 0.12, 0.02)
+		TerrainType.RIVER:     return Color(0.12, 0.28, 0.52)
+		TerrainType.ROAD:      return Color(0.22, 0.20, 0.16)
 	return Color(0.14, 0.16, 0.12)
+
+func get_terrain_name() -> String:
+	match terrain_type:
+		TerrainType.OPEN:      return "Plain"
+		TerrainType.FOREST:    return "Forest"
+		TerrainType.WATER:     return "Water"
+		TerrainType.RUINS:     return "Ruins"
+		TerrainType.ELEVATION: return "Mountain"
+		TerrainType.WALL:      return "Wall"
+		TerrainType.FORT:      return "Fort"
+		TerrainType.BRIDGE:    return "Bridge"
+		TerrainType.VILLAGE:   return "Village"
+		TerrainType.THRONE:    return "Throne"
+		TerrainType.SAND:      return "Sand"
+		TerrainType.LAVA:      return "Lava"
+		TerrainType.RIVER:     return "River"
+		TerrainType.ROAD:      return "Road"
+	return "?"

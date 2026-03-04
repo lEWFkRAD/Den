@@ -471,7 +471,13 @@ func _show_heal_targets():
 	state = State.SELECT_ITEM
 
 func _heal_target(target):
+	var before_hp = target.stats.hp
 	var msg = CombatResolver.resolve_heal(selected_unit, target)
+	var healed_amt = target.stats.hp - before_hp
+	# Record kip healing memory
+	if selected_unit.bonded_kip and healed_amt > 0:
+		selected_unit.bonded_kip.record_event("allies_healed", 1)
+		selected_unit.bonded_kip.record_event("total_hp_healed", healed_amt)
 	_push_log(msg)
 	grid.flash(target.grid_position, Color(0.3, 1.0, 0.5, 0.7), 0.6)
 	selected_unit.has_acted = true
@@ -499,6 +505,23 @@ func _on_action_awaken():
 	if kip.awaken():
 		var r = kip.get_awakening_radius()
 		grid.apply_elemental_effect(selected_unit.grid_position, r, kip.element, 4)
+		# Track tiles changed by element
+		var tiles_affected = 0
+		for x in range(selected_unit.grid_position.x - r, selected_unit.grid_position.x + r + 1):
+			for y in range(selected_unit.grid_position.y - r, selected_unit.grid_position.y + r + 1):
+				if abs(x - selected_unit.grid_position.x) + abs(y - selected_unit.grid_position.y) <= r:
+					if grid.tiles.has(Vector2i(x, y)):
+						tiles_affected += 1
+		kip.record_event("tiles_changed", tiles_affected)
+		# Track element-specific tile counts
+		match kip.element:
+			"ice":      kip.record_event("tiles_frozen", tiles_affected)
+			"void":     kip.record_event("tiles_voided", tiles_affected)
+			"plant":    kip.record_event("plant_tiles_created", tiles_affected)
+			"dark":     kip.record_event("dark_tiles_created", tiles_affected)
+			"light":    kip.record_event("radiant_tiles_created", tiles_affected)
+			"electric": kip.record_event("charged_tiles_stood", tiles_affected)
+
 		# Awakening deals damage to all enemies in radius
 		var hit = 0
 		for u in units:
@@ -507,10 +530,13 @@ func _on_action_awaken():
 				if dist <= r + 0.5:
 					var dmg = kip.get_awakening_damage()
 					u.take_damage(dmg, kip.element)
+					kip.record_event("damage_dealt", dmg)
 					grid.flash(u.grid_position, Color(1.0, 0.5, 0.0, 0.9), 0.8)
 					hit += 1
 					if not u.is_alive():
 						grid.tiles[u.grid_position].occupant = null
+						kip.record_event("kills_witnessed", 1)
+		kip.record_event("chain_hits", hit)
 		_push_log("%s AWAKENED! %s hit %d enemies." % [kip.kip_name, kip.get_phase_label(), hit])
 		kip.is_exhausted = true
 		selected_unit.has_acted = true
@@ -757,9 +783,58 @@ func _animate_strike(attacker, defender, weapon: Weapon):
 func _finish_combat(attacker):
 	_hide_combat_closeup()
 	attacker.has_acted = true
+	# Record kip memory for kills
+	_record_kip_combat_events(attacker, forecast_defender)
 	_deselect()
 	_check_all_acted()
 	_check_battle_outcome()
+
+# ─── Kip Memory Recording ───────────────────────────────────────────────────
+
+func _record_kip_combat_events(attacker, defender):
+	# When an enemy dies, all nearby player kips witness the kill
+	if defender != null and not defender.is_alive() and not defender.is_player_unit:
+		for u in units:
+			if u.is_player_unit and u.is_alive() and u.bonded_kip:
+				var dist = (u.grid_position - defender.grid_position).length()
+				if dist <= 5.0:
+					u.bonded_kip.record_event("kills_witnessed", 1)
+
+	# When a player kills, their own kip records damage dealt
+	if attacker.is_player_unit and attacker.bonded_kip:
+		attacker.bonded_kip.record_event("battles_witnessed", 1)
+		if defender and not defender.is_alive():
+			attacker.bonded_kip.record_event("damage_dealt", defender.stats.max_hp)
+
+	# When a player unit narrowly survives (saved by proximity), record ally saved
+	if defender != null and defender.is_player_unit and defender.is_alive():
+		var hpr = float(defender.stats.hp) / float(defender.stats.max_hp)
+		if hpr < 0.25:
+			for u in units:
+				if u.is_player_unit and u.is_alive() and u != defender and u.bonded_kip:
+					var dist = (u.grid_position - defender.grid_position).length()
+					if dist <= 3.0:
+						u.bonded_kip.record_event("allies_saved", 1)
+
+func _record_kip_tile_events():
+	# Called each turn — record what elemental tiles kips are standing on
+	for u in units:
+		if not u.is_player_unit or not u.is_alive() or u.bonded_kip == null: continue
+		var tile = grid.tiles.get(u.grid_position)
+		if tile == null: continue
+		var kip = u.bonded_kip
+		match tile.elemental_state:
+			Tile.ElementalState.CHARGED:   kip.record_event("charged_tiles_stood", 1)
+			Tile.ElementalState.BLOODSOAKED: kip.record_event("blood_tiles_stood", 1)
+			Tile.ElementalState.FROZEN:    kip.record_event("frozen_tiles_stood", 1)
+
+func _check_kip_evolutions():
+	for u in units:
+		if not u.is_player_unit or not u.is_alive() or u.bonded_kip == null: continue
+		if u.bonded_kip.check_evolution():
+			_push_log("%s has evolved into %s!" % [u.bonded_kip.kip_name, u.bonded_kip.evolution_name])
+			BattleState.kip_evolved.emit(u.bonded_kip.kip_name, u.bonded_kip.evolution_name)
+			grid.flash(u.grid_position, Color(1.0, 0.9, 0.3, 0.9), 1.5)
 
 # ─── Turn / Phase Signals ────────────────────────────────────────────────────
 
@@ -767,6 +842,11 @@ func _on_player_phase(turn: int):
 	phase_label.text = "Player Phase  —  Turn %d" % (turn + 1)
 	turn_label.text  = "Turn %d" % (turn + 1)
 	end_turn_btn.disabled = false
+	# Record kip tile standing events and check evolutions each turn
+	_record_kip_tile_events()
+	_check_kip_evolutions()
+	# Apply mutation effects
+	_apply_kip_mutations()
 	grid.queue_redraw()
 	_check_battle_outcome()
 
@@ -844,8 +924,72 @@ func _check_battle_outcome():
 		state = State.BATTLE_OVER
 	elif not e:
 		phase_label.text = "— VICTORY —"
+		# Check for kip evolutions on victory
+		_check_kip_evolutions()
 		_set_info_text("All enemies defeated.")
 		state = State.BATTLE_OVER
+
+func _apply_kip_mutations():
+	for u in units:
+		if not u.is_player_unit or not u.is_alive() or u.bonded_kip == null: continue
+		var kip = u.bonded_kip
+		if not kip.is_evolved: continue
+
+		# Blood Drain: War Beast heals when nearby enemies died last turn
+		if kip.has_mutation("blood_drain"):
+			# Passive healing handled in _record_kip_combat_events
+			pass
+
+		# Chain Lightning / Permafrost: Spreading elemental tiles
+		if kip.has_mutation("chain_lightning") or kip.has_mutation("permafrost"):
+			var spread_elem = "electric" if kip.has_mutation("chain_lightning") else "ice"
+			var spread_tiles: Array = []
+			for pos in grid.tiles:
+				var tile = grid.tiles[pos]
+				var target_state = Tile.ElementalState.CHARGED if spread_elem == "electric" else Tile.ElementalState.FROZEN
+				if tile.elemental_state == target_state:
+					var dirs = [Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1)]
+					var chosen = dirs[randi() % dirs.size()]
+					var adj = pos + chosen
+					if grid.tiles.has(adj) and grid.tiles[adj].elemental_state == Tile.ElementalState.NEUTRAL:
+						spread_tiles.append(adj)
+			for sp in spread_tiles:
+				grid.tiles[sp].set_elemental_state(spread_elem, 3 if kip.has_mutation("chain_lightning") else 5)
+				grid.flash(sp, grid._elem_color(spread_elem), 0.5)
+
+		# Sanctify: Heal allies on radiant tiles
+		if kip.has_mutation("sanctify"):
+			for ally in units:
+				if ally.is_player_unit and ally.is_alive():
+					var tile = grid.tiles.get(ally.grid_position)
+					if tile and tile.elemental_state == Tile.ElementalState.RADIANT:
+						var heal_amt = min(3, ally.stats.max_hp - ally.stats.hp)
+						if heal_amt > 0:
+							ally.stats.hp += heal_amt
+							grid.pop_damage(ally.grid_position, "+%d" % heal_amt, Color(0.3, 1.0, 0.5))
+							kip.record_event("total_hp_healed", heal_amt)
+
+		# Entangle: Enemies on overgrown tiles lose movement (handled in movement calc)
+		# Shroud: Enemies on dark tiles get hit penalty (handled in combat calc)
+		# Annihilate: Voided tiles become permanent (extend duration)
+		if kip.has_mutation("annihilate"):
+			for pos in grid.tiles:
+				var tile = grid.tiles[pos]
+				if tile.elemental_state == Tile.ElementalState.VOIDED:
+					tile.elemental_turns_remaining = max(tile.elemental_turns_remaining, 99)
+
+		# Judgment: Applied during awakening, not per-turn
+		# Blood Drain: heal on nearby enemy death
+		if kip.has_mutation("blood_drain"):
+			# Check if any enemy died last turn within 3 tiles
+			for other in units:
+				if not other.is_player_unit and not other.is_alive():
+					var dist = (other.grid_position - u.grid_position).length()
+					if dist <= 3.0:
+						var heal = min(4, kip.max_hp - kip.hp)
+						if heal > 0:
+							kip.hp += heal
+							grid.pop_damage(u.grid_position, "+%d" % heal, Color(0.8, 0.2, 0.2))
 
 func _cancel_action():
 	match state:
@@ -1220,6 +1364,27 @@ func _set_info_bbcode(unit):
 		info_rtl.pop()
 		info_rtl.append_text("\n")
 
+	# Terrain info
+	var tile = grid.tiles.get(unit.grid_position)
+	if tile:
+		var terrain_name = tile.get_terrain_name()
+		if terrain_name != "Plain":
+			info_rtl.append_text("\n")
+			info_rtl.push_color(Color(0.5, 0.5, 0.5))
+			info_rtl.append_text("Terrain: ")
+			info_rtl.pop()
+			info_rtl.push_color(Color(0.7, 0.7, 0.6))
+			info_rtl.append_text(terrain_name)
+			info_rtl.pop()
+			if tile.defense_bonus > 0 or tile.avoid_bonus > 0:
+				info_rtl.push_color(Color(0.4, 0.7, 0.4))
+				info_rtl.append_text("  DEF+%d  AVO+%d" % [tile.defense_bonus, tile.avoid_bonus])
+				info_rtl.pop()
+			if tile.heal_bonus > 0:
+				info_rtl.push_color(Color(0.4, 0.8, 0.5))
+				info_rtl.append_text("  HEAL+%d" % tile.heal_bonus)
+				info_rtl.pop()
+
 	# Kip info
 	if unit.bonded_kip:
 		var k = unit.bonded_kip
@@ -1228,16 +1393,36 @@ func _set_info_bbcode(unit):
 		info_rtl.append_text("────────────────────────────\n")
 		info_rtl.pop()
 		info_rtl.push_color(_elem_ui_color(k.element))
-		info_rtl.append_text(k.kip_name)
+		if k.is_evolved:
+			info_rtl.append_text("%s (%s)" % [k.kip_name, k.evolution_name])
+		else:
+			info_rtl.append_text(k.kip_name)
 		info_rtl.pop()
-		var phases = ["Companion", "Deployed", "Awakened"]
 		info_rtl.push_color(Color(0.5, 0.5, 0.5))
-		info_rtl.append_text("  %s  HP %d/%d" % [phases[k.current_phase], k.hp, k.max_hp])
+		info_rtl.append_text("  %s  HP %d/%d" % [k.get_phase_label(), k.hp, k.max_hp])
 		if k.is_exhausted:
 			info_rtl.push_color(Color(0.65, 0.35, 0.35))
 			info_rtl.append_text("  EXHAUSTED")
 			info_rtl.pop()
 		info_rtl.pop()
+		# Show evolution progress if not evolved
+		if not k.is_evolved:
+			var progress = k.get_evolution_progress()
+			if not progress.is_empty():
+				info_rtl.append_text("\n")
+				info_rtl.push_color(Color(0.45, 0.40, 0.55))
+				var done_count = 0
+				var total_count = progress.size()
+				for pkey in progress:
+					var p = progress[pkey]
+					if p["complete"]: done_count += 1
+				info_rtl.append_text("Evolution: %d/%d" % [done_count, total_count])
+				info_rtl.pop()
+		elif k.mutation_ability != "":
+			info_rtl.append_text("\n")
+			info_rtl.push_color(Color(0.7, 0.55, 0.9))
+			info_rtl.append_text("Mutation: %s" % k.mutation_description)
+			info_rtl.pop()
 
 func _make_styled_btn(label: String, col: Color, height: int = 40) -> Button:
 	var btn = Button.new()

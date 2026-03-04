@@ -1,0 +1,202 @@
+{
+	"scar": {
+		"evolution_name": "War Beast",
+		"element": "blood",
+		"description": "Gains HP when enemies die nearby. Larger, more monstrous form with bone spikes and dark crimson aura.",
+		"requirements": {
+			"kills_witnessed": 25,
+			"blood_tiles_stood": 15,
+			"awakenings_survived": 2
+		},
+		"stat_bonuses": {
+			"hp": 8,
+			"attack": 4,
+			"defense": 2,
+			"movement": 0,
+			"awakening_radius": 1
+		},
+		"mutation_ability": "blood_drain",
+		"mutation_description": "Heals 4 HP when an enemy dies within 3 tiles.",
+		"personality_override": {
+			"deploy":  ["Hunt.", "Blood calls.", "I remember every kill."],
+			"awaken":  ["CRIMSON RUIN."],
+			"idle":    ["More.", "The scent. Everywhere.", "They're already dead. They don't know it yet.", "I count them all."],
+			"kip_attack": ["DEVOUR.", "MINE.", "Bleed.", "Feast."]
+		}
+	},
+	"bolt": {
+		"evolution_name": "Storm Engine",
+		"element": "electric",
+		"description": "Electric tiles jump to nearby tiles each turn. Crackling lightning arcs, glowing veins, floating sparks.",
+		"requirements": {
+			"chain_hits": 10,
+			"charged_tiles_stood": 12,
+			"awakenings_survived": 2
+		},
+		"stat_bonuses": {
+			"hp": 4,
+			"attack": 5,
+			"defense": 1,
+			"movement": 1,
+			"awakening_radius": 2
+		},
+		"mutation_ability": "chain_lightning",
+		"mutation_description": "Charged tiles spread to one adjacent tile each turn.",
+		"personality_override": {
+			"deploy":  ["MAXIMUM VOLTAGE!", "I can't stop! WON'T stop!", "The grid is SINGING!"],
+			"awaken":  ["FULL OVERLOAD!!!!"],
+			"idle":    ["Everything is ELECTRIC and I am EVERYTHING!", "I can feel every wire in the ground!", "THE POWER! CAN YOU FEEL IT?!", "I'm not fast anymore. I'm INSTANT."],
+			"kip_attack": ["MEGAVOLT!", "CHAIN!", "SURGE!", "OVERLOAD!"]
+		}
+	},
+	"null_kip": {
+		"evolution_name": "Devourer",
+		"element": "void",
+		"description": "Void tiles erase terrain permanently. Warped silhouette, pieces of space collapsing, black distortion trails.",
+		"requirements": {
+			"tiles_voided": 30,
+			"kip_kills": 2,
+			"awakenings_survived": 3
+		},
+		"stat_bonuses": {
+			"hp": 5,
+			"attack": 6,
+			"defense": 2,
+			"movement": 1,
+			"awakening_radius": 1
+		},
+		"mutation_ability": "annihilate",
+		"mutation_description": "Voided tiles permanently become void terrain. Movement cost 3 for non-void units.",
+		"personality_override": {
+			"deploy":  ["What remains?", "I am the answer.", "Nothing left."],
+			"awaken":  ["ABSOLUTE NOTHING."],
+			"idle":    ["I consumed a piece of the world. It didn't resist.", "What is the difference between me and emptiness?", "Everything ends. I am the proof.", "Do you remember what was here? Neither does the ground."],
+			"kip_attack": ["Consumed.", "Unmade.", "Forgotten.", "Erased."]
+		}
+	},
+	"solen": {
+		"evolution_name": "Radiant Archon",
+		"element": "light",
+		"description": "Heals all allies standing on radiant tiles each turn. Brilliant golden aura, halo of light, warmth made visible.",
+		"requirements": {
+			"allies_healed": 200,
+			"radiant_tiles_created": 20,
+			"allies_saved": 8
+		},
+		"stat_bonuses": {
+			"hp": 6,
+			"attack": 2,
+			"defense": 3,
+			"movement": 1,
+			"awakening_radius": 2
+		},
+		"mutation_ability": "sanctify",
+		"mutation_description": "Allies on radiant tiles heal 3 HP at the start of each turn.",
+		"personality_override": {
+			"deploy":  ["The light remembers you.", "I carry every name.", "Stand with me."],
+			"awaken":  ["DIVINE RADIANCE."],
+			"idle":    ["Every scar you carry — I've been counting them.", "The warmth is not mine. It's yours. I'm reflecting it.", "I've watched empires fall and children grow. Both matter.", "You are not alone. You were never alone."],
+			"kip_attack": ["Shield.", "Ward.", "Endure.", "Protected."]
+		}
+	},
+	"thorn": {
+		"evolution_name": "Thorn Sovereign",
+		"element": "plant",
+		"description": "Roots enemies standing on vine tiles. Thicker vines, crown of thorns, glowing green spores.",
+		"requirements": {
+			"plant_tiles_created": 40,
+			"total_hp_healed": 150,
+			"awakenings_survived": 2
+		},
+		"stat_bonuses": {
+			"hp": 10,
+			"attack": 3,
+			"defense": 4,
+			"movement": 0,
+			"awakening_radius": 2
+		},
+		"mutation_ability": "entangle",
+		"mutation_description": "Enemies on overgrown tiles lose 1 movement and cannot flee combat.",
+		"personality_override": {
+			"deploy":  ["The roots remember.", "This land is mine.", "Grow."],
+			"awaken":  ["SOVEREIGN BLOOM."],
+			"idle":    ["I have held this ground for longer than your bloodline.", "The forest does not forget. I am the forest.", "Patience. The slow things always win.", "They will break against the roots. They always do."],
+			"kip_attack": ["Bound.", "Tangled.", "Rooted.", "Held."]
+		}
+	},
+	"dusk": {
+		"evolution_name": "Twilight Oracle",
+		"element": "dark",
+		"description": "Reveals enemy stats and weaknesses. Dark tiles reduce enemy accuracy. Sardonic, knowing, impossible to surprise.",
+		"requirements": {
+			"dark_tiles_created": 25,
+			"enemies_debuffed": 15,
+			"awakenings_survived": 2
+		},
+		"stat_bonuses": {
+			"hp": 5,
+			"attack": 4,
+			"defense": 2,
+			"movement": 1,
+			"awakening_radius": 2
+		},
+		"mutation_ability": "shroud",
+		"mutation_description": "Enemies on darkened tiles suffer -15 hit rate and -10 avoid.",
+		"personality_override": {
+			"deploy":  ["I've seen this exact battle four hundred years ago.", "Fine. Let me show you what I know.", "Watch."],
+			"awaken":  ["ETERNAL TWILIGHT."],
+			"idle":    ["I've forgotten more wars than you've seen sunsets.", "History doesn't repeat. People do.", "Every commander makes the same mistake. Yours did too.", "I remember everything. That's not a gift."],
+			"kip_attack": ["Foreseen.", "Inevitable.", "History.", "As written."]
+		}
+	},
+	"sleet": {
+		"evolution_name": "Glacial Tyrant",
+		"element": "ice",
+		"description": "Frozen tiles spread outward each turn. Cracks of blue light, frost aura, heavier crystalline armor.",
+		"requirements": {
+			"tiles_frozen": 50,
+			"awakenings_survived": 3,
+			"enemies_immobilized": 10
+		},
+		"stat_bonuses": {
+			"hp": 7,
+			"attack": 4,
+			"defense": 5,
+			"movement": 0,
+			"awakening_radius": 2
+		},
+		"mutation_ability": "permafrost",
+		"mutation_description": "Frozen tiles spread to one adjacent tile each turn. Frozen tiles last 2 extra turns.",
+		"personality_override": {
+			"deploy":  ["Temperature: dropping.", "Optimal freeze conditions.", "Engaging glacial protocol."],
+			"awaken":  ["ABSOLUTE ZERO."],
+			"idle":    ["The frost line is expanding. I've run the calculations.", "Efficiency increased by 340%. I'm satisfied.", "Every tile I touch remembers the cold.", "They can't outrun the ice. I've measured."],
+			"kip_attack": ["Shattered.", "Absolute.", "Crystallized.", "Frozen solid."]
+		}
+	},
+	"the_first": {
+		"evolution_name": "The Arbiter",
+		"element": "god",
+		"description": "Can judge enemies, permanently reducing their stats. The last witness becomes the final judge.",
+		"requirements": {
+			"battles_witnessed": 30,
+			"kills_witnessed": 50,
+			"awakenings_survived": 3
+		},
+		"stat_bonuses": {
+			"hp": 10,
+			"attack": 5,
+			"defense": 4,
+			"movement": 1,
+			"awakening_radius": 2
+		},
+		"mutation_ability": "judgment",
+		"mutation_description": "Awakening permanently reduces all surviving enemies' stats by 2.",
+		"personality_override": {
+			"deploy":  ["Judgment."],
+			"awaken":  ["THE VERDICT."],
+			"idle":    ["I have seen enough.", "The record is complete.", "...guilty."],
+			"kip_attack": ["Judged.", "Sentenced.", "Recorded.", "Condemned."]
+		}
+	}
+}
