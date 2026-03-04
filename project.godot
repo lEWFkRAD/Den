@@ -1,0 +1,21 @@
+; Engine configuration file.
+config_version=5
+
+[application]
+config/name="Den"
+config/description="A dark tactical RPG. Magic. Robots. War."
+run/main_scene="res://scenes/battle/Battle.tscn"
+config/features=PackedStringArray("4.2", "Forward Plus")
+
+[autoload]
+ElementRegistry="*res://autoloads/ElementRegistry.gd"
+GameState="*res://autoloads/GameState.gd"
+BattleState="*res://autoloads/BattleState.gd"
+CombatResolver="*res://autoloads/CombatResolver.gd"
+CharacterRoster="*res://autoloads/CharacterRoster.gd"
+
+[display]
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/resizable=true
+window/stretch/mode="canvas_items"
