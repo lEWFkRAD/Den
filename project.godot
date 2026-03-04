@@ -22,6 +22,7 @@ config/features=PackedStringArray("4.6", "Forward Plus")
 [autoload]
 
 ElementRegistry="*res://autoloads/ElementRegistry.gd"
+DataLoader="*res://autoloads/DataLoader.gd"
 GameState="*res://autoloads/GameState.gd"
 BattleState="*res://autoloads/BattleState.gd"
 CombatResolver="*res://autoloads/CombatResolver.gd"

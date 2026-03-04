@@ -1,0 +1,173 @@
+{
+	"vulnerary": {
+		"name": "Vulnerary",
+		"type": "heal",
+		"description": "Restores 10 HP. Three uses.",
+		"uses": 3,
+		"value": 10,
+		"stat_target": "",
+		"duration": 0
+	},
+	"concoction": {
+		"name": "Concoction",
+		"type": "heal",
+		"description": "Restores 20 HP. Three uses.",
+		"uses": 3,
+		"value": 20,
+		"stat_target": "",
+		"duration": 0
+	},
+	"elixir": {
+		"name": "Elixir",
+		"type": "elixir",
+		"description": "Fully restores HP. One use.",
+		"uses": 1,
+		"value": 9999,
+		"stat_target": "",
+		"duration": 0
+	},
+	"kip_salve": {
+		"name": "Kip Salve",
+		"type": "kip_restore",
+		"description": "Restores exhausted Kip to Companion phase at 50% HP.",
+		"uses": 1,
+		"value": 50,
+		"stat_target": "",
+		"duration": 0
+	},
+	"kip_tonic": {
+		"name": "Kip Tonic",
+		"type": "kip_restore",
+		"description": "Restores exhausted Kip to Companion phase at full HP.",
+		"uses": 1,
+		"value": 100,
+		"stat_target": "",
+		"duration": 0
+	},
+	"pure_water": {
+		"name": "Pure Water",
+		"type": "stat_boost",
+		"description": "Raises RES by 7 for 3 turns.",
+		"uses": 3,
+		"value": 7,
+		"stat_target": "resistance",
+		"duration": 3
+	},
+	"energy_drop": {
+		"name": "Energy Drop",
+		"type": "stat_boost",
+		"description": "Permanently raises STR by 2.",
+		"uses": 1,
+		"value": 2,
+		"stat_target": "strength",
+		"duration": -1
+	},
+	"spirit_dust": {
+		"name": "Spirit Dust",
+		"type": "stat_boost",
+		"description": "Permanently raises MAG by 2.",
+		"uses": 1,
+		"value": 2,
+		"stat_target": "magic",
+		"duration": -1
+	},
+	"speedwing": {
+		"name": "Speedwing",
+		"type": "stat_boost",
+		"description": "Permanently raises SPD by 2.",
+		"uses": 1,
+		"value": 2,
+		"stat_target": "speed",
+		"duration": -1
+	},
+	"dracoshield": {
+		"name": "Dracoshield",
+		"type": "stat_boost",
+		"description": "Permanently raises DEF by 2.",
+		"uses": 1,
+		"value": 2,
+		"stat_target": "defense",
+		"duration": -1
+	},
+	"talisman": {
+		"name": "Talisman",
+		"type": "stat_boost",
+		"description": "Permanently raises RES by 2.",
+		"uses": 1,
+		"value": 2,
+		"stat_target": "resistance",
+		"duration": -1
+	},
+	"secret_book": {
+		"name": "Secret Book",
+		"type": "stat_boost",
+		"description": "Permanently raises SKL by 2.",
+		"uses": 1,
+		"value": 2,
+		"stat_target": "skill",
+		"duration": -1
+	},
+	"goddess_icon": {
+		"name": "Goddess Icon",
+		"type": "stat_boost",
+		"description": "Permanently raises LCK by 2.",
+		"uses": 1,
+		"value": 2,
+		"stat_target": "luck",
+		"duration": -1
+	},
+	"angelic_robe": {
+		"name": "Angelic Robe",
+		"type": "stat_boost",
+		"description": "Permanently raises max HP by 7.",
+		"uses": 1,
+		"value": 7,
+		"stat_target": "hp",
+		"duration": -1
+	},
+	"boots": {
+		"name": "Boots",
+		"type": "stat_boost",
+		"description": "Permanently raises MOV by 1.",
+		"uses": 1,
+		"value": 1,
+		"stat_target": "movement",
+		"duration": -1
+	},
+	"torch": {
+		"name": "Torch",
+		"type": "stat_boost",
+		"description": "Reveals fog of war in 5-tile radius for 3 turns.",
+		"uses": 3,
+		"value": 5,
+		"stat_target": "",
+		"duration": 3
+	},
+	"door_key": {
+		"name": "Door Key",
+		"type": "heal",
+		"description": "Opens a locked door. One use.",
+		"uses": 1,
+		"value": 0,
+		"stat_target": "",
+		"duration": 0
+	},
+	"chest_key": {
+		"name": "Chest Key",
+		"type": "heal",
+		"description": "Opens a treasure chest. One use.",
+		"uses": 1,
+		"value": 0,
+		"stat_target": "",
+		"duration": 0
+	},
+	"lockpick": {
+		"name": "Lockpick",
+		"type": "heal",
+		"description": "Opens locks. Rogues only. Fifteen uses.",
+		"uses": 15,
+		"value": 0,
+		"stat_target": "",
+		"duration": 0
+	}
+}

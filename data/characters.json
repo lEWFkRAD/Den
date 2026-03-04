@@ -1,0 +1,74 @@
+{
+	"aldric": {
+		"name": "Aldric",
+		"class": "Soldier",
+		"kip": "scar",
+		"weapons": ["steel_sword", "iron_sword"],
+		"items": ["vulnerary"],
+		"flavor": "A grizzled veteran who says little and means all of it. Scar chose him three weeks ago. He hasn't asked why.",
+		"portrait": "aldric"
+	},
+	"mira": {
+		"name": "Mira",
+		"class": "Archer",
+		"kip": "bolt",
+		"weapons": ["steel_bow"],
+		"items": ["vulnerary"],
+		"flavor": "Precise, impatient, and verbally dangerous. Bolt is her perfect match \u2014 both of them act before they think and it somehow keeps working.",
+		"portrait": "mira"
+	},
+	"voss": {
+		"name": "Voss",
+		"class": "Mage",
+		"kip": "null_kip",
+		"weapons": ["void_tome", "dark_tome"],
+		"items": ["pure_water"],
+		"flavor": "Cold scholar. Studies null. Studies Null. Not sure anymore where one ends and the other begins.",
+		"portrait": "voss"
+	},
+	"seren": {
+		"name": "Seren",
+		"class": "Healer",
+		"kip": "solen",
+		"weapons": ["physic_staff", "heal_staff"],
+		"items": ["vulnerary", "elixir"],
+		"flavor": "Steady, warm, and terrifyingly competent under pressure. Solen has been awake for longer than living memory. It found Seren in a field. It waited. She sat down. They talked until dawn.",
+		"portrait": "seren"
+	},
+	"bram": {
+		"name": "Bram",
+		"class": "Knight",
+		"kip": "thorn",
+		"weapons": ["steel_lance", "iron_lance"],
+		"items": ["vulnerary"],
+		"flavor": "Immovable. Not because he can't move but because he has decided not to. Thorn approves of this. They have never had an argument.",
+		"portrait": "bram"
+	},
+	"corvin": {
+		"name": "Corvin",
+		"class": "Rogue",
+		"kip": "dusk",
+		"weapons": ["venomed_dagger", "iron_dagger"],
+		"items": ["vulnerary", "kip_salve"],
+		"flavor": "Sardonic thief who steals from people he dislikes, which is most people. Dusk finds him entertaining. This is either a good sign or a terrible one.",
+		"portrait": "corvin"
+	},
+	"yael": {
+		"name": "Yael",
+		"class": "Mage",
+		"kip": "sleet",
+		"weapons": ["ice_tome", "lightning_tome"],
+		"items": ["pure_water"],
+		"flavor": "Calculating strategist who approaches battle like a proof. Sleet pointed out three errors in her last plan before the fight started. She fixed all three. They are very good together.",
+		"portrait": "yael"
+	},
+	"lorn": {
+		"name": "Lorn",
+		"class": "Warden",
+		"kip": "the_first",
+		"weapons": ["divine_blade", "greatsword"],
+		"items": ["elixir"],
+		"flavor": "Nobody knows where Lorn came from. The First does. It isn't saying.",
+		"portrait": "lorn"
+	}
+}

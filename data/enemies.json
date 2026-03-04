@@ -1,0 +1,114 @@
+{
+	"grunt": {
+		"name": "Grunt",
+		"class": "Enemy",
+		"weapons": ["iron_sword"],
+		"items": [],
+		"element": ""
+	},
+	"archer": {
+		"name": "Scout",
+		"class": "Enemy_Archer",
+		"weapons": ["iron_bow"],
+		"items": [],
+		"element": ""
+	},
+	"heavy": {
+		"name": "Ironhelm",
+		"class": "Enemy_Heavy",
+		"weapons": ["iron_lance"],
+		"items": [],
+		"element": ""
+	},
+	"mage": {
+		"name": "Hexblade",
+		"class": "Enemy_Mage",
+		"weapons": ["dark_tome"],
+		"items": [],
+		"element": "dark"
+	},
+	"rogue": {
+		"name": "Cutthroat",
+		"class": "Enemy_Rogue",
+		"weapons": ["iron_dagger"],
+		"items": [],
+		"element": ""
+	},
+	"blood_knight": {
+		"name": "Blood Knight",
+		"class": "Enemy_Knight",
+		"weapons": ["berserker_axe"],
+		"items": [],
+		"element": "blood"
+	},
+	"void_warden": {
+		"name": "Void Warden",
+		"class": "Enemy_Warden",
+		"weapons": ["void_tome"],
+		"items": [],
+		"element": "void"
+	},
+	"commander": {
+		"name": "Commander Varek",
+		"class": "Enemy_Commander",
+		"weapons": ["heavy_lance", "iron_axe"],
+		"items": ["vulnerary"],
+		"element": ""
+	},
+	"priest": {
+		"name": "Covenant Priest",
+		"class": "Enemy_Mage",
+		"weapons": ["heal_staff", "light_tome"],
+		"items": [],
+		"element": "light"
+	},
+	"paladin": {
+		"name": "Covenant Paladin",
+		"class": "Enemy_Warden",
+		"weapons": ["steel_lance", "hand_axe"],
+		"items": [],
+		"element": "light"
+	},
+	"assassin": {
+		"name": "Phantom",
+		"class": "Enemy_Rogue",
+		"weapons": ["venomed_dagger", "silver_dagger"],
+		"items": [],
+		"element": "void"
+	},
+	"golem": {
+		"name": "Ancient Golem",
+		"class": "Enemy_Heavy",
+		"weapons": ["golem_fist"],
+		"items": [],
+		"element": ""
+	},
+	"siege_mage": {
+		"name": "Storm Caller",
+		"class": "Enemy_Mage",
+		"weapons": ["siege_tome"],
+		"items": [],
+		"element": "electric"
+	},
+	"covenant_captain": {
+		"name": "Covenant Captain",
+		"class": "Enemy_Commander",
+		"weapons": ["silver_sword", "steel_lance"],
+		"items": ["vulnerary"],
+		"element": "light"
+	},
+	"warden_corrupted": {
+		"name": "Corrupted Warden",
+		"class": "Enemy_Warden",
+		"weapons": ["blood_lance", "berserker_axe"],
+		"items": [],
+		"element": "blood"
+	},
+	"varek_final": {
+		"name": "Varek, The Unbound",
+		"class": "Enemy_Commander",
+		"weapons": ["divine_blade", "heavy_lance"],
+		"items": ["vulnerary", "elixir"],
+		"element": "blood"
+	}
+}

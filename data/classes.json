@@ -1,0 +1,33 @@
+{
+	"Soldier":         { "hp": 24, "strength": 7, "magic": 2, "skill": 6, "speed": 6, "luck": 4, "defense": 6, "resistance": 2, "movement": 5 },
+	"Archer":          { "hp": 20, "strength": 6, "magic": 3, "skill": 8, "speed": 7, "luck": 5, "defense": 4, "resistance": 3, "movement": 5 },
+	"Mage":            { "hp": 18, "strength": 2, "magic": 9, "skill": 6, "speed": 5, "luck": 5, "defense": 2, "resistance": 7, "movement": 5 },
+	"Knight":          { "hp": 32, "strength": 9, "magic": 1, "skill": 5, "speed": 2, "luck": 3, "defense": 11, "resistance": 2, "movement": 4 },
+	"Rogue":           { "hp": 19, "strength": 5, "magic": 3, "skill": 9, "speed": 9, "luck": 7, "defense": 3, "resistance": 3, "movement": 6 },
+	"Healer":          { "hp": 17, "strength": 1, "magic": 8, "skill": 6, "speed": 5, "luck": 6, "defense": 2, "resistance": 8, "movement": 5 },
+	"Warden":          { "hp": 28, "strength": 10, "magic": 4, "skill": 7, "speed": 7, "luck": 5, "defense": 8, "resistance": 5, "movement": 5 },
+
+	"Hero":            { "hp": 30, "strength": 10, "magic": 3, "skill": 10, "speed": 9, "luck": 6, "defense": 8, "resistance": 3, "movement": 6 },
+	"Sniper":          { "hp": 24, "strength": 9, "magic": 4, "skill": 13, "speed": 10, "luck": 7, "defense": 5, "resistance": 4, "movement": 6 },
+	"Sage":            { "hp": 22, "strength": 3, "magic": 14, "skill": 9, "speed": 8, "luck": 7, "defense": 3, "resistance": 11, "movement": 5 },
+	"General":         { "hp": 40, "strength": 13, "magic": 2, "skill": 8, "speed": 4, "luck": 5, "defense": 16, "resistance": 4, "movement": 4 },
+	"Assassin":        { "hp": 22, "strength": 8, "magic": 4, "skill": 14, "speed": 13, "luck": 10, "defense": 4, "resistance": 4, "movement": 7 },
+	"Bishop":          { "hp": 21, "strength": 2, "magic": 12, "skill": 9, "speed": 7, "luck": 8, "defense": 3, "resistance": 12, "movement": 5 },
+	"Guardian":        { "hp": 35, "strength": 14, "magic": 6, "skill": 10, "speed": 9, "luck": 7, "defense": 11, "resistance": 7, "movement": 5 },
+
+	"Enemy":           { "hp": 20, "strength": 5, "magic": 2, "skill": 4, "speed": 4, "luck": 2, "defense": 4, "resistance": 2, "movement": 4 },
+	"Enemy_Archer":    { "hp": 17, "strength": 5, "magic": 2, "skill": 6, "speed": 5, "luck": 2, "defense": 3, "resistance": 2, "movement": 5 },
+	"Enemy_Heavy":     { "hp": 30, "strength": 8, "magic": 1, "skill": 3, "speed": 2, "luck": 1, "defense": 8, "resistance": 1, "movement": 3 },
+	"Enemy_Mage":      { "hp": 16, "strength": 1, "magic": 7, "skill": 5, "speed": 5, "luck": 2, "defense": 1, "resistance": 6, "movement": 4 },
+	"Enemy_Rogue":     { "hp": 18, "strength": 4, "magic": 2, "skill": 7, "speed": 7, "luck": 3, "defense": 3, "resistance": 2, "movement": 6 },
+	"Enemy_Knight":    { "hp": 28, "strength": 9, "magic": 1, "skill": 4, "speed": 3, "luck": 1, "defense": 10, "resistance": 1, "movement": 3 },
+	"Enemy_Warden":    { "hp": 26, "strength": 9, "magic": 4, "skill": 6, "speed": 6, "luck": 2, "defense": 7, "resistance": 5, "movement": 5 },
+	"Enemy_Commander": { "hp": 38, "strength": 10, "magic": 3, "skill": 7, "speed": 6, "luck": 4, "defense": 9, "resistance": 4, "movement": 5 },
+
+	"Enemy_Elite":          { "hp": 26, "strength": 7, "magic": 3, "skill": 6, "speed": 6, "luck": 3, "defense": 6, "resistance": 3, "movement": 5 },
+	"Enemy_Elite_Archer":   { "hp": 22, "strength": 7, "magic": 3, "skill": 8, "speed": 7, "luck": 3, "defense": 4, "resistance": 3, "movement": 5 },
+	"Enemy_Elite_Heavy":    { "hp": 36, "strength": 10, "magic": 2, "skill": 5, "speed": 3, "luck": 2, "defense": 11, "resistance": 2, "movement": 3 },
+	"Enemy_Elite_Mage":     { "hp": 20, "strength": 2, "magic": 10, "skill": 7, "speed": 7, "luck": 3, "defense": 2, "resistance": 8, "movement": 4 },
+	"Enemy_Elite_Rogue":    { "hp": 22, "strength": 6, "magic": 3, "skill": 10, "speed": 10, "luck": 5, "defense": 4, "resistance": 3, "movement": 7 },
+	"Enemy_Boss":           { "hp": 48, "strength": 13, "magic": 5, "skill": 10, "speed": 8, "luck": 6, "defense": 12, "resistance": 6, "movement": 5 }
+}

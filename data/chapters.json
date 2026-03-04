@@ -1,0 +1,430 @@
+{
+	"_schema": {
+		"description": "Each key is a chapter ID. Defines map, units, objectives, and dialogue triggers.",
+		"fields": {
+			"name": "Chapter display name",
+			"map_size": "[width, height] in tiles",
+			"terrain": "2D array of terrain types (plain, forest, mountain, water, wall, fort, ruins, bridge, village, throne, sand, lava)",
+			"player_units": "Array of character IDs to deploy",
+			"player_spawns": "Array of [x, y] spawn positions",
+			"enemies": "Array of {type, position, suffix}",
+			"reinforcements": "Optional array of {type, position, suffix, turn}",
+			"objectives": "Array of {type, description}",
+			"dialogue_before": "Dialogue ID to play before battle",
+			"dialogue_after": "Dialogue ID to play after victory"
+		}
+	},
+	"chapter_1": {
+		"name": "The Last Road",
+		"map_size": [14, 10],
+		"terrain": [
+			["forest","plain","plain","forest","forest","plain","plain","bridge","plain","plain","plain","forest","forest","plain"],
+			["plain","plain","forest","forest","plain","plain","plain","bridge","plain","mountain","plain","forest","plain","plain"],
+			["plain","plain","plain","plain","plain","water","water","bridge","plain","mountain","mountain","plain","plain","fort"],
+			["forest","plain","plain","plain","plain","water","water","bridge","plain","plain","mountain","plain","plain","plain"],
+			["forest","forest","plain","plain","water","water","water","water","plain","plain","plain","plain","plain","forest"],
+			["plain","forest","plain","plain","water","water","water","water","plain","plain","plain","fort","forest","forest"],
+			["plain","plain","plain","plain","plain","water","water","plain","plain","plain","plain","plain","plain","plain"],
+			["plain","plain","wall","wall","plain","plain","plain","plain","plain","forest","plain","plain","plain","plain"],
+			["plain","fort","wall","wall","plain","plain","plain","plain","forest","forest","plain","plain","plain","plain"],
+			["plain","plain","plain","plain","plain","plain","plain","plain","plain","forest","plain","plain","plain","plain"]
+		],
+		"player_units": ["aldric", "mira", "voss", "seren", "bram", "corvin"],
+		"player_spawns": [[1,7],[2,8],[1,8],[0,8],[2,7],[0,7]],
+		"enemies": [
+			{ "type": "grunt", "position": [10, 2], "suffix": "A" },
+			{ "type": "grunt", "position": [11, 3], "suffix": "B" },
+			{ "type": "archer", "position": [12, 1], "suffix": "" },
+			{ "type": "heavy", "position": [11, 4], "suffix": "" },
+			{ "type": "mage", "position": [12, 3], "suffix": "" },
+			{ "type": "rogue", "position": [13, 2], "suffix": "" },
+			{ "type": "commander", "position": [13, 0], "suffix": "" }
+		],
+		"objectives": [
+			{ "type": "rout", "description": "Defeat all enemies" }
+		],
+		"dialogue_before": "ch1_intro",
+		"dialogue_after": "ch1_victory"
+	},
+	"chapter_2": {
+		"name": "Ashfield",
+		"map_size": [16, 12],
+		"terrain": [
+			["forest","forest","plain","plain","plain","plain","ruins","plain","plain","plain","village","village","plain","plain","forest","forest"],
+			["forest","plain","plain","plain","forest","plain","ruins","plain","plain","village","village","plain","plain","plain","plain","forest"],
+			["plain","plain","forest","plain","plain","plain","plain","plain","plain","plain","village","plain","plain","forest","plain","plain"],
+			["plain","plain","plain","plain","forest","plain","plain","plain","plain","plain","plain","plain","forest","forest","plain","plain"],
+			["plain","plain","plain","forest","forest","plain","plain","ruins","plain","plain","plain","plain","forest","plain","plain","plain"],
+			["plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain"],
+			["plain","plain","plain","plain","plain","plain","village","plain","plain","plain","ruins","plain","plain","plain","plain","plain"],
+			["plain","plain","forest","plain","plain","village","village","plain","plain","plain","plain","plain","plain","forest","plain","plain"],
+			["plain","forest","forest","plain","plain","village","plain","plain","plain","plain","plain","plain","forest","forest","plain","plain"],
+			["forest","forest","plain","plain","plain","plain","plain","plain","ruins","plain","plain","plain","plain","forest","forest","plain"],
+			["forest","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","forest","plain"],
+			["plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain"]
+		],
+		"player_units": ["aldric", "mira", "voss", "seren", "bram", "corvin"],
+		"player_spawns": [[1,10],[2,10],[0,11],[1,11],[2,11],[3,10]],
+		"enemies": [
+			{ "type": "grunt", "position": [7, 3], "suffix": "A" },
+			{ "type": "grunt", "position": [9, 4], "suffix": "B" },
+			{ "type": "grunt", "position": [6, 6], "suffix": "C" },
+			{ "type": "archer", "position": [10, 2], "suffix": "A" },
+			{ "type": "archer", "position": [12, 5], "suffix": "B" },
+			{ "type": "rogue", "position": [8, 1], "suffix": "" },
+			{ "type": "mage", "position": [11, 3], "suffix": "" },
+			{ "type": "grunt", "position": [5, 5], "suffix": "D" }
+		],
+		"reinforcements": [
+			{ "type": "yael", "position": [14, 1], "suffix": "", "turn": 3, "is_ally": true }
+		],
+		"objectives": [
+			{ "type": "rout", "description": "Defeat all enemies" },
+			{ "type": "protect", "description": "Protect the villagers" }
+		],
+		"dialogue_before": "ch2_intro",
+		"dialogue_after": "ch2_victory"
+	},
+	"chapter_3": {
+		"name": "The Gorge",
+		"map_size": [12, 16],
+		"terrain": [
+			["mountain","mountain","mountain","mountain","plain","fort","plain","mountain","mountain","mountain","mountain","mountain"],
+			["mountain","mountain","mountain","plain","plain","plain","plain","plain","mountain","mountain","mountain","mountain"],
+			["mountain","mountain","plain","plain","forest","plain","forest","plain","plain","mountain","mountain","mountain"],
+			["mountain","mountain","plain","forest","plain","plain","plain","forest","plain","mountain","mountain","mountain"],
+			["mountain","plain","plain","plain","plain","mountain","plain","plain","plain","plain","mountain","mountain"],
+			["mountain","plain","forest","plain","plain","mountain","mountain","plain","forest","plain","mountain","mountain"],
+			["mountain","plain","plain","plain","plain","plain","mountain","plain","plain","plain","plain","mountain"],
+			["mountain","mountain","plain","forest","plain","plain","plain","plain","forest","plain","mountain","mountain"],
+			["mountain","plain","plain","plain","plain","mountain","plain","plain","plain","plain","plain","mountain"],
+			["mountain","plain","forest","plain","plain","mountain","mountain","plain","plain","forest","plain","mountain"],
+			["mountain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","mountain"],
+			["mountain","mountain","plain","plain","forest","plain","forest","plain","plain","mountain","mountain","mountain"],
+			["mountain","mountain","plain","plain","plain","plain","plain","plain","plain","mountain","mountain","mountain"],
+			["mountain","mountain","mountain","plain","plain","fort","plain","plain","mountain","mountain","mountain","mountain"],
+			["mountain","mountain","mountain","plain","plain","plain","plain","plain","mountain","mountain","mountain","mountain"],
+			["mountain","mountain","mountain","mountain","plain","plain","plain","mountain","mountain","mountain","mountain","mountain"]
+		],
+		"player_units": ["aldric", "mira", "voss", "seren", "bram", "corvin", "yael"],
+		"player_spawns": [[4,14],[5,14],[6,14],[4,15],[5,15],[6,15],[5,13]],
+		"enemies": [
+			{ "type": "grunt", "position": [5, 6], "suffix": "A" },
+			{ "type": "grunt", "position": [3, 7], "suffix": "B" },
+			{ "type": "grunt", "position": [7, 8], "suffix": "C" },
+			{ "type": "archer", "position": [4, 4], "suffix": "A" },
+			{ "type": "archer", "position": [7, 5], "suffix": "B" },
+			{ "type": "heavy", "position": [5, 3], "suffix": "A" },
+			{ "type": "heavy", "position": [6, 7], "suffix": "B" },
+			{ "type": "mage", "position": [3, 5], "suffix": "" },
+			{ "type": "rogue", "position": [8, 6], "suffix": "" },
+			{ "type": "blood_knight", "position": [5, 1], "suffix": "" }
+		],
+		"reinforcements": [
+			{ "type": "lorn", "position": [5, 0], "suffix": "", "turn": 4, "is_ally": true }
+		],
+		"objectives": [
+			{ "type": "survive", "description": "Survive 8 turns OR defeat all enemies", "turns": 8 },
+			{ "type": "rout", "description": "Defeat all enemies" }
+		],
+		"dialogue_before": "ch3_intro",
+		"dialogue_after": "ch3_victory"
+	},
+	"chapter_4": {
+		"name": "Thornwall",
+		"map_size": [18, 14],
+		"terrain": [
+			["wall","wall","wall","wall","wall","wall","plain","plain","plain","plain","plain","plain","wall","wall","wall","wall","wall","wall"],
+			["wall","fort","plain","plain","plain","wall","plain","forest","forest","forest","forest","plain","wall","plain","plain","plain","fort","wall"],
+			["wall","plain","plain","plain","plain","plain","plain","forest","plain","plain","forest","plain","plain","plain","plain","plain","plain","wall"],
+			["wall","plain","plain","fort","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","fort","plain","plain","wall"],
+			["wall","plain","plain","plain","plain","wall","wall","plain","plain","plain","plain","wall","wall","plain","plain","plain","plain","wall"],
+			["plain","plain","plain","plain","plain","wall","plain","plain","plain","plain","plain","plain","wall","plain","plain","plain","plain","plain"],
+			["plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain"],
+			["plain","plain","plain","plain","plain","plain","plain","plain","throne","plain","plain","plain","plain","plain","plain","plain","plain","plain"],
+			["plain","plain","plain","plain","plain","wall","plain","plain","plain","plain","plain","plain","wall","plain","plain","plain","plain","plain"],
+			["wall","plain","plain","plain","plain","wall","wall","plain","plain","plain","plain","wall","wall","plain","plain","plain","plain","wall"],
+			["wall","plain","plain","fort","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","fort","plain","plain","wall"],
+			["wall","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","wall"],
+			["wall","fort","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","fort","wall"],
+			["wall","wall","wall","wall","wall","plain","plain","plain","plain","plain","plain","plain","plain","wall","wall","wall","wall","wall"]
+		],
+		"player_units": ["aldric", "mira", "voss", "seren", "bram", "corvin", "yael", "lorn"],
+		"player_spawns": [[7,7],[8,7],[9,7],[7,8],[8,8],[9,8],[6,7],[10,7]],
+		"enemies": [
+			{ "type": "grunt", "position": [3, 1], "suffix": "A" },
+			{ "type": "grunt", "position": [14, 1], "suffix": "B" },
+			{ "type": "grunt", "position": [3, 12], "suffix": "C" },
+			{ "type": "grunt", "position": [14, 12], "suffix": "D" },
+			{ "type": "heavy", "position": [1, 6], "suffix": "A" },
+			{ "type": "heavy", "position": [16, 6], "suffix": "B" },
+			{ "type": "archer", "position": [6, 0], "suffix": "A" },
+			{ "type": "archer", "position": [11, 0], "suffix": "B" },
+			{ "type": "mage", "position": [1, 1], "suffix": "A" },
+			{ "type": "mage", "position": [16, 1], "suffix": "B" },
+			{ "type": "blood_knight", "position": [8, 0], "suffix": "" },
+			{ "type": "archer", "position": [8, 13], "suffix": "C" }
+		],
+		"objectives": [
+			{ "type": "defend", "description": "Survive 10 turns and protect the throne", "turns": 10, "target_tile": [8, 7] }
+		],
+		"dialogue_before": "ch4_intro",
+		"dialogue_after": "ch4_victory"
+	},
+	"chapter_5": {
+		"name": "The Drowned Temple",
+		"map_size": [16, 14],
+		"terrain": [
+			["water","water","water","ruins","ruins","water","water","water","water","water","water","ruins","ruins","water","water","water"],
+			["water","water","ruins","ruins","plain","ruins","water","water","water","water","ruins","plain","ruins","ruins","water","water"],
+			["water","ruins","plain","plain","plain","plain","ruins","water","water","ruins","plain","plain","plain","plain","ruins","water"],
+			["water","ruins","plain","plain","plain","plain","plain","bridge","bridge","plain","plain","plain","plain","plain","ruins","water"],
+			["water","water","ruins","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","ruins","water","water"],
+			["water","water","water","bridge","plain","plain","ruins","ruins","ruins","ruins","plain","plain","bridge","water","water","water"],
+			["water","water","water","bridge","plain","ruins","ruins","plain","plain","ruins","ruins","plain","bridge","water","water","water"],
+			["water","water","water","bridge","plain","ruins","plain","plain","plain","plain","ruins","plain","bridge","water","water","water"],
+			["water","water","water","bridge","plain","plain","plain","plain","plain","plain","plain","plain","bridge","water","water","water"],
+			["water","water","ruins","plain","plain","plain","ruins","plain","plain","ruins","plain","plain","plain","ruins","water","water"],
+			["water","ruins","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","ruins","water"],
+			["water","ruins","plain","plain","plain","plain","plain","bridge","bridge","plain","plain","plain","plain","plain","ruins","water"],
+			["water","water","ruins","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","ruins","water","water"],
+			["water","water","water","ruins","plain","plain","plain","plain","plain","plain","plain","plain","ruins","water","water","water"]
+		],
+		"player_units": ["aldric", "mira", "voss", "seren", "bram", "corvin", "yael", "lorn"],
+		"player_spawns": [[5,12],[6,12],[7,12],[8,12],[5,13],[6,13],[7,13],[8,13]],
+		"enemies": [
+			{ "type": "void_warden", "position": [7, 1], "suffix": "A" },
+			{ "type": "void_warden", "position": [8, 1], "suffix": "B" },
+			{ "type": "mage", "position": [5, 3], "suffix": "A" },
+			{ "type": "mage", "position": [10, 3], "suffix": "B" },
+			{ "type": "rogue", "position": [4, 5], "suffix": "A" },
+			{ "type": "rogue", "position": [11, 5], "suffix": "B" },
+			{ "type": "grunt", "position": [6, 6], "suffix": "A" },
+			{ "type": "grunt", "position": [9, 6], "suffix": "B" },
+			{ "type": "grunt", "position": [7, 4], "suffix": "C" },
+			{ "type": "mage", "position": [8, 7], "suffix": "C" }
+		],
+		"objectives": [
+			{ "type": "seize", "description": "Reach the sunken altar", "target_tile": [7, 1] }
+		],
+		"dialogue_before": "ch5_intro",
+		"dialogue_after": "ch5_victory"
+	},
+	"chapter_6": {
+		"name": "Iron Crossing",
+		"map_size": [20, 12],
+		"terrain": [
+			["plain","plain","forest","forest","plain","plain","water","water","water","water","water","water","water","water","plain","plain","forest","forest","plain","plain"],
+			["plain","plain","plain","forest","plain","plain","water","water","water","water","water","water","water","water","plain","plain","forest","plain","plain","plain"],
+			["plain","plain","plain","plain","plain","plain","water","water","water","water","water","water","water","water","plain","plain","plain","plain","plain","plain"],
+			["plain","plain","plain","plain","plain","bridge","bridge","bridge","bridge","bridge","bridge","bridge","bridge","bridge","bridge","plain","plain","plain","plain","plain"],
+			["plain","plain","fort","plain","plain","bridge","water","water","water","water","water","water","water","water","bridge","plain","plain","fort","plain","plain"],
+			["plain","plain","plain","plain","plain","bridge","water","water","water","water","water","water","water","water","bridge","plain","plain","plain","plain","plain"],
+			["plain","plain","plain","plain","plain","bridge","water","water","water","water","water","water","water","water","bridge","plain","plain","plain","plain","plain"],
+			["plain","plain","fort","plain","plain","bridge","water","water","water","water","water","water","water","water","bridge","plain","plain","fort","plain","plain"],
+			["plain","plain","plain","plain","plain","bridge","bridge","bridge","bridge","bridge","bridge","bridge","bridge","bridge","bridge","plain","plain","plain","plain","plain"],
+			["plain","plain","plain","plain","plain","plain","water","water","water","water","water","water","water","water","plain","plain","plain","plain","plain","plain"],
+			["plain","plain","plain","forest","plain","plain","water","water","water","water","water","water","water","water","plain","plain","forest","plain","plain","plain"],
+			["plain","plain","forest","forest","plain","plain","water","water","water","water","water","water","water","water","plain","plain","forest","forest","plain","plain"]
+		],
+		"player_units": ["aldric", "mira", "voss", "seren", "bram", "corvin", "yael", "lorn"],
+		"player_spawns": [[0,4],[1,4],[0,5],[1,5],[0,6],[1,6],[0,7],[1,7]],
+		"enemies": [
+			{ "type": "grunt", "position": [8, 3], "suffix": "A" },
+			{ "type": "grunt", "position": [10, 3], "suffix": "B" },
+			{ "type": "grunt", "position": [8, 8], "suffix": "C" },
+			{ "type": "grunt", "position": [10, 8], "suffix": "D" },
+			{ "type": "archer", "position": [12, 3], "suffix": "A" },
+			{ "type": "archer", "position": [12, 8], "suffix": "B" },
+			{ "type": "heavy", "position": [14, 5], "suffix": "A" },
+			{ "type": "heavy", "position": [14, 6], "suffix": "B" },
+			{ "type": "mage", "position": [16, 4], "suffix": "" },
+			{ "type": "rogue", "position": [11, 5], "suffix": "" },
+			{ "type": "blood_knight", "position": [17, 5], "suffix": "" },
+			{ "type": "archer", "position": [17, 7], "suffix": "C" },
+			{ "type": "heavy", "position": [15, 3], "suffix": "C" },
+			{ "type": "commander", "position": [18, 5], "suffix": "" }
+		],
+		"objectives": [
+			{ "type": "defeat_boss", "description": "Defeat Commander Varek", "target": "commander" }
+		],
+		"dialogue_before": "ch6_intro",
+		"dialogue_after": "ch6_victory"
+	},
+	"chapter_7": {
+		"name": "The Schism",
+		"map_size": [14, 14],
+		"terrain": [
+			["forest","forest","forest","forest","plain","plain","plain","plain","plain","plain","forest","forest","forest","forest"],
+			["forest","forest","plain","plain","plain","wall","wall","wall","wall","plain","plain","plain","forest","forest"],
+			["forest","plain","plain","plain","plain","wall","fort","fort","wall","plain","plain","plain","plain","forest"],
+			["forest","plain","plain","forest","plain","plain","plain","plain","plain","plain","forest","plain","plain","forest"],
+			["plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain"],
+			["plain","plain","wall","wall","plain","plain","plain","plain","plain","plain","wall","wall","plain","plain"],
+			["plain","plain","wall","fort","plain","plain","forest","forest","plain","plain","fort","wall","plain","plain"],
+			["plain","plain","wall","wall","plain","plain","forest","forest","plain","plain","wall","wall","plain","plain"],
+			["plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain"],
+			["forest","plain","plain","forest","plain","plain","plain","plain","plain","plain","forest","plain","plain","forest"],
+			["forest","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","forest"],
+			["forest","plain","plain","plain","plain","wall","wall","wall","wall","plain","plain","plain","plain","forest"],
+			["forest","forest","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","forest","forest"],
+			["forest","forest","forest","plain","plain","plain","plain","plain","plain","plain","plain","forest","forest","forest"]
+		],
+		"player_units": ["aldric", "mira", "voss", "seren", "bram", "corvin", "yael", "lorn"],
+		"player_spawns": [[5,13],[6,13],[7,13],[8,13],[5,12],[6,12],[7,12],[8,12]],
+		"enemies": [
+			{ "type": "rogue", "position": [3, 4], "suffix": "A" },
+			{ "type": "rogue", "position": [10, 4], "suffix": "B" },
+			{ "type": "rogue", "position": [6, 8], "suffix": "C" },
+			{ "type": "mage", "position": [6, 2], "suffix": "A" },
+			{ "type": "mage", "position": [7, 2], "suffix": "B" },
+			{ "type": "archer", "position": [3, 6], "suffix": "A" },
+			{ "type": "archer", "position": [10, 6], "suffix": "B" },
+			{ "type": "archer", "position": [6, 0], "suffix": "C" },
+			{ "type": "priest", "position": [7, 3], "suffix": "A" },
+			{ "type": "priest", "position": [6, 3], "suffix": "B" },
+			{ "type": "grunt", "position": [5, 1], "suffix": "A" },
+			{ "type": "grunt", "position": [8, 1], "suffix": "B" }
+		],
+		"objectives": [
+			{ "type": "seize", "description": "Reach the command tent", "target_tile": [6, 2] }
+		],
+		"dialogue_before": "ch7_intro",
+		"dialogue_after": "ch7_victory"
+	},
+	"chapter_8": {
+		"name": "Cathedral of Glass",
+		"map_size": [16, 16],
+		"terrain": [
+			["wall","wall","wall","wall","wall","wall","plain","plain","plain","plain","wall","wall","wall","wall","wall","wall"],
+			["wall","wall","wall","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","wall","wall","wall"],
+			["wall","wall","plain","plain","plain","plain","ruins","plain","plain","ruins","plain","plain","plain","plain","wall","wall"],
+			["wall","plain","plain","plain","ruins","plain","plain","plain","plain","plain","plain","ruins","plain","plain","plain","wall"],
+			["wall","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","wall"],
+			["wall","plain","ruins","plain","plain","wall","wall","plain","plain","wall","wall","plain","plain","ruins","plain","wall"],
+			["plain","plain","plain","plain","plain","wall","throne","plain","plain","plain","wall","plain","plain","plain","plain","plain"],
+			["plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain"],
+			["plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain"],
+			["plain","plain","ruins","plain","plain","wall","plain","plain","plain","plain","wall","plain","plain","ruins","plain","plain"],
+			["wall","plain","plain","plain","plain","wall","wall","plain","plain","wall","wall","plain","plain","plain","plain","wall"],
+			["wall","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","wall"],
+			["wall","plain","plain","ruins","plain","plain","plain","plain","plain","plain","plain","plain","ruins","plain","plain","wall"],
+			["wall","wall","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","wall","wall"],
+			["wall","wall","wall","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","wall","wall","wall"],
+			["wall","wall","wall","wall","wall","plain","plain","plain","plain","plain","plain","wall","wall","wall","wall","wall"]
+		],
+		"player_units": ["aldric", "mira", "voss", "seren", "bram", "corvin", "yael", "lorn"],
+		"player_spawns": [[6,14],[7,14],[8,14],[9,14],[6,15],[7,15],[8,15],[9,15]],
+		"enemies": [
+			{ "type": "priest", "position": [6, 6], "suffix": "A" },
+			{ "type": "priest", "position": [9, 6], "suffix": "B" },
+			{ "type": "paladin", "position": [4, 4], "suffix": "A" },
+			{ "type": "paladin", "position": [11, 4], "suffix": "B" },
+			{ "type": "paladin", "position": [7, 2], "suffix": "C" },
+			{ "type": "mage", "position": [2, 5], "suffix": "A" },
+			{ "type": "mage", "position": [13, 5], "suffix": "B" },
+			{ "type": "archer", "position": [5, 7], "suffix": "A" },
+			{ "type": "archer", "position": [10, 7], "suffix": "B" },
+			{ "type": "priest", "position": [7, 4], "suffix": "C" },
+			{ "type": "covenant_captain", "position": [7, 1], "suffix": "" },
+			{ "type": "grunt", "position": [3, 8], "suffix": "A" }
+		],
+		"objectives": [
+			{ "type": "seize", "description": "Seize the throne", "target_tile": [6, 6] }
+		],
+		"dialogue_before": "ch8_intro",
+		"dialogue_after": "ch8_victory"
+	},
+	"chapter_9": {
+		"name": "The Forge Beneath",
+		"map_size": [18, 14],
+		"terrain": [
+			["wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall"],
+			["wall","ruins","plain","plain","wall","lava","lava","lava","bridge","lava","lava","lava","wall","plain","plain","ruins","plain","wall"],
+			["wall","plain","plain","plain","wall","lava","lava","lava","bridge","lava","lava","lava","wall","plain","plain","plain","plain","wall"],
+			["wall","plain","plain","plain","plain","plain","lava","lava","bridge","lava","lava","plain","plain","plain","plain","plain","plain","wall"],
+			["wall","wall","plain","plain","plain","plain","plain","lava","bridge","lava","plain","plain","plain","plain","plain","wall","wall","wall"],
+			["wall","plain","plain","plain","wall","plain","plain","plain","plain","plain","plain","plain","wall","plain","plain","plain","plain","wall"],
+			["wall","plain","ruins","plain","wall","wall","plain","plain","plain","plain","plain","wall","wall","plain","ruins","plain","plain","wall"],
+			["wall","plain","plain","plain","plain","wall","plain","ruins","ruins","ruins","plain","wall","plain","plain","plain","plain","plain","wall"],
+			["wall","plain","ruins","plain","wall","wall","plain","plain","plain","plain","plain","wall","wall","plain","ruins","plain","plain","wall"],
+			["wall","plain","plain","plain","wall","plain","plain","plain","plain","plain","plain","plain","wall","plain","plain","plain","plain","wall"],
+			["wall","wall","plain","plain","plain","plain","plain","lava","bridge","lava","plain","plain","plain","plain","plain","wall","wall","wall"],
+			["wall","plain","plain","plain","plain","plain","lava","lava","bridge","lava","lava","plain","plain","plain","plain","plain","plain","wall"],
+			["wall","plain","plain","plain","plain","lava","lava","lava","bridge","lava","lava","lava","plain","plain","plain","plain","plain","wall"],
+			["wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall","wall"]
+		],
+		"player_units": ["aldric", "mira", "voss", "seren", "bram", "corvin", "yael", "lorn"],
+		"player_spawns": [[2,11],[3,11],[2,12],[3,12],[4,11],[4,12],[1,11],[1,12]],
+		"enemies": [
+			{ "type": "golem", "position": [7, 7], "suffix": "A" },
+			{ "type": "golem", "position": [9, 7], "suffix": "B" },
+			{ "type": "golem", "position": [8, 5], "suffix": "C" },
+			{ "type": "void_warden", "position": [2, 2], "suffix": "A" },
+			{ "type": "void_warden", "position": [15, 2], "suffix": "B" },
+			{ "type": "heavy", "position": [5, 5], "suffix": "A" },
+			{ "type": "heavy", "position": [12, 5], "suffix": "B" },
+			{ "type": "mage", "position": [8, 1], "suffix": "A" },
+			{ "type": "mage", "position": [2, 6], "suffix": "B" },
+			{ "type": "siege_mage", "position": [15, 6], "suffix": "" },
+			{ "type": "archer", "position": [14, 1], "suffix": "A" },
+			{ "type": "archer", "position": [1, 1], "suffix": "B" },
+			{ "type": "grunt", "position": [8, 3], "suffix": "A" },
+			{ "type": "grunt", "position": [8, 10], "suffix": "B" }
+		],
+		"objectives": [
+			{ "type": "rout", "description": "Defeat all enemies" }
+		],
+		"dialogue_before": "ch9_intro",
+		"dialogue_after": "ch9_victory"
+	},
+	"chapter_10": {
+		"name": "Judgment",
+		"map_size": [20, 16],
+		"terrain": [
+			["mountain","mountain","wall","wall","wall","wall","wall","wall","ruins","ruins","ruins","ruins","wall","wall","wall","wall","wall","wall","mountain","mountain"],
+			["mountain","wall","wall","plain","plain","plain","wall","plain","plain","plain","plain","plain","plain","wall","plain","plain","plain","wall","wall","mountain"],
+			["wall","wall","plain","plain","plain","plain","plain","plain","plain","throne","plain","plain","plain","plain","plain","plain","plain","plain","wall","wall"],
+			["wall","plain","plain","fort","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","fort","plain","plain","wall"],
+			["wall","plain","plain","plain","plain","wall","wall","plain","plain","plain","plain","plain","wall","wall","plain","plain","plain","plain","plain","wall"],
+			["wall","plain","plain","plain","plain","wall","plain","plain","lava","lava","lava","plain","plain","wall","plain","plain","plain","plain","plain","wall"],
+			["wall","plain","plain","plain","plain","plain","plain","lava","lava","lava","lava","lava","plain","plain","plain","plain","plain","plain","plain","wall"],
+			["plain","plain","plain","forest","plain","plain","plain","lava","lava","bridge","lava","lava","plain","plain","plain","forest","plain","plain","plain","plain"],
+			["plain","plain","plain","forest","plain","plain","plain","lava","lava","bridge","lava","lava","plain","plain","plain","forest","plain","plain","plain","plain"],
+			["wall","plain","plain","plain","plain","plain","plain","lava","lava","lava","lava","lava","plain","plain","plain","plain","plain","plain","plain","wall"],
+			["wall","plain","plain","plain","plain","wall","plain","plain","lava","lava","lava","plain","plain","wall","plain","plain","plain","plain","plain","wall"],
+			["wall","plain","plain","plain","plain","wall","wall","plain","plain","plain","plain","plain","wall","wall","plain","plain","plain","plain","plain","wall"],
+			["wall","plain","plain","fort","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","fort","plain","plain","wall"],
+			["wall","wall","plain","plain","plain","plain","plain","plain","ruins","plain","ruins","plain","plain","plain","plain","plain","plain","plain","wall","wall"],
+			["mountain","wall","wall","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","wall","wall","mountain"],
+			["mountain","mountain","wall","wall","wall","plain","plain","plain","plain","plain","plain","plain","plain","plain","plain","wall","wall","wall","mountain","mountain"]
+		],
+		"player_units": ["aldric", "mira", "voss", "seren", "bram", "corvin", "yael", "lorn"],
+		"player_spawns": [[7,14],[8,14],[9,14],[10,14],[7,15],[8,15],[9,15],[10,15]],
+		"enemies": [
+			{ "type": "varek_final", "position": [9, 2], "suffix": "" },
+			{ "type": "warden_corrupted", "position": [7, 3], "suffix": "A" },
+			{ "type": "warden_corrupted", "position": [11, 3], "suffix": "B" },
+			{ "type": "paladin", "position": [5, 4], "suffix": "A" },
+			{ "type": "paladin", "position": [14, 4], "suffix": "B" },
+			{ "type": "blood_knight", "position": [3, 6], "suffix": "A" },
+			{ "type": "blood_knight", "position": [16, 6], "suffix": "B" },
+			{ "type": "assassin", "position": [1, 8], "suffix": "A" },
+			{ "type": "assassin", "position": [18, 8], "suffix": "B" },
+			{ "type": "siege_mage", "position": [3, 3], "suffix": "A" },
+			{ "type": "siege_mage", "position": [16, 3], "suffix": "B" },
+			{ "type": "priest", "position": [8, 2], "suffix": "A" },
+			{ "type": "priest", "position": [10, 2], "suffix": "B" },
+			{ "type": "golem", "position": [9, 5], "suffix": "" },
+			{ "type": "void_warden", "position": [6, 7], "suffix": "" },
+			{ "type": "heavy", "position": [13, 7], "suffix": "" },
+			{ "type": "archer", "position": [4, 1], "suffix": "A" },
+			{ "type": "archer", "position": [15, 1], "suffix": "B" }
+		],
+		"objectives": [
+			{ "type": "defeat_boss", "description": "Defeat Varek, The Unbound", "target": "varek_final" }
+		],
+		"dialogue_before": "ch10_intro",
+		"dialogue_after": "ch10_victory"
+	}
+}

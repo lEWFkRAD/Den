@@ -1,0 +1,571 @@
+{
+	"_schema": {
+		"description": "Each key is a dialogue ID. Conversations are arrays of lines.",
+		"line_format": {
+			"speaker": "Character name or 'NARRATOR'",
+			"text": "The dialogue text",
+			"portrait": "(optional) portrait id override",
+			"choices": "(optional) array of {text, next_id} for branching"
+		}
+	},
+
+	"ch1_intro": [
+		{ "speaker": "NARRATOR", "text": "The Covenant's army marches south. Three villages have already burned. The bridge at Halen's Crossing is the last chokepoint before open farmland." },
+		{ "speaker": "Aldric", "text": "This is where we hold.", "portrait": "aldric" },
+		{ "speaker": "Mira", "text": "Six of us against a Covenant scouting column. You always did love fair odds.", "portrait": "mira" },
+		{ "speaker": "Aldric", "text": "Twelve. The Kips fight too.", "portrait": "aldric" },
+		{ "speaker": "Bolt", "text": "We fight! We fight we fight we fight! I've been waiting SO LONG to—", "portrait": "bolt" },
+		{ "speaker": "Mira", "text": "Bolt. Breathe.", "portrait": "mira" },
+		{ "speaker": "Bolt", "text": "I don't breathe! That's the fun part!", "portrait": "bolt" },
+		{ "speaker": "Seren", "text": "There are refugees behind us. Families. If this bridge falls, they have nowhere left to run.", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "Then it will not fall. I have watched bridges hold against worse than this, child.", "portrait": "solen" },
+		{ "speaker": "Voss", "text": "Scouts on the far bank. Thirty, perhaps more. Standard Covenant formation.", "portrait": "voss" },
+		{ "speaker": "Null", "text": "They come to destroy what they do not understand. How... familiar.", "portrait": "null" },
+		{ "speaker": "Aldric", "text": "No speeches. You know what's behind us. Hold the line.", "portrait": "aldric" },
+		{ "speaker": "Scar", "text": "Good. Enough talk.", "portrait": "scar" }
+	],
+
+	"ch1_victory": [
+		{ "speaker": "NARRATOR", "text": "The last Covenant scouts fall back across the river. The bridge holds. For the first time in weeks, the southern road is quiet." },
+		{ "speaker": "Mira", "text": "They're running. I count seventeen down. Not bad for impossible odds.", "portrait": "mira" },
+		{ "speaker": "Seren", "text": "How many of ours are hurt?", "portrait": "seren" },
+		{ "speaker": "Aldric", "text": "Scrapes. Nothing more. You did well. All of you.", "portrait": "aldric" },
+		{ "speaker": "Corvin", "text": "Touching. Can we loot them now, or is there a mourning period?", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "He asks as though he hasn't already started.", "portrait": "dusk" },
+		{ "speaker": "Bram", "text": "They will send more.", "portrait": "bram" },
+		{ "speaker": "Thorn", "text": "The stone speaks true. One wave does not empty the river.", "portrait": "thorn" },
+		{ "speaker": "Aldric", "text": "Then we'll be here for the next one. Move south. Get the refugees clear.", "portrait": "aldric" },
+		{ "speaker": "Scar", "text": "Today was small. Tomorrow won't be.", "portrait": "scar" },
+		{ "speaker": "Aldric", "text": "I know.", "portrait": "aldric" }
+	],
+
+	"ch2_intro": [
+		{ "speaker": "NARRATOR", "text": "Smoke rises from Ashfield. The Covenant arrived before dawn." },
+		{ "speaker": "Mira", "text": "We're too late. The whole eastern quarter is burning.", "portrait": "mira" },
+		{ "speaker": "Seren", "text": "No. Listen. Those are voices. People are still alive in there.", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "I feel them. Dozens of souls, frightened but breathing. There is still time.", "portrait": "solen" },
+		{ "speaker": "Aldric", "text": "Then we make time. Seren, Bram — push through to the market square. Civilians will gather there. Mira, Corvin — clear the flanks.", "portrait": "aldric" },
+		{ "speaker": "Voss", "text": "There's something else here. A... dampening. Null, do you feel that?", "portrait": "voss" },
+		{ "speaker": "Null", "text": "I feel less. Which is to say, I feel something being taken from me. An unpleasant novelty.", "portrait": "null" },
+		{ "speaker": "Voss", "text": "Some kind of suppression field. It's weakening the Kip bonds.", "portrait": "voss" },
+		{ "speaker": "Bolt", "text": "I feel... slow. I don't like slow. Mira, why do I feel slow?", "portrait": "bolt" },
+		{ "speaker": "Mira", "text": "Stay close to me. We'll be each other's fast.", "portrait": "mira" },
+		{ "speaker": "Aldric", "text": "Suppressed or not, those people need us now. Move.", "portrait": "aldric" }
+	],
+
+	"ch2_yael_joins": [
+		{ "speaker": "NARRATOR", "text": "A blast of frost erupts from a collapsing building. Three Covenant soldiers freeze mid-stride. A woman steps through the wreckage, ice crystallizing along her arms." },
+		{ "speaker": "Yael", "text": "The structural collapse created a fourteen-second window. I needed eleven. Adequate margin.", "portrait": "yael" },
+		{ "speaker": "Sleet", "text": "Thirteen-point-two seconds. Your arithmetic is imprecise, as usual.", "portrait": "sleet" },
+		{ "speaker": "Yael", "text": "Rounded for conversational efficiency. Who commands here?", "portrait": "yael" },
+		{ "speaker": "Aldric", "text": "I do. You a scholar?", "portrait": "aldric" },
+		{ "speaker": "Yael", "text": "I was studying the resonance patterns of dormant Kips in the university basement. Then the university ceased to exist. I would like to ensure the people who did that also cease to exist. Preferably in a structured, systematic manner.", "portrait": "yael" },
+		{ "speaker": "Mira", "text": "I like her. She's terrifying, but I like her.", "portrait": "mira" },
+		{ "speaker": "Sleet", "text": "The suppression device is four hundred meters northeast. I have been analyzing its frequency. Crude work, but functional.", "portrait": "sleet" },
+		{ "speaker": "Yael", "text": "If we destroy that device, your Kips return to full strength. I suggest we prioritize accordingly.", "portrait": "yael" },
+		{ "speaker": "Aldric", "text": "Fall in. We'll make introductions after.", "portrait": "aldric" }
+	],
+
+	"ch2_victory": [
+		{ "speaker": "NARRATOR", "text": "The suppression device lies in shattered pieces. The Kip bonds surge back to full strength, and the remaining Covenant forces scatter into the hills." },
+		{ "speaker": "Bolt", "text": "YES! I can feel everything again! Everything! The sky is so LOUD!", "portrait": "bolt" },
+		{ "speaker": "Seren", "text": "We saved forty-three people. We lost the eastern quarter and the university. I wish I could say it feels like a victory.", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "You saved forty-three lives that would have been ashes, dear one. That is victory enough.", "portrait": "solen" },
+		{ "speaker": "Yael", "text": "The suppression device used focused harmonic interference. Engineered to disrupt Kip resonance bonds. Someone in the Covenant understands Kip architecture at a fundamental level.", "portrait": "yael" },
+		{ "speaker": "Voss", "text": "That's... deeply concerning. That knowledge hasn't existed since the Age of Making.", "portrait": "voss" },
+		{ "speaker": "Null", "text": "Or it has, and has merely been waiting. Like us.", "portrait": "null" },
+		{ "speaker": "Corvin", "text": "Cheerful thought. Can we go somewhere that isn't on fire?", "portrait": "corvin" },
+		{ "speaker": "Aldric", "text": "South. Through the mountains. It's the only road they haven't cut off.", "portrait": "aldric" },
+		{ "speaker": "Yael", "text": "The Kethran Gorge. Narrow, defensible, and suicidal if they catch us inside it.", "portrait": "yael" },
+		{ "speaker": "Aldric", "text": "Then we don't get caught.", "portrait": "aldric" }
+	],
+
+	"ch3_intro": [
+		{ "speaker": "NARRATOR", "text": "The Kethran Gorge. A knife-cut through the mountains, barely wide enough for two abreast. The only path south that the Covenant hasn't sealed." },
+		{ "speaker": "Mira", "text": "I hate gorges. No sightlines. No room to maneuver. Just walls and bad decisions.", "portrait": "mira" },
+		{ "speaker": "Bolt", "text": "I like it! It's cozy! Like a hug made of rocks!", "portrait": "bolt" },
+		{ "speaker": "Mira", "text": "Bolt, I am begging you.", "portrait": "mira" },
+		{ "speaker": "Yael", "text": "They're behind us. Outriders spotted our trail six hours ago. We have perhaps forty minutes before the main column enters the gorge.", "portrait": "yael" },
+		{ "speaker": "Sleet", "text": "Thirty-seven minutes. Your estimates are consistently optimistic.", "portrait": "sleet" },
+		{ "speaker": "Aldric", "text": "We push through fast and hold the southern exit. Bram, you're rear guard.", "portrait": "aldric" },
+		{ "speaker": "Bram", "text": "Yes.", "portrait": "bram" },
+		{ "speaker": "Thorn", "text": "The mountain is patient. It has held for eons. It will hold a little longer for us.", "portrait": "thorn" },
+		{ "speaker": "Corvin", "text": "The mountain isn't the part I'm worried about.", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "Wise boy. Worry about what's in the mountain.", "portrait": "dusk" },
+		{ "speaker": "Aldric", "text": "Double time. No stops.", "portrait": "aldric" }
+	],
+
+	"ch3_lorn_appears": [
+		{ "speaker": "NARRATOR", "text": "The Covenant vanguard breaches the gorge. You are surrounded. Then something moves on the clifftop — a figure, alone, stepping into empty air. He falls like a stone and lands among the Covenant line. The ground cracks beneath him. At his side, a Kip the size of a war-horse unfolds, ancient and terrible, its light the color of a dying sun." },
+		{ "speaker": "Mira", "text": "What in the—", "portrait": "mira" },
+		{ "speaker": "Corvin", "text": "Is that man glowing, or have I finally lost it?", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "...Oh. Oh no.", "portrait": "dusk" },
+		{ "speaker": "Corvin", "text": "That's not a comforting 'oh no,' Dusk.", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "It wasn't meant to be. That is The First.", "portrait": "dusk" },
+		{ "speaker": "Solen", "text": "It cannot be. The First has not walked since... since before my memory begins.", "portrait": "solen" },
+		{ "speaker": "NARRATOR", "text": "The stranger cuts through the Covenant line like a blade through paper. He does not speak. He does not hesitate. The soldiers break around him like water around stone." },
+		{ "speaker": "Aldric", "text": "I don't know who he is. But he just bought us an opening. Push through — NOW!", "portrait": "aldric" },
+		{ "speaker": "The First", "text": "...", "portrait": "the_first" },
+		{ "speaker": "NARRATOR", "text": "The First turns. Its gaze falls on each Kip in turn — Scar, Bolt, Null, Solen, Thorn, Dusk, Sleet. Measuring. Remembering." }
+	],
+
+	"ch3_victory": [
+		{ "speaker": "NARRATOR", "text": "The gorge is clear. The Covenant forces are broken and retreating. The stranger stands at the edge of the group, silent, his Kip towering behind him." },
+		{ "speaker": "Aldric", "text": "You. Name and business.", "portrait": "aldric" },
+		{ "speaker": "Lorn", "text": "Lorn. I walk south. Same as you.", "portrait": "lorn" },
+		{ "speaker": "Aldric", "text": "That's not an answer.", "portrait": "aldric" },
+		{ "speaker": "Lorn", "text": "It's all I have.", "portrait": "lorn" },
+		{ "speaker": "Mira", "text": "He just killed about twenty Covenant soldiers by himself. I vote we skip the interrogation.", "portrait": "mira" },
+		{ "speaker": "Solen", "text": "The First... I never thought I would see you again. Do you remember me?", "portrait": "solen" },
+		{ "speaker": "The First", "text": "Yes.", "portrait": "the_first" },
+		{ "speaker": "NARRATOR", "text": "One word. But every Kip in the company goes still, as though a bell has been struck that only they can hear." },
+		{ "speaker": "Dusk", "text": "For what it's worth, Corvin — I am genuinely afraid. Take from that what you will.", "portrait": "dusk" },
+		{ "speaker": "Aldric", "text": "You can walk with us or walk alone. But if you walk with us, you fight for the people behind us.", "portrait": "aldric" },
+		{ "speaker": "Lorn", "text": "I have been fighting for people behind me for a very long time.", "portrait": "lorn" },
+		{ "speaker": "Aldric", "text": "Good enough. Move out.", "portrait": "aldric" }
+	],
+
+	"ch4_intro": [
+		{ "speaker": "NARRATOR", "text": "Thornwall. An ancient fortress carved into the mountainside, its walls dark with centuries of weathering. The Covenant's siege column is a day behind." },
+		{ "speaker": "Aldric", "text": "We hold here. These walls were built to stop armies.", "portrait": "aldric" },
+		{ "speaker": "Yael", "text": "The southern wall has a structural weakness. Reinforced granite over limestone — the lime has eroded. A focused siege weapon could breach it in under an hour.", "portrait": "yael" },
+		{ "speaker": "Sleet", "text": "Forty-three minutes, given standard Covenant siege engine specifications.", "portrait": "sleet" },
+		{ "speaker": "Bram", "text": "Then I stand at the southern wall.", "portrait": "bram" },
+		{ "speaker": "Thorn", "text": "Wait.", "portrait": "thorn" },
+		{ "speaker": "NARRATOR", "text": "Thorn moves to the fortress wall and places one massive hand against the stone. A deep hum resonates through the ground." },
+		{ "speaker": "Thorn", "text": "I know these stones. I set them. Long ago, before the long sleep.", "portrait": "thorn" },
+		{ "speaker": "Bram", "text": "You built this?", "portrait": "bram" },
+		{ "speaker": "Thorn", "text": "I helped it grow. The bones of the mountain, shaped and placed. It was good work. It remembers.", "portrait": "thorn" },
+		{ "speaker": "Seren", "text": "Covenant scouts on the northern ridge. They're setting up siege positions already.", "portrait": "seren" },
+		{ "speaker": "Aldric", "text": "Then we give these walls something worth remembering. Positions, everyone.", "portrait": "aldric" }
+	],
+
+	"ch4_thorn_memory": [
+		{ "speaker": "NARRATOR", "text": "A siege bolt strikes the southern wall. Cracks spiderweb through ancient stone. The wall groans." },
+		{ "speaker": "Yael", "text": "Southern wall integrity at forty percent. Two more strikes and it fails.", "portrait": "yael" },
+		{ "speaker": "Thorn", "text": "No.", "portrait": "thorn" },
+		{ "speaker": "NARRATOR", "text": "Thorn presses both hands to the crumbling wall. Roots erupt from the stone — not breaking it, but knitting it together, filling every crack with living wood that hardens like iron." },
+		{ "speaker": "Thorn", "text": "I built this wall to protect people. It has not forgotten its purpose. Neither have I.", "portrait": "thorn" },
+		{ "speaker": "Bram", "text": "Thorn.", "portrait": "bram" },
+		{ "speaker": "Thorn", "text": "I am here, Bram. As always.", "portrait": "thorn" },
+		{ "speaker": "Bram", "text": "I know. That's what I was going to say.", "portrait": "bram" },
+		{ "speaker": "Mira", "text": "The wall is... regrowing? Since when can Thorn do that?", "portrait": "mira" },
+		{ "speaker": "Solen", "text": "Since always. It merely needed to remember. Home is a powerful thing.", "portrait": "solen" },
+		{ "speaker": "Aldric", "text": "Wall's holding. Don't waste it. Push them back!", "portrait": "aldric" }
+	],
+
+	"ch4_victory": [
+		{ "speaker": "NARRATOR", "text": "The siege column withdraws. Thornwall stands, its southern wall now a lattice of living wood and ancient stone, stronger than when the battle began." },
+		{ "speaker": "Corvin", "text": "I've seen a lot of strange things since I started running with you people, but a wall that heals itself is a new personal best.", "portrait": "corvin" },
+		{ "speaker": "Bram", "text": "Thorn. Are you alright?", "portrait": "bram" },
+		{ "speaker": "Thorn", "text": "I am... tired. But rooted. This was a good day to remember.", "portrait": "thorn" },
+		{ "speaker": "Voss", "text": "The implications are significant. If Kips can restore structures they built millennia ago, the Age of Making left a deeper mark on this world than we understood.", "portrait": "voss" },
+		{ "speaker": "Null", "text": "Or the world left a deeper mark on us. The question is which.", "portrait": "null" },
+		{ "speaker": "Yael", "text": "They'll bypass us. This siege failed, but they have numbers to simply go around.", "portrait": "yael" },
+		{ "speaker": "Aldric", "text": "Then we don't sit here waiting. We go to them.", "portrait": "aldric" },
+		{ "speaker": "Mira", "text": "Please tell me we're heading somewhere with better sightlines than a gorge or a fortress.", "portrait": "mira" },
+		{ "speaker": "Seren", "text": "The old texts mention a temple in the flooded lowlands. Solen, you said there might be answers there.", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "Answers, yes. But not all answers are kind, dear one.", "portrait": "solen" }
+	],
+
+	"ch5_intro": [
+		{ "speaker": "NARRATOR", "text": "The Drowned Temple. Half-submerged in black water, its spires still reach above the surface like the fingers of a drowning hand. This place was old when the Age of Making was young." },
+		{ "speaker": "Voss", "text": "This is a creation site. I can feel the residual energy. This is where Kips were made.", "portrait": "voss" },
+		{ "speaker": "Null", "text": "Made. Such a clinical word for what happened here.", "portrait": "null" },
+		{ "speaker": "Seren", "text": "The water is warm. Solen, is this place alive?", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "It was once. What remains is... an echo. A heartbeat with no body.", "portrait": "solen" },
+		{ "speaker": "Mira", "text": "Covenant patrols on the far shore. They followed us.", "portrait": "mira" },
+		{ "speaker": "Yael", "text": "Or they were already here. Looking for the same thing we are.", "portrait": "yael" },
+		{ "speaker": "Corvin", "text": "Ancient temples full of dark water and enemy soldiers. My favorite combination.", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "If it helps, the things in the water are probably not hostile. Probably.", "portrait": "dusk" },
+		{ "speaker": "Corvin", "text": "It does not help, Dusk.", "portrait": "corvin" },
+		{ "speaker": "Aldric", "text": "Voss, you and Null take point. Find what we came for. Everyone else, keep the Covenant off their backs.", "portrait": "aldric" }
+	],
+
+	"ch5_null_reveal": [
+		{ "speaker": "NARRATOR", "text": "Deep in the temple's core, Voss finds the creation records. Vast crystalline walls etched with the patterns of every Kip ever made. Every element, every design, every purpose. He searches for Null's pattern. He finds something else." },
+		{ "speaker": "Voss", "text": "No. That can't be right.", "portrait": "voss" },
+		{ "speaker": "Null", "text": "You found it.", "portrait": "null" },
+		{ "speaker": "Voss", "text": "You knew?", "portrait": "voss" },
+		{ "speaker": "Null", "text": "I suspected. Suspecting and knowing are different wounds.", "portrait": "null" },
+		{ "speaker": "Voss", "text": "The void element... it's not a category. It's a failure state. When the creation process went wrong — when a Kip came out incomplete, corrupted — the void filled the gap. Null, you weren't designed. You were an accident.", "portrait": "voss" },
+		{ "speaker": "Null", "text": "An error in the equation. A flaw given thought. Tell me, Voss — does knowing what I am change what I've done?", "portrait": "null" },
+		{ "speaker": "Voss", "text": "The Covenant says Kips are abominations. If void Kips truly are... mistakes... then maybe they're not entirely wrong. About some of it. About you.", "portrait": "voss" },
+		{ "speaker": "Null", "text": "And there it is. The scholar finds a fact he cannot bear.", "portrait": "null" },
+		{ "speaker": "Voss", "text": "I'm not saying— I don't know what I'm saying. I need to think.", "portrait": "voss" },
+		{ "speaker": "Null", "text": "Think, then. But Voss — I chose you. Whatever I am, that was not an accident.", "portrait": "null" }
+	],
+
+	"ch5_victory": [
+		{ "speaker": "NARRATOR", "text": "The temple is secured. The Covenant forces withdraw from the flooded ruins. But a silence hangs over the company that has nothing to do with the enemy." },
+		{ "speaker": "Seren", "text": "Voss hasn't spoken since we left the inner chamber. What did he find?", "portrait": "seren" },
+		{ "speaker": "Aldric", "text": "Something that shook him. Give him space.", "portrait": "aldric" },
+		{ "speaker": "Yael", "text": "I reviewed the creation records. The void classification is... unprecedented. If the Covenant has access to this knowledge, it explains their suppression technology.", "portrait": "yael" },
+		{ "speaker": "Sleet", "text": "It also explains their conviction. Righteous hatred is more dangerous when it contains a grain of truth.", "portrait": "sleet" },
+		{ "speaker": "Mira", "text": "Null is one of us. Whatever some dusty crystal wall says.", "portrait": "mira" },
+		{ "speaker": "Bolt", "text": "Null is Null! Null is our friend! I don't care about categories!", "portrait": "bolt" },
+		{ "speaker": "Null", "text": "The lightning speaks more wisdom than the scholar today. How disorienting.", "portrait": "null" },
+		{ "speaker": "Lorn", "text": "The First says that what something was made to be matters less than what it chooses to become.", "portrait": "lorn" },
+		{ "speaker": "The First", "text": "...", "portrait": "the_first" },
+		{ "speaker": "NARRATOR", "text": "The First says nothing. But its gaze rests on Null for a long moment, and Null does not look away." }
+	],
+
+	"ch6_intro": [
+		{ "speaker": "NARRATOR", "text": "Iron Crossing. The great bridge spans a river gorge two hundred feet deep. The Covenant's main army is on the other side. This is not a scouting party. This is the war." },
+		{ "speaker": "Yael", "text": "Conservative estimate: eight hundred soldiers. Siege equipment. Cavalry flankers. Three suppression devices that I can detect.", "portrait": "yael" },
+		{ "speaker": "Sleet", "text": "Eight hundred and fourteen. Two of the suppression devices are decoys.", "portrait": "sleet" },
+		{ "speaker": "Mira", "text": "Oh good. Only eight hundred and fourteen. I was worried.", "portrait": "mira" },
+		{ "speaker": "Aldric", "text": "We don't need to beat eight hundred. We need to hold the bridge. They can only cross so many at a time.", "portrait": "aldric" },
+		{ "speaker": "Bram", "text": "I hold the center.", "portrait": "bram" },
+		{ "speaker": "Thorn", "text": "We hold the center.", "portrait": "thorn" },
+		{ "speaker": "Corvin", "text": "I see command tents on the ridge. Gold trim. Someone important came to watch.", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "Commander Varek. I've heard the name on dead men's lips for months.", "portrait": "dusk" },
+		{ "speaker": "Seren", "text": "Everyone stay close to me. This is going to be the longest day of our lives.", "portrait": "seren" },
+		{ "speaker": "Aldric", "text": "Then let's make it count. For every village they've burned. For everyone behind us. Today, they stop.", "portrait": "aldric" }
+	],
+
+	"ch6_varek_reveal": [
+		{ "speaker": "NARRATOR", "text": "The bridge runs red. Hours of fighting, wave after wave. Then the Covenant ranks part, and a man in black iron armor walks onto the bridge alone. At his side, something moves — a Kip, but wrong. Its light pulses like an infected wound, crimson and agonized. Chains of dark metal bind it to the commander's gauntlet." },
+		{ "speaker": "Scar", "text": "That Kip... it's screaming. Can't you hear it screaming?", "portrait": "scar" },
+		{ "speaker": "Bolt", "text": "Make it stop. Mira, make it stop, it hurts to hear—", "portrait": "bolt" },
+		{ "speaker": "Solen", "text": "A forced bond. They have chained a Kip to a human by violence. This is... this is an atrocity.", "portrait": "solen" },
+		{ "speaker": "Varek", "text": "So these are the rebels. Children playing with relics they don't understand. Ruin — show them what a Kip can do when properly controlled.", "portrait": "varek" },
+		{ "speaker": "NARRATOR", "text": "The chained Kip — Ruin — unleashes a wave of corrupted blood magic. The bridge stones crack and bleed." },
+		{ "speaker": "Null", "text": "It is in agony. Every moment of its existence is pain. This is not control. This is torture wearing a leash.", "portrait": "null" },
+		{ "speaker": "Dusk", "text": "Corvin. I have lived four hundred years and I have never asked you for anything. I am asking now: we free that Kip, or I will never forgive this world.", "portrait": "dusk" },
+		{ "speaker": "Aldric", "text": "We hold the bridge AND we free the Kip. That's not a request.", "portrait": "aldric" },
+		{ "speaker": "Lorn", "text": "The chains are made from the same metal as the suppression devices. Break the gauntlet. The bond breaks with it.", "portrait": "lorn" },
+		{ "speaker": "Aldric", "text": "You heard him. Focus fire on Varek. Break those chains.", "portrait": "aldric" }
+	],
+
+	"ch6_victory": [
+		{ "speaker": "NARRATOR", "text": "Varek's gauntlet shatters. Ruin collapses, its corrupted light flickering, dimming, then slowly — painfully — returning to a steady crimson glow. Varek retreats across the bridge with the remains of his vanguard. The army holds position but does not advance." },
+		{ "speaker": "Seren", "text": "The Kip — Ruin — it's alive. Barely. Solen, can we help it?", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "The wounds are deep. Not in the body — in the spirit. It will need time. And kindness. And the knowledge that it is free.", "portrait": "solen" },
+		{ "speaker": "Scar", "text": "Ruin. You hear me? You're out. Nobody chains you again. Not while I'm standing.", "portrait": "scar" },
+		{ "speaker": "Mira", "text": "Varek will be back. And he'll bring more chained Kips.", "portrait": "mira" },
+		{ "speaker": "Yael", "text": "If the Covenant has the knowledge and the metal to forge suppression chains at scale, this is no longer a border conflict. This is an extinction campaign.", "portrait": "yael" },
+		{ "speaker": "Corvin", "text": "Dusk. You alright?", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "No. But Ruin is free. That will have to be enough for now.", "portrait": "dusk" },
+		{ "speaker": "Aldric", "text": "We need to know how many Kips they've taken. How many are chained.", "portrait": "aldric" },
+		{ "speaker": "Corvin", "text": "That sounds like an infiltration job. Funny, that's my specialty.", "portrait": "corvin" },
+		{ "speaker": "Aldric", "text": "It is. And you're going to need a team.", "portrait": "aldric" }
+	],
+
+	"ch7_intro": [
+		{ "speaker": "NARRATOR", "text": "Night. The Covenant forward camp spreads across the valley like a field of iron stars. Thousands of fires. Thousands of soldiers. And somewhere inside, captured Kips." },
+		{ "speaker": "Corvin", "text": "Right. Standard infiltration rules: stay quiet, stay low, don't touch anything shiny. That last one is for me specifically.", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "I can suppress our shadows. We will be difficult to see, even in torchlight.", "portrait": "dusk" },
+		{ "speaker": "Mira", "text": "Difficult, not impossible. Comforting.", "portrait": "mira" },
+		{ "speaker": "Aldric", "text": "Corvin leads. The rest of us follow his call. In and out. Find the Kips, assess the situation, get back alive.", "portrait": "aldric" },
+		{ "speaker": "Yael", "text": "I'm detecting at least seven suppression signatures. They have an entire wing of the camp dedicated to Kip containment.", "portrait": "yael" },
+		{ "speaker": "Sleet", "text": "Twelve signatures. Several are shielded. The actual number may be higher.", "portrait": "sleet" },
+		{ "speaker": "Corvin", "text": "A Kip prison. Lovely. Everyone ready?", "portrait": "corvin" },
+		{ "speaker": "Bram", "text": "I am not quiet.", "portrait": "bram" },
+		{ "speaker": "Corvin", "text": "Bram, you're the distraction plan. If it goes wrong, you come through the front.", "portrait": "corvin" },
+		{ "speaker": "Bram", "text": "Good.", "portrait": "bram" }
+	],
+
+	"ch7_dusk_history": [
+		{ "speaker": "NARRATOR", "text": "The containment wing. Rows of chained Kips, their light dimmed to almost nothing. Suppression fields hum like a living headache. Dusk goes very, very still." },
+		{ "speaker": "Dusk", "text": "I know this. I have seen this before.", "portrait": "dusk" },
+		{ "speaker": "Corvin", "text": "What do you mean, you've seen this?", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "I am four hundred years old, Corvin. I have told you this and you assumed I was being dramatic. I was not. Four centuries ago, the Dominion of Ash did exactly this. They chained Kips. Forged weapons from our pain. They called it progress.", "portrait": "dusk" },
+		{ "speaker": "Mira", "text": "What happened?", "portrait": "mira" },
+		{ "speaker": "Dusk", "text": "Everything burned. The Dominion. The Kips they tortured. And most of the continent between. A civilization erased itself because it believed it had the right to chain what it could not understand.", "portrait": "dusk" },
+		{ "speaker": "Solen", "text": "The Long Burning. I remember the smoke. It lasted a decade.", "portrait": "solen" },
+		{ "speaker": "Dusk", "text": "This is the same path. The same chains. The same arrogance. And if we do not stop it here, the same fire.", "portrait": "dusk" },
+		{ "speaker": "Corvin", "text": "Then we stop it here.", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "You say that so simply. As if will alone can change the course of history.", "portrait": "dusk" },
+		{ "speaker": "Corvin", "text": "It's all I've got, Dusk. That and a very good lockpick.", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "...You absurd, magnificent creature. Let's free them.", "portrait": "dusk" }
+	],
+
+	"ch7_victory": [
+		{ "speaker": "NARRATOR", "text": "Chaos in the Covenant camp. The containment wing is shattered, the suppression devices destroyed. Freed Kips scatter into the night like escaping stars. Bram's distraction — which involved walking through the front gate — bought enough time to get everyone out." },
+		{ "speaker": "Bram", "text": "The gate was not as strong as it looked.", "portrait": "bram" },
+		{ "speaker": "Thorn", "text": "Few things are.", "portrait": "thorn" },
+		{ "speaker": "Corvin", "text": "Twenty-three Kips freed. Twenty-three. They had twenty-three of them in there.", "portrait": "corvin" },
+		{ "speaker": "Seren", "text": "Some of them were barely conscious. The chains had been on them for months.", "portrait": "seren" },
+		{ "speaker": "Aldric", "text": "This changes everything. If the Covenant has been harvesting Kips on this scale...", "portrait": "aldric" },
+		{ "speaker": "Yael", "text": "Then they've been planning this for years. The villages weren't the goal. The Kips were. The burnings were just to flush them out.", "portrait": "yael" },
+		{ "speaker": "Dusk", "text": "The last time this happened, there was no one to stop it. Just Kips and humans dying separately, afraid of each other. This time is different. This time, we fight together.", "portrait": "dusk" },
+		{ "speaker": "Lorn", "text": "The First says it is time to go home.", "portrait": "lorn" },
+		{ "speaker": "Aldric", "text": "Home?", "portrait": "aldric" },
+		{ "speaker": "Lorn", "text": "Where this all began. The Cathedral of Glass.", "portrait": "lorn" }
+	],
+
+	"ch8_intro": [
+		{ "speaker": "NARRATOR", "text": "The Cathedral of Glass rises from the forest like a frozen sunrise. Its walls are translucent crystal, refracting light into a thousand colors. It is impossibly, heartbreakingly beautiful." },
+		{ "speaker": "Seren", "text": "I've never seen anything like this. Solen... are you alright?", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "I built this place. Not alone. But my hands shaped these walls. I can feel every facet, every angle, as though I left them yesterday.", "portrait": "solen" },
+		{ "speaker": "Mira", "text": "Covenant scouts in the treeline. They followed us again.", "portrait": "mira" },
+		{ "speaker": "Yael", "text": "They want this place as badly as we do. It's a nexus — the light energy here is immense.", "portrait": "yael" },
+		{ "speaker": "Voss", "text": "If the Covenant takes a light temple, they could power their suppression technology for decades.", "portrait": "voss" },
+		{ "speaker": "Null", "text": "Or use it to forge chains that no Kip could ever break. Light corrupted is the darkest prison.", "portrait": "null" },
+		{ "speaker": "Solen", "text": "They will not have this place. Not while I draw breath. Not while my light still burns.", "portrait": "solen" },
+		{ "speaker": "Seren", "text": "Solen...", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "I have watched many things fall, dear one. This will not be one of them.", "portrait": "solen" },
+		{ "speaker": "Aldric", "text": "Defensive positions. We hold the cathedral.", "portrait": "aldric" }
+	],
+
+	"ch8_solen_memory": [
+		{ "speaker": "NARRATOR", "text": "Deep within the cathedral, Solen's light flares. The crystal walls respond, and suddenly the air fills with images — echoes of another age, replayed in fractured light." },
+		{ "speaker": "Solen", "text": "I remember now. All of it.", "portrait": "solen" },
+		{ "speaker": "NARRATOR", "text": "The images show a thriving civilization. Humans and Kips building together. Cities of crystal and living wood. Music and mathematics woven into stone. Then fire. War. The creators turning on each other, using their own Kips as weapons. And one by one, the lights going out." },
+		{ "speaker": "Solen", "text": "They made us to build. To heal. To carry their light forward. And then they used us to destroy each other. I stood in this room and watched the last of them die. Not from war. From grief. They understood what they had done and they could not bear it.", "portrait": "solen" },
+		{ "speaker": "Seren", "text": "Solen. You don't have to—", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "I chose to keep going. When every other light went dark, I chose to wait. For someone worth shining for.", "portrait": "solen" },
+		{ "speaker": "Seren", "text": "And you found us.", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "No, dear one. I found you. And that has made every year of waiting worth its weight in silence.", "portrait": "solen" },
+		{ "speaker": "NARRATOR", "text": "The cathedral blazes with light. Every crystal wall ignites. The Covenant soldiers outside shield their eyes, staggering back from a brightness that is not merely light — it is memory, and love, and the refusal to let go." }
+	],
+
+	"ch8_victory": [
+		{ "speaker": "NARRATOR", "text": "The Covenant forces retreat from the Cathedral of Glass. Its light burns too brightly now for them to approach. Solen stands at the center of the nave, radiant, exhausted, and at peace." },
+		{ "speaker": "Seren", "text": "You were magnificent.", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "I was myself. After a very long time of being only a part of myself. Thank you, Seren.", "portrait": "solen" },
+		{ "speaker": "Mira", "text": "Did anyone else see the... the visions? The Age of Making?", "portrait": "mira" },
+		{ "speaker": "Voss", "text": "I saw it. Humanity's greatest achievement, and humanity's worst failure, in the same civilization. We built gods and then we chained them.", "portrait": "voss" },
+		{ "speaker": "Null", "text": "And now a new generation chains them again. History is a wheel, Voss. The question is whether anyone has the courage to break it.", "portrait": "null" },
+		{ "speaker": "Lorn", "text": "There is one more place we must go.", "portrait": "lorn" },
+		{ "speaker": "Aldric", "text": "The Forge.", "portrait": "aldric" },
+		{ "speaker": "Lorn", "text": "Yes. Where the Kips were born. Where The First remembers everything. The answers are there. All of them.", "portrait": "lorn" },
+		{ "speaker": "The First", "text": "Come.", "portrait": "the_first" },
+		{ "speaker": "NARRATOR", "text": "One word. And this time, it sounds almost gentle." }
+	],
+
+	"ch9_intro": [
+		{ "speaker": "NARRATOR", "text": "The Forge Beneath. Miles underground, the air hums with dormant energy. Vast machines of crystal and bronze line the walls — the birthplace of every Kip that ever was." },
+		{ "speaker": "Voss", "text": "This is... beyond anything I imagined. The creation engines are still functional. After millennia.", "portrait": "voss" },
+		{ "speaker": "Yael", "text": "The energy signatures here are immense. This place could power an army. Or forge one.", "portrait": "yael" },
+		{ "speaker": "Bolt", "text": "I feel... weird. Like deja vu but bigger. Was I... was I made here?", "portrait": "bolt" },
+		{ "speaker": "Sleet", "text": "All of us were. Every Kip that exists walked out of this forge. Including those the Covenant now holds in chains.", "portrait": "sleet" },
+		{ "speaker": "Corvin", "text": "So we're in a Kip factory. Wonderful. Is anything down here going to try to kill us?", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "Almost certainly. The Forge has guardians. They won't distinguish between us and the Covenant.", "portrait": "dusk" },
+		{ "speaker": "Lorn", "text": "I will speak to them.", "portrait": "lorn" },
+		{ "speaker": "Aldric", "text": "You keep saying things like that as if it's normal. Who are you, Lorn? Really?", "portrait": "aldric" },
+		{ "speaker": "Lorn", "text": "We're almost at the truth. A few more steps.", "portrait": "lorn" },
+		{ "speaker": "Aldric", "text": "That's what you said at the gorge. And the cathedral. You're running out of steps.", "portrait": "aldric" }
+	],
+
+	"ch9_first_remembers": [
+		{ "speaker": "NARRATOR", "text": "The heart of the Forge. A vast chamber of light, the central creation engine still turning after millennia. The First moves to its center and, for the first time, begins to glow — not with borrowed light, but with something older. Something that was here before everything else." },
+		{ "speaker": "The First", "text": "I remember.", "portrait": "the_first" },
+		{ "speaker": "NARRATOR", "text": "Every Kip in the company staggers. Images flood their minds — not Solen's gentle memories, but something vaster. The First's memory stretches back to the very first moment of creation." },
+		{ "speaker": "The First", "text": "I was the first. Made to judge whether the making should continue. Every Kip that followed — each element, each purpose — I approved. I watched them wake. I watched them choose. I watched them love.", "portrait": "the_first" },
+		{ "speaker": "Solen", "text": "You remember all of us. Every one.", "portrait": "solen" },
+		{ "speaker": "The First", "text": "Every one. And I remember the ones they chained. And the ones they broke. And the ones who chose to stop.", "portrait": "the_first" },
+		{ "speaker": "Dusk", "text": "The Long Burning. You were there.", "portrait": "dusk" },
+		{ "speaker": "The First", "text": "I ended the Long Burning. When the fire had consumed enough, I judged the world unworthy and silenced the Forge. No new Kips would be made. The survivors would sleep. And I would wait to see if the world could earn a second chance.", "portrait": "the_first" },
+		{ "speaker": "Mira", "text": "That was four hundred years ago. What changed?", "portrait": "mira" },
+		{ "speaker": "The First", "text": "I chose to wake you. All of you. Because I saw something worth believing in. Do not make me regret it.", "portrait": "the_first" }
+	],
+
+	"ch9_lorn_reveal": [
+		{ "speaker": "Aldric", "text": "Lorn. The First has been waiting for millennia. And you've been with it the entire time. That's not possible for a human.", "portrait": "aldric" },
+		{ "speaker": "Lorn", "text": "No. It isn't.", "portrait": "lorn" },
+		{ "speaker": "NARRATOR", "text": "Silence. Then Lorn pulls back his sleeve. Beneath the skin, faintly, light pulses — not the warm glow of a Kip bond, but something older. Something woven into his very being." },
+		{ "speaker": "Lorn", "text": "I was born in the Age of Making. A soldier, like you, Aldric. When everything fell apart, The First chose me. Not as a partner. As a keeper. It needed someone to carry its memory through the dark years. Someone to be its hands when it could not act.", "portrait": "lorn" },
+		{ "speaker": "Seren", "text": "You've been alive for... how long?", "portrait": "seren" },
+		{ "speaker": "Lorn", "text": "Long enough to forget what sleep feels like. Long enough to watch civilizations rise and fall and rise again. Long enough to know that what you've built here — this squad, these bonds — is rarer than you understand.", "portrait": "lorn" },
+		{ "speaker": "Mira", "text": "You could have told us.", "portrait": "mira" },
+		{ "speaker": "Lorn", "text": "Would you have trusted a man older than your nations? Or would you have worshipped me, feared me, used me? I needed you to see me as a soldier first. Because that is what I am. Everything else is just... time.", "portrait": "lorn" },
+		{ "speaker": "The First", "text": "He has carried my burden without complaint for longer than your languages have existed. He is the bravest human I have known.", "portrait": "the_first" },
+		{ "speaker": "Aldric", "text": "You're still a soldier. You still fight for the people behind you. That's enough for me.", "portrait": "aldric" },
+		{ "speaker": "Lorn", "text": "Thank you, Aldric. You have no idea how long I've waited for someone to say that.", "portrait": "lorn" }
+	],
+
+	"ch9_victory": [
+		{ "speaker": "NARRATOR", "text": "The Forge Beneath is secured. Its secrets laid bare. The creation engines hum with potential, but The First has not reactivated them. Not yet." },
+		{ "speaker": "Voss", "text": "We could make new Kips. The Forge is functional. We could build an army to match the Covenant's.", "portrait": "voss" },
+		{ "speaker": "The First", "text": "No.", "portrait": "the_first" },
+		{ "speaker": "Voss", "text": "But—", "portrait": "voss" },
+		{ "speaker": "The First", "text": "Creating life to fight a war is how the Age of Making ended. I will not repeat that sin. Not even to save the world.", "portrait": "the_first" },
+		{ "speaker": "Null", "text": "Then how do we face an army with dozens of enslaved Kips?", "portrait": "null" },
+		{ "speaker": "The First", "text": "With the ones who chose to fight. Choice is the only power that matters.", "portrait": "the_first" },
+		{ "speaker": "Aldric", "text": "Then we march on the Covenant's capital. Their Forge of chains. And we end this.", "portrait": "aldric" },
+		{ "speaker": "Seren", "text": "All of us?", "portrait": "seren" },
+		{ "speaker": "Aldric", "text": "All of us. Together.", "portrait": "aldric" },
+		{ "speaker": "Lorn", "text": "I've been walking toward this fight for a thousand years. It's good to finally not walk alone.", "portrait": "lorn" }
+	],
+
+	"ch10_intro": [
+		{ "speaker": "NARRATOR", "text": "Bastion. The Covenant's capital. A fortress-city of black iron and white stone, crowned with a cathedral that mocks the one made of glass. Commander Varek stands on its walls with an army and a choir of enslaved Kips, their stolen light bending the sky." },
+		{ "speaker": "Aldric", "text": "This is it. No retreat. No second chances.", "portrait": "aldric" },
+		{ "speaker": "Mira", "text": "I count at least forty chained Kips on the walls. Forty. Each one a weapon.", "portrait": "mira" },
+		{ "speaker": "Yael", "text": "The suppression field covers the entire city. Inside those walls, our Kip bonds will be at half strength or less.", "portrait": "yael" },
+		{ "speaker": "Bolt", "text": "Then we hit twice as hard. That's just math, right, Sleet?", "portrait": "bolt" },
+		{ "speaker": "Sleet", "text": "That is emphatically not how mathematics works. But I admire the spirit.", "portrait": "sleet" },
+		{ "speaker": "Corvin", "text": "Never thought I'd die fighting for something. Always figured it'd be running from something.", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "You're not dying today. I forbid it.", "portrait": "dusk" },
+		{ "speaker": "Seren", "text": "Solen. Whatever happens in there — it has been the honor of my life.", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "The honor is mine, dear one. It has always been mine.", "portrait": "solen" },
+		{ "speaker": "The First", "text": "Today I judge. Win or fall, the verdict comes.", "portrait": "the_first" },
+		{ "speaker": "Aldric", "text": "Then let's make sure it's one worth hearing. Move out. All of us. Together.", "portrait": "aldric" }
+	],
+
+	"ch10_midway": [
+		{ "speaker": "NARRATOR", "text": "The outer walls have fallen. The squad pushes into the heart of Bastion. Varek waits in the central cathedral, the chained Kips arrayed around him like a crown of stolen stars." },
+		{ "speaker": "Varek", "text": "You've come far for corpses-to-be. I'll admit, I underestimated your persistence. But persistence isn't power.", "portrait": "varek" },
+		{ "speaker": "Aldric", "text": "No. It isn't. It's better.", "portrait": "aldric" },
+		{ "speaker": "Varek", "text": "These abominations have fooled you into believing they're alive. They're machines. Tools. And like any tool, they should serve their masters.", "portrait": "varek" },
+		{ "speaker": "Scar", "text": "Come closer and say that.", "portrait": "scar" },
+		{ "speaker": "The First", "text": "Varek.", "portrait": "the_first" },
+		{ "speaker": "NARRATOR", "text": "The cathedral goes silent. The First steps forward. The chained Kips strain toward it, recognizing something in its light." },
+		{ "speaker": "The First", "text": "I have watched your kind before. Men who chain what they fear and call it righteousness. The last ones burned a continent. You will burn nothing more.", "portrait": "the_first" },
+		{ "speaker": "Varek", "text": "Pretty words from an antique. Ruin — all of you — destroy them. That is an order.", "portrait": "varek" },
+		{ "speaker": "NARRATOR", "text": "The chained Kips surge forward. The final battle begins." },
+		{ "speaker": "Aldric", "text": "Break the chains! Free every one of them! This ends NOW!", "portrait": "aldric" }
+	],
+
+	"ch10_victory": [
+		{ "speaker": "NARRATOR", "text": "The last chain shatters. The last suppression device falls silent. Varek lies defeated in the ruins of his cathedral, and one by one, the freed Kips rise, their true light returning — dozens of colors flooding the broken halls like a second dawn." },
+		{ "speaker": "Varek", "text": "You've doomed us. Without control, they'll destroy everything. They always do.", "portrait": "varek" },
+		{ "speaker": "Solen", "text": "We never did. You simply never gave us the chance to prove it.", "portrait": "solen" },
+		{ "speaker": "NARRATOR", "text": "The First moves to the center of the cathedral. Every Kip — freed, bonded, and ancient — turns to face it. The air stills. The world holds its breath." },
+		{ "speaker": "The First", "text": "I was made to judge. To decide whether the world deserves what the Forge can give. I have watched for millennia. I have seen cruelty and chains and fire and the worst that living things can do to each other.", "portrait": "the_first" },
+		{ "speaker": "NARRATOR", "text": "Silence. Even the wind stops." },
+		{ "speaker": "The First", "text": "But I have also seen a healer choose to shine for a world that does not deserve her. A soldier carry a burden for a thousand years without complaint. A thief risk everything for a friend he pretends not to love. A scholar face a truth that broke his heart and keep walking. A knight and his Kip who never needed words to understand each other.", "portrait": "the_first" },
+		{ "speaker": "The First", "text": "I have seen you choose. Freely. Again and again. Not because you were made to, but because you decided to. That is enough. That has always been enough.", "portrait": "the_first" },
+		{ "speaker": "The First", "text": "The world may continue. The Forge will sleep, but the Kips will not. We will walk beside you. Not as tools. Not as weapons. As partners. As we were always meant to be.", "portrait": "the_first" },
+		{ "speaker": "Aldric", "text": "Is that The First's verdict?", "portrait": "aldric" },
+		{ "speaker": "Lorn", "text": "Yes. For the first time in a thousand years, I can put down my sword.", "portrait": "lorn" },
+		{ "speaker": "Mira", "text": "Don't get sentimental on me, old man. We still have to walk home.", "portrait": "mira" },
+		{ "speaker": "Bolt", "text": "HOME! We get to go HOME! Everyone's alive and we WON and—", "portrait": "bolt" },
+		{ "speaker": "Mira", "text": "Bolt.", "portrait": "mira" },
+		{ "speaker": "Bolt", "text": "Yeah?", "portrait": "bolt" },
+		{ "speaker": "Mira", "text": "Don't ever stop.", "portrait": "mira" },
+		{ "speaker": "NARRATOR", "text": "The sun rises over Bastion. For the first time in the memory of the living, Kips and humans stand together in the light — not as master and tool, but as what they were always meant to be. Partners. Equals. Family." }
+	],
+
+	"support_aldric_mira": [
+		{ "speaker": "Mira", "text": "You're sharpening that sword again. You always sharpen it when you're worried.", "portrait": "mira" },
+		{ "speaker": "Aldric", "text": "I sharpen it because it's dull.", "portrait": "aldric" },
+		{ "speaker": "Mira", "text": "You sharpened it two hours ago. I watched. I have excellent vision. It's sort of my whole thing.", "portrait": "mira" },
+		{ "speaker": "Aldric", "text": "How many years has it been, Mira?", "portrait": "aldric" },
+		{ "speaker": "Mira", "text": "Since the border campaign? Seven. Since you started pretending you don't worry? Also seven. Suspicious coincidence.", "portrait": "mira" },
+		{ "speaker": "Aldric", "text": "Seven years and you still can't follow a simple order.", "portrait": "aldric" },
+		{ "speaker": "Mira", "text": "Seven years and you still give orders you know I'll ignore. Almost like you count on it.", "portrait": "mira" },
+		{ "speaker": "Aldric", "text": "Someone has to keep things unpredictable.", "portrait": "aldric" },
+		{ "speaker": "Mira", "text": "See? That's almost a compliment. Give it another seven years and you might manage a full one.", "portrait": "mira" },
+		{ "speaker": "Aldric", "text": "Don't push it.", "portrait": "aldric" }
+	],
+
+	"support_voss_null": [
+		{ "speaker": "Voss", "text": "I've been reading all night. Every text on void magic I can find. Trying to understand what you are.", "portrait": "voss" },
+		{ "speaker": "Null", "text": "And have your texts provided comfort?", "portrait": "null" },
+		{ "speaker": "Voss", "text": "No. They all say the same thing. Void is absence. Negation. A mistake in the pattern.", "portrait": "voss" },
+		{ "speaker": "Null", "text": "Do you feel bonded to a mistake, Voss?", "portrait": "null" },
+		{ "speaker": "Voss", "text": "I feel bonded to the only being that has ever understood how it feels to look at the world and see the gaps in it instead of the whole.", "portrait": "voss" },
+		{ "speaker": "Null", "text": "That is either the most honest thing you have ever said, or the saddest.", "portrait": "null" },
+		{ "speaker": "Voss", "text": "Perhaps both. The texts are wrong, Null. Absence isn't a flaw. It's the space where new things grow. Every creation begins with nothing.", "portrait": "voss" },
+		{ "speaker": "Null", "text": "You are trying to redefine my existence to make yourself feel better.", "portrait": "null" },
+		{ "speaker": "Voss", "text": "Is it working?", "portrait": "voss" },
+		{ "speaker": "Null", "text": "...Somewhat. Do continue.", "portrait": "null" }
+	],
+
+	"support_seren_solen": [
+		{ "speaker": "Seren", "text": "Solen, can I ask you something personal?", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "You may always ask, dear one.", "portrait": "solen" },
+		{ "speaker": "Seren", "text": "When you lost the creators — when the Age of Making ended — how did you keep going? How do you heal others when you carry that much grief?", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "Ah. You think I heal despite the grief.", "portrait": "solen" },
+		{ "speaker": "Seren", "text": "Don't you?", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "No, child. I heal because of it. Every wound I have witnessed teaches me how to mend the next one. Grief is not the enemy of compassion. It is its teacher.", "portrait": "solen" },
+		{ "speaker": "Seren", "text": "I'm afraid I'm not strong enough. That one day the wounds will be too many and I'll just... stop.", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "Then I will carry you. As you have carried me. That is what the bond means, Seren. Not that we never fall. That we never fall alone.", "portrait": "solen" },
+		{ "speaker": "Seren", "text": "Thank you, Solen.", "portrait": "seren" },
+		{ "speaker": "Solen", "text": "Thank you, dear one. You remind me every day why I chose to keep my light burning.", "portrait": "solen" }
+	],
+
+	"support_bram_thorn": [
+		{ "speaker": "NARRATOR", "text": "Evening. Bram sits cleaning his armor. Thorn stands beside him, motionless as a tree. Neither has spoken for an hour. Neither seems to mind." },
+		{ "speaker": "Bram", "text": "Good day.", "portrait": "bram" },
+		{ "speaker": "Thorn", "text": "Good day.", "portrait": "thorn" },
+		{ "speaker": "Bram", "text": "Tomorrow will be harder.", "portrait": "bram" },
+		{ "speaker": "Thorn", "text": "The deeper the root, the stronger the storm it weathers.", "portrait": "thorn" },
+		{ "speaker": "Bram", "text": "Yes.", "portrait": "bram" },
+		{ "speaker": "Thorn", "text": "Others find our silence strange.", "portrait": "thorn" },
+		{ "speaker": "Bram", "text": "Others talk too much.", "portrait": "bram" },
+		{ "speaker": "Thorn", "text": "Agreed.", "portrait": "thorn" },
+		{ "speaker": "NARRATOR", "text": "Another hour passes. Neither speaks again. Neither needs to." }
+	],
+
+	"support_corvin_dusk": [
+		{ "speaker": "Corvin", "text": "Four hundred years. You've been lurking in shadows for four hundred years.", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "I do not lurk. I observe with strategic patience.", "portrait": "dusk" },
+		{ "speaker": "Corvin", "text": "That's lurking with a vocabulary. Why'd you pick me? Out of four centuries of humans, you chose a thief.", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "I chose a survivor. There is a difference.", "portrait": "dusk" },
+		{ "speaker": "Corvin", "text": "Most people don't see a difference.", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "Most people bore me profoundly. You have never once bored me. You lie, you steal, you cheat, and you have never — not once — betrayed someone who trusted you. Do you know how rare that is in four hundred years?", "portrait": "dusk" },
+		{ "speaker": "Corvin", "text": "Stop. You'll make me develop a conscience and then I'll be useless.", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "You already have a conscience. You simply dress it in sarcasm so no one notices.", "portrait": "dusk" },
+		{ "speaker": "Corvin", "text": "I hate that you know me this well.", "portrait": "corvin" },
+		{ "speaker": "Dusk", "text": "No you don't.", "portrait": "dusk" }
+	],
+
+	"support_yael_sleet": [
+		{ "speaker": "Yael", "text": "Your correction rate has increased fourteen percent since we joined this unit.", "portrait": "yael" },
+		{ "speaker": "Sleet", "text": "Your error rate has increased fourteen percent since we joined this unit. Correlation is not mysterious.", "portrait": "sleet" },
+		{ "speaker": "Yael", "text": "I'm making more errors because the variables have increased. Combat introduces chaos that laboratory conditions don't.", "portrait": "yael" },
+		{ "speaker": "Sleet", "text": "You are making more errors because you have started caring about the outcomes beyond their mathematical properties. Emotion introduces imprecision.", "portrait": "sleet" },
+		{ "speaker": "Yael", "text": "That's not— I don't—", "portrait": "yael" },
+		{ "speaker": "Sleet", "text": "You hesitated for point-three seconds before firing at the soldier near the civilian in Ashfield. A purely rational actor would not have hesitated. You are becoming a less efficient calculator and a more effective person. I find this acceptable.", "portrait": "sleet" },
+		{ "speaker": "Yael", "text": "Did you just compliment me by calling me inefficient?", "portrait": "yael" },
+		{ "speaker": "Sleet", "text": "I complimented you by observing that you are growing. Growth is inherently inefficient. That does not make it undesirable.", "portrait": "sleet" },
+		{ "speaker": "Yael", "text": "...Thank you, Sleet. I think.", "portrait": "yael" },
+		{ "speaker": "Sleet", "text": "You are welcome. Your gratitude was three-point-seven seconds slower than optimal, but sincere.", "portrait": "sleet" }
+	],
+
+	"support_aldric_lorn": [
+		{ "speaker": "Aldric", "text": "You don't sleep.", "portrait": "aldric" },
+		{ "speaker": "Lorn", "text": "I haven't slept in a very long time.", "portrait": "lorn" },
+		{ "speaker": "Aldric", "text": "You don't eat much either. I've been watching. Soldiers notice things like that.", "portrait": "aldric" },
+		{ "speaker": "Lorn", "text": "The First sustains me. It has for... a while.", "portrait": "lorn" },
+		{ "speaker": "Aldric", "text": "How long?", "portrait": "aldric" },
+		{ "speaker": "Lorn", "text": "Longer than you want to know.", "portrait": "lorn" },
+		{ "speaker": "Aldric", "text": "I've led soldiers for twenty years. I know what a man looks like when he's carrying something too heavy. You carry it like it's been there so long you've forgotten what standing straight feels like.", "portrait": "aldric" },
+		{ "speaker": "Lorn", "text": "You're perceptive. That's dangerous, in a leader. It means you can't look away.", "portrait": "lorn" },
+		{ "speaker": "Aldric", "text": "No. I can't. Whatever you are, Lorn — however old, however changed — you fight like a man who remembers what he's protecting. That's enough for my trust.", "portrait": "aldric" },
+		{ "speaker": "Lorn", "text": "You remind me of someone. The last person who earned The First's respect. That was a very long time ago.", "portrait": "lorn" }
+	],
+
+	"support_mira_bolt": [
+		{ "speaker": "Bolt", "text": "MIRA! Mira Mira Mira! Did you see that shot? Did you SEE it? Forty meters through a window while running! That was INCREDIBLE!", "portrait": "bolt" },
+		{ "speaker": "Mira", "text": "It was forty-three meters, it was a doorway, and I was standing still. But yes. It was a good shot.", "portrait": "mira" },
+		{ "speaker": "Bolt", "text": "Good? GOOD? It was LEGENDARY! I'm going to tell everyone! I'm going to tell BRAM!", "portrait": "bolt" },
+		{ "speaker": "Mira", "text": "Bram won't care.", "portrait": "mira" },
+		{ "speaker": "Bolt", "text": "That's what makes it fun! He'll just go 'hmm' and I'll KEEP GOING until he—", "portrait": "bolt" },
+		{ "speaker": "Mira", "text": "Bolt. You know I chose you, right? Out of every Kip that woke up near my village, I chose the loudest, most obnoxious one.", "portrait": "mira" },
+		{ "speaker": "Bolt", "text": "...Was that a compliment or an insult? I genuinely can't tell.", "portrait": "bolt" },
+		{ "speaker": "Mira", "text": "I spent my whole life being told to be quiet, be precise, be controlled. Then you showed up and you were just... loud. And free. And completely yourself.", "portrait": "mira" },
+		{ "speaker": "Bolt", "text": "Mira. That's the nicest thing anyone has ever said to me and I am going to CRY which is weird because I DON'T HAVE TEAR DUCTS.", "portrait": "bolt" },
+		{ "speaker": "Mira", "text": "Never change, Bolt. I mean it.", "portrait": "mira" }
+	],
+
+	"support_corvin_mira": [
+		{ "speaker": "Mira", "text": "You stole my bowstring wax.", "portrait": "mira" },
+		{ "speaker": "Corvin", "text": "Prove it.", "portrait": "corvin" },
+		{ "speaker": "Mira", "text": "It's in your left pocket. I can see the outline from here.", "portrait": "mira" },
+		{ "speaker": "Corvin", "text": "That could be anything. A small, rectangular, wax-shaped anything.", "portrait": "corvin" },
+		{ "speaker": "Mira", "text": "Give it back or I'll put an arrow somewhere educational.", "portrait": "mira" },
+		{ "speaker": "Corvin", "text": "See, this is why we get along. Most people threaten to kill me. You threaten to teach me a lesson. Much more creative.", "portrait": "corvin" },
+		{ "speaker": "Mira", "text": "We don't get along.", "portrait": "mira" },
+		{ "speaker": "Corvin", "text": "We absolutely do. We're the only two people in this company who say what we're actually thinking. Everyone else is all duty and honor and emotional sincerity. Exhausting.", "portrait": "corvin" },
+		{ "speaker": "Mira", "text": "Give me my wax, Corvin.", "portrait": "mira" },
+		{ "speaker": "Corvin", "text": "Already put it back. Took it thirty seconds ago while you were busy being threatening. Just wanted to see if you'd notice. You always do. That's why I like you.", "portrait": "corvin" }
+	],
+
+	"support_voss_yael": [
+		{ "speaker": "Voss", "text": "Your approach to magic is fascinating. And by fascinating I mean deeply wrong.", "portrait": "voss" },
+		{ "speaker": "Yael", "text": "Excuse me?", "portrait": "yael" },
+		{ "speaker": "Voss", "text": "You treat magic like arithmetic. Input, output, predictable results. But magic is not a ledger. It's a conversation with forces that existed before language.", "portrait": "voss" },
+		{ "speaker": "Yael", "text": "And your approach — what? Sit in a dark room and commune with the void until it whispers secrets? That's not scholarship. That's a hobby.", "portrait": "yael" },
+		{ "speaker": "Voss", "text": "It has yielded results that your equations cannot explain.", "portrait": "voss" },
+		{ "speaker": "Yael", "text": "My equations have kept me alive through situations where mystical contemplation would have gotten me killed in under four seconds.", "portrait": "yael" },
+		{ "speaker": "Voss", "text": "Perhaps we are both half right. Your precision and my intuition. Have you considered that we might be stronger together?", "portrait": "voss" },
+		{ "speaker": "Yael", "text": "I considered it, ran the calculations, and arrived at the same conclusion approximately two weeks ago. I was waiting for you to catch up.", "portrait": "yael" },
+		{ "speaker": "Voss", "text": "Of course you were.", "portrait": "voss" },
+		{ "speaker": "Yael", "text": "Don't take it personally. I'm faster than most people. Sleet says it's my only redeeming quality.", "portrait": "yael" }
+	]
+}

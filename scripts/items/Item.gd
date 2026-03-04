@@ -13,34 +13,27 @@ var value:       int      = 0    # Heal amount or boost amount
 var stat_target: String   = ""   # For stat boosts: "def", "res", etc.
 var duration:    int      = 0    # For temporary boosts (turns)
 
+const TYPE_STR_MAP: Dictionary = {
+	"heal": ItemType.HEAL, "kip_restore": ItemType.KIP_RESTORE,
+	"stat_boost": ItemType.STAT_BOOST, "elixir": ItemType.ELIXIR,
+	"promotion": ItemType.PROMOTION,
+}
+
 static func make(id: String) -> Item:
 	var it = Item.new()
 	it.item_id = id
-	match id:
-		"vulnerary":
-			it.item_name = "Vulnerary"; it.item_type = ItemType.HEAL
-			it.description = "Restores 10 HP. Three uses."
-			it.uses = 3; it.max_uses = 3; it.value = 10
-		"elixir":
-			it.item_name = "Elixir"; it.item_type = ItemType.ELIXIR
-			it.description = "Fully restores HP. One use."
-			it.uses = 1; it.max_uses = 1; it.value = 9999
-		"kip_salve":
-			it.item_name = "Kip Salve"; it.item_type = ItemType.KIP_RESTORE
-			it.description = "Restores exhausted Kip to Companion at 50% HP."
-			it.uses = 1; it.max_uses = 1; it.value = 50
-		"pure_water":
-			it.item_name = "Pure Water"; it.item_type = ItemType.STAT_BOOST
-			it.description = "Raises RES by 7 for 3 turns."
-			it.uses = 3; it.max_uses = 3; it.value = 7
-			it.stat_target = "resistance"; it.duration = 3
-		"energy_drop":
-			it.item_name = "Energy Drop"; it.item_type = ItemType.STAT_BOOST
-			it.description = "Permanently raises STR by 2."
-			it.uses = 1; it.max_uses = 1; it.value = 2
-			it.stat_target = "strength"; it.duration = -1   # -1 = permanent
-		_:
-			it.item_name = "Unknown Item"
+	var data: Dictionary = DataLoader.items_data.get(id, {})
+	if data.is_empty():
+		it.item_name = "Unknown Item"
+		return it
+	it.item_name   = data.get("name", "Unknown Item")
+	it.item_type   = TYPE_STR_MAP.get(data.get("type", "heal"), ItemType.HEAL)
+	it.description = data.get("description", "")
+	it.uses        = int(data.get("uses", 1))
+	it.max_uses    = it.uses
+	it.value       = int(data.get("value", 0))
+	it.stat_target = data.get("stat_target", "")
+	it.duration    = int(data.get("duration", 0))
 	return it
 
 func use_on(unit) -> String:
