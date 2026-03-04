@@ -4,6 +4,7 @@ extends RefCounted
 enum WeaponType { SWORD, LANCE, AXE, BOW, TOME, DAGGER, STAFF, GREATSWORD }
 enum DamageType { PHYSICAL, MAGICAL }
 
+var weapon_id:    String     = ""
 var weapon_name:  String     = "Iron Sword"
 var weapon_type:  WeaponType = WeaponType.SWORD
 var damage_type:  DamageType = DamageType.PHYSICAL
@@ -133,6 +134,7 @@ static func make(id: String) -> Weapon:
 		_: # Default fallback
 			w.weapon_name = "Broken Sword"; w.attack = 2; w.hit = 70
 
+	w.weapon_id = id
 	w.max_uses = w.uses
 	return w
 

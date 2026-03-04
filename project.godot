@@ -16,7 +16,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 config/name="Den"
 config/description="A dark tactical RPG. Magic. Robots. War."
-run/main_scene="res://scenes/battle/Battle.tscn"
+run/main_scene="res://scenes/ui/TitleScreen.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 
 [autoload]

@@ -56,6 +56,22 @@ var kip_portrait_tex: TextureRect
 var portrait_cache:  Dictionary = {}  # name_lower → Texture2D
 var kip_portrait_cache: Dictionary = {}  # kip_name_lower → Texture2D
 
+# Pause menu
+var pause_overlay:   ColorRect
+var pause_menu:      VBoxContainer
+var is_pause_open:   bool = false
+
+# Combat close-up
+var combat_layer:    CanvasLayer
+var combat_panel:    ColorRect
+var combat_atk_portrait: TextureRect
+var combat_def_portrait: TextureRect
+var combat_atk_hp:   ColorRect
+var combat_def_hp:   ColorRect
+var combat_atk_name: Label
+var combat_def_name: Label
+var combat_vs:       Label
+
 # Speech timer
 var speech_timer:   float = 0.0
 var log_timer:      float = 0.0
@@ -67,6 +83,8 @@ func _ready():
 	_setup_camera()
 	_load_portraits()
 	_build_ui()
+	_build_pause_menu()
+	_build_combat_closeup()
 	_start_battle()
 	BattleState.kip_speaks.connect(_on_kip_speaks)
 	BattleState.unit_died.connect(_on_unit_died)
@@ -161,6 +179,21 @@ func _open_tile(prefer: Vector2i) -> Vector2i:
 # ─── Input ────────────────────────────────────────────────────────────────────
 
 func _input(event: InputEvent):
+	# Pause toggle always available
+	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+		if is_pause_open:
+			_close_pause_menu()
+			return
+		elif state == State.IDLE and BattleState.is_player_phase:
+			_open_pause_menu()
+			return
+		else:
+			_cancel_action()
+			return
+
+	# Block all input while paused
+	if is_pause_open: return
+
 	# Camera controls always active
 	_handle_camera_input(event)
 
@@ -174,9 +207,6 @@ func _input(event: InputEvent):
 			var tp = grid.world_to_tile(get_global_mouse_position())
 			if grid.is_valid_tile(tp):
 				_handle_tile_click(tp)
-
-	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
-		_cancel_action()
 
 func _handle_camera_input(event: InputEvent):
 	# Scroll wheel zoom
@@ -639,6 +669,7 @@ func _on_confirm_attack():
 	if forecast_attacker == null or forecast_defender == null: return
 	state = State.ANIMATING
 	_hide_all_panels()
+	_show_combat_closeup(forecast_attacker, forecast_defender)
 
 	var atk = forecast_attacker
 	var def = forecast_defender
@@ -711,6 +742,10 @@ func _animate_strike(attacker, defender, weapon: Weapon):
 	defender.take_damage(damage, elem)
 	weapon.use_one()
 
+	# Update combat close-up HP bars
+	if forecast_attacker and forecast_defender:
+		_update_combat_hp(forecast_attacker, forecast_defender)
+
 	# Hit recoil on defender
 	if defender.is_alive():
 		await grid.animate_hit_recoil(defender)
@@ -720,6 +755,7 @@ func _animate_strike(attacker, defender, weapon: Weapon):
 	grid.queue_redraw()
 
 func _finish_combat(attacker):
+	_hide_combat_closeup()
 	attacker.has_acted = true
 	_deselect()
 	_check_all_acted()
@@ -1235,3 +1271,232 @@ func _elem_ui_color(elem: String) -> Color:
 		"plant":    return Color(0.25, 0.82, 0.25)
 		"god":      return Color(1.0, 1.0, 0.9)
 	return Color(0.7, 0.7, 0.7)
+
+# ─── Pause Menu ───────────────────────────────────────────────────────────────
+
+func _build_pause_menu():
+	var pause_layer = CanvasLayer.new()
+	pause_layer.layer = 20
+	add_child(pause_layer)
+
+	pause_overlay = ColorRect.new()
+	pause_overlay.color = Color(0, 0, 0, 0.65)
+	pause_overlay.position = Vector2.ZERO
+	pause_overlay.size = Vector2(1280, 720)
+	pause_overlay.visible = false
+	pause_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	pause_layer.add_child(pause_overlay)
+
+	pause_menu = VBoxContainer.new()
+	pause_menu.position = Vector2(440, 160)
+	pause_menu.custom_minimum_size = Vector2(400, 0)
+	pause_overlay.add_child(pause_menu)
+
+	var title = Label.new()
+	title.text = "PAUSED"
+	title.add_theme_font_size_override("font_size", 32)
+	title.add_theme_color_override("font_color", Color(0.85, 0.14, 0.28))
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	pause_menu.add_child(title)
+
+	pause_menu.add_child(_spacer(20))
+
+	_add_pause_btn("RESUME", Color(0.3, 0.6, 0.3), _close_pause_menu)
+	_add_pause_btn("SAVE GAME", Color(0.3, 0.5, 0.8), _on_pause_save)
+	_add_pause_btn("LOAD GAME", Color(0.5, 0.4, 0.2), _on_pause_load, GameState.has_save())
+	_add_pause_btn("QUIT TO TITLE", Color(0.6, 0.15, 0.15), _on_pause_quit)
+
+func _add_pause_btn(label: String, col: Color, callback: Callable, enabled: bool = true):
+	var btn = Button.new()
+	btn.text = label
+	btn.custom_minimum_size = Vector2(400, 48)
+	btn.disabled = not enabled
+	btn.pressed.connect(callback)
+	btn.add_theme_font_size_override("font_size", 16)
+
+	var style = StyleBoxFlat.new()
+	style.bg_color = col.darkened(0.65)
+	style.border_color = col.darkened(0.2)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(5)
+	style.set_content_margin_all(12)
+	btn.add_theme_stylebox_override("normal", style)
+
+	var hover = StyleBoxFlat.new()
+	hover.bg_color = col.darkened(0.4)
+	hover.border_color = col
+	hover.set_border_width_all(1)
+	hover.set_corner_radius_all(5)
+	hover.set_content_margin_all(12)
+	btn.add_theme_stylebox_override("hover", hover)
+
+	var dis = StyleBoxFlat.new()
+	dis.bg_color = Color(0.08, 0.08, 0.10)
+	dis.border_color = Color(0.15, 0.15, 0.18)
+	dis.set_border_width_all(1)
+	dis.set_corner_radius_all(5)
+	dis.set_content_margin_all(12)
+	btn.add_theme_stylebox_override("disabled", dis)
+	btn.add_theme_color_override("font_disabled_color", Color(0.3, 0.3, 0.32))
+
+	pause_menu.add_child(btn)
+
+func _open_pause_menu():
+	is_pause_open = true
+	pause_overlay.visible = true
+	BattleState.pause()
+
+func _close_pause_menu():
+	is_pause_open = false
+	pause_overlay.visible = false
+	BattleState.resume()
+
+func _on_pause_save():
+	if GameState.save_game(units):
+		_push_log("Game saved.")
+	else:
+		_push_log("Save failed!")
+	_close_pause_menu()
+
+func _on_pause_load():
+	if GameState.load_game():
+		_close_pause_menu()
+		get_tree().change_scene_to_file("res://scenes/battle/Battle.tscn")
+
+func _on_pause_quit():
+	_close_pause_menu()
+	get_tree().change_scene_to_file("res://scenes/ui/TitleScreen.tscn")
+
+# ─── Combat Close-Up ─────────────────────────────────────────────────────────
+
+func _build_combat_closeup():
+	combat_layer = CanvasLayer.new()
+	combat_layer.layer = 15
+	add_child(combat_layer)
+
+	combat_panel = ColorRect.new()
+	combat_panel.color = Color(0.02, 0.02, 0.05, 0.92)
+	combat_panel.position = Vector2(140, 200)
+	combat_panel.size = Vector2(1000, 320)
+	combat_panel.visible = false
+	combat_layer.add_child(combat_panel)
+
+	# Top accent line
+	var accent = ColorRect.new()
+	accent.color = Color(0.85, 0.14, 0.28, 0.6)
+	accent.position = Vector2(0, 0)
+	accent.size = Vector2(1000, 2)
+	combat_panel.add_child(accent)
+
+	# Bottom accent
+	var accent2 = ColorRect.new()
+	accent2.color = Color(0.85, 0.14, 0.28, 0.6)
+	accent2.position = Vector2(0, 318)
+	accent2.size = Vector2(1000, 2)
+	combat_panel.add_child(accent2)
+
+	# Attacker side (left)
+	combat_atk_portrait = TextureRect.new()
+	combat_atk_portrait.position = Vector2(30, 30)
+	combat_atk_portrait.custom_minimum_size = Vector2(200, 260)
+	combat_atk_portrait.size = Vector2(200, 260)
+	combat_atk_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	combat_atk_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	combat_panel.add_child(combat_atk_portrait)
+
+	combat_atk_name = Label.new()
+	combat_atk_name.position = Vector2(240, 40)
+	combat_atk_name.add_theme_font_size_override("font_size", 22)
+	combat_atk_name.add_theme_color_override("font_color", Color(0.55, 0.78, 1.0))
+	combat_panel.add_child(combat_atk_name)
+
+	# Attacker HP bar bg
+	var atk_hp_bg = ColorRect.new()
+	atk_hp_bg.position = Vector2(240, 75)
+	atk_hp_bg.size = Vector2(200, 14)
+	atk_hp_bg.color = Color(0.08, 0.08, 0.10)
+	combat_panel.add_child(atk_hp_bg)
+
+	combat_atk_hp = ColorRect.new()
+	combat_atk_hp.position = Vector2(240, 75)
+	combat_atk_hp.size = Vector2(200, 14)
+	combat_atk_hp.color = Color(0.15, 0.88, 0.15)
+	combat_panel.add_child(combat_atk_hp)
+
+	# VS label
+	combat_vs = Label.new()
+	combat_vs.text = "VS"
+	combat_vs.position = Vector2(465, 130)
+	combat_vs.add_theme_font_size_override("font_size", 36)
+	combat_vs.add_theme_color_override("font_color", Color(0.85, 0.14, 0.28, 0.7))
+	combat_panel.add_child(combat_vs)
+
+	# Defender side (right)
+	combat_def_portrait = TextureRect.new()
+	combat_def_portrait.position = Vector2(770, 30)
+	combat_def_portrait.custom_minimum_size = Vector2(200, 260)
+	combat_def_portrait.size = Vector2(200, 260)
+	combat_def_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	combat_def_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	combat_panel.add_child(combat_def_portrait)
+
+	combat_def_name = Label.new()
+	combat_def_name.position = Vector2(560, 40)
+	combat_def_name.custom_minimum_size = Vector2(200, 0)
+	combat_def_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	combat_def_name.add_theme_font_size_override("font_size", 22)
+	combat_def_name.add_theme_color_override("font_color", Color(1.0, 0.45, 0.35))
+	combat_panel.add_child(combat_def_name)
+
+	# Defender HP bar
+	var def_hp_bg = ColorRect.new()
+	def_hp_bg.position = Vector2(560, 75)
+	def_hp_bg.size = Vector2(200, 14)
+	def_hp_bg.color = Color(0.08, 0.08, 0.10)
+	combat_panel.add_child(def_hp_bg)
+
+	combat_def_hp = ColorRect.new()
+	combat_def_hp.position = Vector2(560, 75)
+	combat_def_hp.size = Vector2(200, 14)
+	combat_def_hp.color = Color(0.15, 0.88, 0.15)
+	combat_panel.add_child(combat_def_hp)
+
+func _show_combat_closeup(atk, def):
+	# Set attacker portrait
+	var atk_key = atk.unit_name.to_lower()
+	if portrait_cache.has(atk_key):
+		combat_atk_portrait.texture = portrait_cache[atk_key]
+	else:
+		combat_atk_portrait.texture = null
+
+	# Set defender portrait
+	var def_key = def.unit_name.to_lower()
+	if portrait_cache.has(def_key):
+		combat_def_portrait.texture = portrait_cache[def_key]
+	else:
+		combat_def_portrait.texture = null
+
+	combat_atk_name.text = atk.unit_name
+	combat_def_name.text = def.unit_name
+
+	# Set name colors based on team
+	combat_atk_name.add_theme_color_override("font_color",
+		Color(0.55, 0.78, 1.0) if atk.is_player_unit else Color(1.0, 0.45, 0.35))
+	combat_def_name.add_theme_color_override("font_color",
+		Color(0.55, 0.78, 1.0) if def.is_player_unit else Color(1.0, 0.45, 0.35))
+
+	_update_combat_hp(atk, def)
+	combat_panel.visible = true
+
+func _update_combat_hp(atk, def):
+	var atk_ratio = clampf(float(atk.stats.hp) / float(atk.stats.max_hp), 0.0, 1.0)
+	var def_ratio = clampf(float(def.stats.hp) / float(def.stats.max_hp), 0.0, 1.0)
+
+	combat_atk_hp.size.x = 200.0 * atk_ratio
+	combat_def_hp.size.x = 200.0 * def_ratio
+
+	combat_atk_hp.color = Color(0.15, 0.88, 0.15) if atk_ratio > 0.5 else (Color(0.92, 0.58, 0.1) if atk_ratio > 0.25 else Color(0.92, 0.12, 0.12))
+	combat_def_hp.color = Color(0.15, 0.88, 0.15) if def_ratio > 0.5 else (Color(0.92, 0.58, 0.1) if def_ratio > 0.25 else Color(0.92, 0.12, 0.12))
+
+func _hide_combat_closeup():
+	combat_panel.visible = false

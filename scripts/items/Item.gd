@@ -3,6 +3,7 @@ extends RefCounted
 
 enum ItemType { HEAL, KIP_RESTORE, STAT_BOOST, ELIXIR, PROMOTION }
 
+var item_id:     String   = ""
 var item_name:   String   = ""
 var item_type:   ItemType = ItemType.HEAL
 var description: String   = ""
@@ -14,6 +15,7 @@ var duration:    int      = 0    # For temporary boosts (turns)
 
 static func make(id: String) -> Item:
 	var it = Item.new()
+	it.item_id = id
 	match id:
 		"vulnerary":
 			it.item_name = "Vulnerary"; it.item_type = ItemType.HEAL
