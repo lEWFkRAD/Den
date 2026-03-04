@@ -12,6 +12,7 @@ var tiles:       Dictionary = {}
 var highlighted: Dictionary = {}   # Vector2i → Color
 var flash_tiles: Dictionary = {}   # Vector2i → {color, timer}
 var units_ref:   Array       = []
+var unit_offsets: Dictionary = {}  # Unit → Vector2 (pixel offset for attack animations)
 
 func initialize(unit_count: int, _kip_count: int = 0):
 	grid_width  = BASE_WIDTH  + unit_count * TILES_PER_UNIT
@@ -75,8 +76,9 @@ func _draw():
 
 func _draw_unit(unit, font):
 	var p   = unit.grid_position
-	var ux  = p.x * TILE_SIZE
-	var uy  = p.y * TILE_SIZE
+	var offset = unit_offsets.get(unit, Vector2.ZERO)
+	var ux  = p.x * TILE_SIZE + int(offset.x)
+	var uy  = p.y * TILE_SIZE + int(offset.y)
 	var pad = 6
 	var col = unit.get_display_color()
 	var shape = unit.get_class_shape()
@@ -259,3 +261,52 @@ func world_to_tile(wp: Vector2) -> Vector2i:
 
 func is_valid_tile(pos: Vector2i) -> bool:
 	return tiles.has(pos) and pos.x >= 0 and pos.y >= 0
+
+# ─── Attack Animations ──────────────────────────────────────────────────────
+
+var _anim_unit = null  # Unit currently being animated
+
+func _set_anim_offset(v: Vector2) -> void:
+	if _anim_unit != null:
+		unit_offsets[_anim_unit] = v
+		queue_redraw()
+
+func animate_attack(attacker, defender) -> void:
+	var atk_pos = Vector2(attacker.grid_position.x * TILE_SIZE, attacker.grid_position.y * TILE_SIZE)
+	var def_pos = Vector2(defender.grid_position.x * TILE_SIZE, defender.grid_position.y * TILE_SIZE)
+	var direction = (def_pos - atk_pos).normalized()
+	var slide_dist = TILE_SIZE * 0.6
+
+	# Slide attacker toward defender
+	_anim_unit = attacker
+	unit_offsets[attacker] = Vector2.ZERO
+	var tween = create_tween()
+	tween.tween_method(_set_anim_offset, Vector2.ZERO, direction * slide_dist, 0.12)
+	await tween.finished
+
+	# Impact flash on defender
+	flash(defender.grid_position, Color(1.0, 1.0, 1.0, 0.9), 0.15)
+	queue_redraw()
+	await get_tree().create_timer(0.08).timeout
+
+	# Slide attacker back
+	var tween2 = create_tween()
+	tween2.tween_method(_set_anim_offset, direction * slide_dist, Vector2.ZERO, 0.1)
+	await tween2.finished
+
+	unit_offsets.erase(attacker)
+	_anim_unit = null
+	queue_redraw()
+
+func animate_hit_recoil(unit) -> void:
+	var recoil = Vector2(4, 0)
+	_anim_unit = unit
+	unit_offsets[unit] = Vector2.ZERO
+	var tween = create_tween()
+	tween.tween_method(_set_anim_offset, Vector2.ZERO, recoil, 0.04)
+	tween.tween_method(_set_anim_offset, recoil, -recoil, 0.04)
+	tween.tween_method(_set_anim_offset, -recoil, Vector2.ZERO, 0.04)
+	await tween.finished
+	unit_offsets.erase(unit)
+	_anim_unit = null
+	queue_redraw()

@@ -19,6 +19,15 @@ var grid:         Grid
 var turn_manager: TurnManager
 var units:        Array = []
 
+# ─── Camera ──────────────────────────────────────────────────────────────────
+var camera: Camera2D
+var cam_zoom: float = 1.0
+const CAM_ZOOM_MIN: float = 0.4
+const CAM_ZOOM_MAX: float = 2.0
+const CAM_ZOOM_STEP: float = 0.1
+var cam_dragging: bool = false
+var cam_drag_last: Vector2
+
 # ─── Selection ───────────────────────────────────────────────────────────────
 var selected_unit  = null
 var pre_move_pos:  Vector2i
@@ -49,10 +58,17 @@ var log_queue:      Array = []
 # ─── Ready ────────────────────────────────────────────────────────────────────
 
 func _ready():
+	_setup_camera()
 	_build_ui()
 	_start_battle()
 	BattleState.kip_speaks.connect(_on_kip_speaks)
 	BattleState.unit_died.connect(_on_unit_died)
+
+func _setup_camera():
+	camera = Camera2D.new()
+	camera.enabled = true
+	camera.zoom = Vector2(cam_zoom, cam_zoom)
+	add_child(camera)
 
 func _start_battle():
 	var player_units = ["aldric","mira","voss","seren","bram","corvin","yael"]
@@ -91,6 +107,9 @@ func _start_battle():
 
 	grid.units_ref = units
 
+	# Center camera on the grid
+	_center_camera()
+
 	# ── Turn Manager ──────────────────────────────────────────────────────────
 	turn_manager = TurnManager.new()
 	turn_manager.units = units
@@ -123,18 +142,44 @@ func _open_tile(prefer: Vector2i) -> Vector2i:
 # ─── Input ────────────────────────────────────────────────────────────────────
 
 func _input(event: InputEvent):
+	# Camera controls always active
+	_handle_camera_input(event)
+
 	if BattleState.is_paused: return
 	if not BattleState.is_player_phase: return
 	if state == State.BATTLE_OVER: return
 	if state == State.ANIMATING: return
 
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		var tp = grid.world_to_tile(get_global_mouse_position())
-		if grid.is_valid_tile(tp):
-			_handle_tile_click(tp)
+		if not cam_dragging:
+			var tp = grid.world_to_tile(get_global_mouse_position())
+			if grid.is_valid_tile(tp):
+				_handle_tile_click(tp)
 
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
 		_cancel_action()
+
+func _handle_camera_input(event: InputEvent):
+	# Scroll wheel zoom
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			cam_zoom = clampf(cam_zoom + CAM_ZOOM_STEP, CAM_ZOOM_MIN, CAM_ZOOM_MAX)
+			camera.zoom = Vector2(cam_zoom, cam_zoom)
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			cam_zoom = clampf(cam_zoom - CAM_ZOOM_STEP, CAM_ZOOM_MIN, CAM_ZOOM_MAX)
+			camera.zoom = Vector2(cam_zoom, cam_zoom)
+		# Middle-click or right-click drag to pan
+		elif event.button_index == MOUSE_BUTTON_MIDDLE or event.button_index == MOUSE_BUTTON_RIGHT:
+			if event.pressed:
+				cam_dragging = true
+				cam_drag_last = event.position
+			else:
+				cam_dragging = false
+
+	if event is InputEventMouseMotion and cam_dragging:
+		var delta = cam_drag_last - event.position
+		camera.position += delta / cam_zoom
+		cam_drag_last = event.position
 
 func _handle_tile_click(tp: Vector2i):
 	match state:
@@ -501,22 +546,86 @@ func _show_forecast():
 func _on_confirm_attack():
 	if forecast_attacker == null or forecast_defender == null: return
 	state = State.ANIMATING
+	_hide_all_panels()
 
-	grid.flash(forecast_attacker.grid_position, Color(1.0,0.85,0.1,0.8), 0.6)
-	grid.flash(forecast_defender.grid_position, Color(0.9,0.1,0.1,0.8), 0.6)
+	var atk = forecast_attacker
+	var def = forecast_defender
+	var fc  = CombatResolver.get_forecast(atk, def)
 
-	var log = CombatResolver.resolve_combat(forecast_attacker, forecast_defender)
-	for entry in log: _push_log(entry)
+	# Animate and resolve each strike individually
+	# Strike 1: Attacker hits
+	await _animate_strike(atk, def, atk.weapon)
+	if not def.is_alive():
+		grid.tiles[def.grid_position].occupant = null
+		grid.queue_redraw()
+		_finish_combat(atk); return
 
-	if not forecast_defender.is_alive():
-		grid.tiles[forecast_defender.grid_position].occupant = null
-	if not forecast_attacker.is_alive():
-		grid.tiles[forecast_attacker.grid_position].occupant = null
+	# Counter: Defender strikes back
+	if fc["def_can_counter"]:
+		await get_tree().create_timer(0.15).timeout
+		await _animate_strike(def, atk, def.weapon)
+		if not atk.is_alive():
+			grid.tiles[atk.grid_position].occupant = null
+			grid.queue_redraw()
+			_finish_combat(atk); return
+
+	# Follow-up: Attacker doubles
+	if fc["atk_double"] and def.is_alive():
+		await get_tree().create_timer(0.15).timeout
+		await _animate_strike(atk, def, atk.weapon)
+		if not def.is_alive():
+			grid.tiles[def.grid_position].occupant = null
+			grid.queue_redraw()
+			_finish_combat(atk); return
+
+	# Follow-up: Defender doubles
+	if fc["def_double"] and fc["def_can_counter"] and atk.is_alive():
+		await get_tree().create_timer(0.15).timeout
+		await _animate_strike(def, atk, def.weapon)
+		if not atk.is_alive():
+			grid.tiles[atk.grid_position].occupant = null
+			grid.queue_redraw()
+
+	_finish_combat(atk)
+
+func _animate_strike(attacker, defender, weapon: Weapon):
+	# Slide toward target
+	await grid.animate_attack(attacker, defender)
+
+	# Resolve this single strike
+	var hit_roll    = randi() % 100
+	var hit_chance  = CombatResolver.get_hit(attacker, weapon, defender)
+
+	if hit_roll >= hit_chance:
+		_push_log("%s missed %s." % [attacker.unit_name, defender.unit_name])
+		return
+
+	var damage    = CombatResolver.get_damage(attacker, weapon, defender)
+	var crit_roll = randi() % 100
+	var is_crit   = crit_roll < CombatResolver.get_crit(attacker, weapon, defender)
+
+	if is_crit:
+		damage = int(damage * 3)
+		_push_log("CRITICAL! %s → %s: %d damage" % [attacker.unit_name, defender.unit_name, damage])
+		grid.flash(defender.grid_position, Color(1.0, 0.2, 0.0, 0.9), 0.5)
+	else:
+		_push_log("%s → %s: %d damage" % [attacker.unit_name, defender.unit_name, damage])
+		grid.flash(defender.grid_position, Color(0.9, 0.1, 0.1, 0.8), 0.4)
+
+	var elem = weapon.element if weapon.element != "" else attacker.element
+	defender.take_damage(damage, elem)
+	weapon.use_one()
+
+	# Hit recoil on defender
+	if defender.is_alive():
+		await grid.animate_hit_recoil(defender)
+	else:
+		_push_log("%s fell." % defender.unit_name)
 
 	grid.queue_redraw()
 
-	forecast_attacker.has_acted = true
-	_hide_all_panels()
+func _finish_combat(attacker):
+	attacker.has_acted = true
 	_deselect()
 	_check_all_acted()
 	_check_battle_outcome()
@@ -563,6 +672,25 @@ func _on_unit_died(uname: String, _was_player: bool):
 func _unit_at(tp: Vector2i):
 	if not grid.tiles.has(tp): return null
 	return grid.tiles[tp].occupant
+
+func _center_camera():
+	var grid_pixel_w = grid.grid_width  * Grid.TILE_SIZE
+	var grid_pixel_h = grid.grid_height * Grid.TILE_SIZE
+	var grid_cx = grid_pixel_w / 2.0
+	var grid_cy = grid_pixel_h / 2.0
+	# Fit the grid into the left panel area (PANEL_X wide, 720 tall)
+	var fit_zoom = minf(float(PANEL_X) / float(grid_pixel_w), 720.0 / float(grid_pixel_h))
+	cam_zoom = clampf(fit_zoom * 0.92, CAM_ZOOM_MIN, CAM_ZOOM_MAX)  # Slight margin
+	camera.zoom = Vector2(cam_zoom, cam_zoom)
+	# Camera position = world point that appears at screen center (640, 360)
+	# We want grid center to appear at screen x = PANEL_X/2 = 398
+	# Offset from screen center: 640 - 398 = 242 pixels right
+	# In world space: 242 / zoom
+	camera.position = Vector2(grid_cx + 242.0 / cam_zoom, grid_cy)
+
+func _pan_to_tile(tp: Vector2i):
+	camera.position = Vector2(tp.x * Grid.TILE_SIZE + Grid.TILE_SIZE / 2.0,
+							  tp.y * Grid.TILE_SIZE + Grid.TILE_SIZE / 2.0)
 
 func _check_all_acted():
 	var any_left = false
@@ -627,15 +755,20 @@ func _on_kip_speaks(kname: String, line: String):
 const PANEL_X = 796
 
 func _build_ui():
+	# Put UI on a CanvasLayer so it stays fixed when camera pans/zooms
+	var ui_layer = CanvasLayer.new()
+	ui_layer.layer = 10
+	add_child(ui_layer)
+
 	var bg = ColorRect.new()
 	bg.color = Color(0.05, 0.05, 0.09, 0.97)
 	bg.position = Vector2(PANEL_X, 0); bg.size = Vector2(484, 720)
-	add_child(bg)
+	ui_layer.add_child(bg)
 
 	var root = VBoxContainer.new()
 	root.position = Vector2(PANEL_X + 16, 10)
 	root.custom_minimum_size = Vector2(452, 700)
-	add_child(root)
+	ui_layer.add_child(root)
 	ui_panel = root
 
 	# Title row
