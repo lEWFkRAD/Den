@@ -40,15 +40,17 @@ var forecast_defender = null
 var ui_panel:        Control
 var phase_label:     Label
 var turn_label:      Label
-var info_label:      Label
+var info_rtl:        RichTextLabel
 var kip_label:       Label
 var log_label:       Label
 var action_box:      VBoxContainer
 var forecast_box:    VBoxContainer
 var items_box:       VBoxContainer
-var forecast_label:  Label
-var bottom_box:      VBoxContainer
+var forecast_rtl:    RichTextLabel
 var end_turn_btn:    Button
+var hp_bar_bg:       ColorRect
+var hp_bar_fill:     ColorRect
+var hp_bar_label:    Label
 
 # Speech timer
 var speech_timer:   float = 0.0
@@ -239,7 +241,7 @@ func _deselect():
 	movement_tiles = []
 	attack_targets = []
 	grid.clear_highlights()
-	info_label.text = "Select a unit."
+	_set_info_text("Select a unit.")
 	_hide_all_panels()
 	_set_end_turn_visible(true)
 	state = State.IDLE
@@ -302,16 +304,52 @@ func _show_action_menu():
 func _add_action_btn(label: String, col: Color, callback: Callable, enabled: bool):
 	var btn = Button.new()
 	btn.text = label
-	btn.custom_minimum_size = Vector2(440, 38)
+	btn.custom_minimum_size = Vector2(440, 40)
 	btn.disabled = not enabled
 	btn.pressed.connect(callback)
-	# Style tint
+	btn.add_theme_font_size_override("font_size", 14)
+
+	# Normal state
 	var style = StyleBoxFlat.new()
-	style.bg_color    = col.darkened(0.5)
-	style.border_color = col
+	style.bg_color = col.darkened(0.6)
+	style.border_color = col.darkened(0.15)
 	style.set_border_width_all(1)
-	style.set_corner_radius_all(3)
+	style.border_width_left = 3
+	style.set_corner_radius_all(4)
+	style.set_content_margin_all(8)
 	btn.add_theme_stylebox_override("normal", style)
+
+	# Hover state
+	var hover = StyleBoxFlat.new()
+	hover.bg_color = col.darkened(0.4)
+	hover.border_color = col
+	hover.set_border_width_all(1)
+	hover.border_width_left = 3
+	hover.set_corner_radius_all(4)
+	hover.set_content_margin_all(8)
+	btn.add_theme_stylebox_override("hover", hover)
+
+	# Pressed state
+	var pressed = StyleBoxFlat.new()
+	pressed.bg_color = col.darkened(0.25)
+	pressed.border_color = col.lightened(0.2)
+	pressed.set_border_width_all(1)
+	pressed.border_width_left = 3
+	pressed.set_corner_radius_all(4)
+	pressed.set_content_margin_all(8)
+	btn.add_theme_stylebox_override("pressed", pressed)
+
+	# Disabled state
+	var disabled_style = StyleBoxFlat.new()
+	disabled_style.bg_color = Color(0.12, 0.12, 0.14)
+	disabled_style.border_color = Color(0.2, 0.2, 0.22)
+	disabled_style.set_border_width_all(1)
+	disabled_style.border_width_left = 3
+	disabled_style.set_corner_radius_all(4)
+	disabled_style.set_content_margin_all(8)
+	btn.add_theme_stylebox_override("disabled", disabled_style)
+	btn.add_theme_color_override("font_disabled_color", Color(0.3, 0.3, 0.32))
+
 	action_box.add_child(btn)
 
 # ─── Action Handlers ─────────────────────────────────────────────────────────
@@ -505,39 +543,76 @@ func _show_forecast():
 	forecast_box.visible = true
 
 	var fc  = CombatResolver.get_forecast(forecast_attacker, forecast_defender)
-	var txt = "══ COMBAT FORECAST ══\n\n"
-	txt += "%s  →  %s\n" % [fc["atk_name"], fc["def_name"]]
-	txt += "%s  vs  %s\n\n" % [fc["atk_weapon"], fc["def_weapon"]]
-	txt += "ATK  DMG: %d   HIT: %d%%   CRIT: %d%%\n" % [fc["atk_damage"], fc["atk_hit"], fc["atk_crit"]]
-	if fc["atk_double"]: txt += "  (DOUBLES)\n"
+	forecast_rtl.clear()
+	forecast_rtl.push_color(Color(0.85, 0.14, 0.28))
+	forecast_rtl.append_text("COMBAT FORECAST\n")
+	forecast_rtl.pop()
+	forecast_rtl.push_color(Color(0.75, 0.75, 0.75))
+	forecast_rtl.append_text("────────────────────────────────\n")
+	forecast_rtl.pop()
 
+	# Attacker vs Defender header
+	forecast_rtl.push_color(Color(0.55, 0.78, 1.0))
+	forecast_rtl.append_text(fc["atk_name"])
+	forecast_rtl.pop()
+	forecast_rtl.push_color(Color(0.5, 0.5, 0.5))
+	forecast_rtl.append_text("  vs  ")
+	forecast_rtl.pop()
+	forecast_rtl.push_color(Color(1.0, 0.45, 0.35))
+	forecast_rtl.append_text(fc["def_name"] + "\n")
+	forecast_rtl.pop()
+	forecast_rtl.push_color(Color(0.55, 0.55, 0.55))
+	forecast_rtl.append_text("%s  vs  %s\n\n" % [fc["atk_weapon"], fc["def_weapon"]])
+	forecast_rtl.pop()
+
+	# Attacker stats
+	forecast_rtl.push_color(Color(0.55, 0.78, 1.0))
+	forecast_rtl.append_text("ATK  ")
+	forecast_rtl.pop()
+	forecast_rtl.push_color(Color(0.9, 0.9, 0.9))
+	forecast_rtl.append_text("DMG %d   HIT %d%%   CRIT %d%%" % [fc["atk_damage"], fc["atk_hit"], fc["atk_crit"]])
+	forecast_rtl.pop()
+	if fc["atk_double"]:
+		forecast_rtl.push_color(Color(1.0, 0.85, 0.2))
+		forecast_rtl.append_text("  x2")
+		forecast_rtl.pop()
+	forecast_rtl.append_text("\n")
+
+	# Defender stats
 	if fc["def_can_counter"]:
-		txt += "\nDEF  DMG: %d   HIT: %d%%   CRIT: %d%%\n" % [fc["def_damage"], fc["def_hit"], fc["def_crit"]]
-		if fc["def_double"]: txt += "  (DOUBLES)\n"
+		forecast_rtl.push_color(Color(1.0, 0.45, 0.35))
+		forecast_rtl.append_text("DEF  ")
+		forecast_rtl.pop()
+		forecast_rtl.push_color(Color(0.9, 0.9, 0.9))
+		forecast_rtl.append_text("DMG %d   HIT %d%%   CRIT %d%%" % [fc["def_damage"], fc["def_hit"], fc["def_crit"]])
+		forecast_rtl.pop()
+		if fc["def_double"]:
+			forecast_rtl.push_color(Color(1.0, 0.85, 0.2))
+			forecast_rtl.append_text("  x2")
+			forecast_rtl.pop()
+		forecast_rtl.append_text("\n")
 	else:
-		txt += "\nDEF  Cannot counter.\n"
+		forecast_rtl.push_color(Color(0.45, 0.45, 0.45))
+		forecast_rtl.append_text("DEF  Cannot counter.\n")
+		forecast_rtl.pop()
 
 	# Element interaction
 	var atk_elem = forecast_attacker.weapon.element if forecast_attacker.weapon and forecast_attacker.weapon.element != "" else forecast_attacker.element
 	var wt = ElementRegistry.get_weakness_text(atk_elem, forecast_defender.element)
 	if wt != "":
-		txt += "\n[%s]" % wt
-
-	forecast_label.text = txt
+		forecast_rtl.push_color(_elem_ui_color(atk_elem))
+		forecast_rtl.append_text("\n%s" % wt)
+		forecast_rtl.pop()
 
 	for c in forecast_box.get_children():
 		if c is Button: c.queue_free()
 	await get_tree().process_frame
 
-	var confirm = Button.new()
-	confirm.text = "CONFIRM ATTACK"
-	confirm.custom_minimum_size = Vector2(440, 42)
+	var confirm = _make_styled_btn("CONFIRM ATTACK", Color(0.8, 0.1, 0.1), 42)
 	confirm.pressed.connect(_on_confirm_attack)
 	forecast_box.add_child(confirm)
 
-	var back = Button.new()
-	back.text = "← Back"
-	back.custom_minimum_size = Vector2(440, 36)
+	var back = _make_styled_btn("Back", Color(0.25, 0.25, 0.4), 36)
 	back.pressed.connect(func(): _enter_action_menu())
 	forecast_box.add_child(back)
 
@@ -598,6 +673,7 @@ func _animate_strike(attacker, defender, weapon: Weapon):
 
 	if hit_roll >= hit_chance:
 		_push_log("%s missed %s." % [attacker.unit_name, defender.unit_name])
+		grid.pop_damage(defender.grid_position, "MISS", Color(0.6, 0.6, 0.7))
 		return
 
 	var damage    = CombatResolver.get_damage(attacker, weapon, defender)
@@ -608,9 +684,11 @@ func _animate_strike(attacker, defender, weapon: Weapon):
 		damage = int(damage * 3)
 		_push_log("CRITICAL! %s → %s: %d damage" % [attacker.unit_name, defender.unit_name, damage])
 		grid.flash(defender.grid_position, Color(1.0, 0.2, 0.0, 0.9), 0.5)
+		grid.pop_damage(defender.grid_position, "%d!" % damage, Color(1.0, 0.3, 0.0), 1.2)
 	else:
 		_push_log("%s → %s: %d damage" % [attacker.unit_name, defender.unit_name, damage])
 		grid.flash(defender.grid_position, Color(0.9, 0.1, 0.1, 0.8), 0.4)
+		grid.pop_damage(defender.grid_position, "%d" % damage, Color(1.0, 1.0, 1.0))
 
 	var elem = weapon.element if weapon.element != "" else attacker.element
 	defender.take_damage(damage, elem)
@@ -709,11 +787,11 @@ func _check_battle_outcome():
 			else: e = true
 	if not p:
 		phase_label.text = "— DEFEAT —"
-		info_label.text  = "All units lost.\nPress ESC."
+		_set_info_text("All units lost.\nPress ESC.")
 		state = State.BATTLE_OVER
 	elif not e:
 		phase_label.text = "— VICTORY —"
-		info_label.text  = "All enemies defeated."
+		_set_info_text("All enemies defeated.")
 		state = State.BATTLE_OVER
 
 func _cancel_action():
@@ -725,7 +803,7 @@ func _cancel_action():
 		State.UNIT_SELECTED:   _deselect()
 
 func _refresh_info(unit):
-	info_label.text = unit.get_info_text()
+	_set_info_bbcode(unit)
 
 func _push_log(text: String):
 	log_queue.append(text)
@@ -760,109 +838,186 @@ func _build_ui():
 	ui_layer.layer = 10
 	add_child(ui_layer)
 
+	# Panel background with gradient effect
 	var bg = ColorRect.new()
-	bg.color = Color(0.05, 0.05, 0.09, 0.97)
+	bg.color = Color(0.04, 0.04, 0.07, 0.98)
 	bg.position = Vector2(PANEL_X, 0); bg.size = Vector2(484, 720)
 	ui_layer.add_child(bg)
 
+	# Accent stripe on left edge
+	var accent = ColorRect.new()
+	accent.color = Color(0.85, 0.14, 0.28, 0.8)
+	accent.position = Vector2(PANEL_X, 0); accent.size = Vector2(2, 720)
+	ui_layer.add_child(accent)
+
+	# Subtle gradient overlay at top
+	var grad_top = ColorRect.new()
+	grad_top.color = Color(0.10, 0.08, 0.14, 0.35)
+	grad_top.position = Vector2(PANEL_X, 0); grad_top.size = Vector2(484, 80)
+	ui_layer.add_child(grad_top)
+
 	var root = VBoxContainer.new()
-	root.position = Vector2(PANEL_X + 16, 10)
-	root.custom_minimum_size = Vector2(452, 700)
+	root.position = Vector2(PANEL_X + 18, 12)
+	root.custom_minimum_size = Vector2(448, 696)
 	ui_layer.add_child(root)
 	ui_panel = root
 
 	# Title row
-	var row = HBoxContainer.new(); row.custom_minimum_size = Vector2(452, 44)
+	var row = HBoxContainer.new(); row.custom_minimum_size = Vector2(448, 40)
 	var title = Label.new(); title.text = "D E N"
-	title.add_theme_font_size_override("font_size", 32)
+	title.add_theme_font_size_override("font_size", 28)
 	title.add_theme_color_override("font_color", Color(0.85, 0.14, 0.28))
 	row.add_child(title)
 	var spacer = Control.new(); spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(spacer)
 	turn_label = Label.new(); turn_label.text = "Turn 1"
-	turn_label.add_theme_font_size_override("font_size", 14)
-	turn_label.add_theme_color_override("font_color", Color(0.45,0.45,0.45))
+	turn_label.add_theme_font_size_override("font_size", 13)
+	turn_label.add_theme_color_override("font_color", Color(0.4, 0.4, 0.42))
 	row.add_child(turn_label)
 	root.add_child(row)
 
-	# Divider
 	root.add_child(_divider())
 
-	# Phase
-	phase_label = Label.new(); phase_label.text = "Player Phase — Turn 1"
-	phase_label.add_theme_font_size_override("font_size", 15)
-	phase_label.add_theme_color_override("font_color", Color(0.78, 0.72, 0.28))
-	root.add_child(phase_label)
+	# Phase indicator (styled pill)
+	var phase_container = PanelContainer.new()
+	var phase_style = StyleBoxFlat.new()
+	phase_style.bg_color = Color(0.14, 0.13, 0.08, 0.6)
+	phase_style.border_color = Color(0.78, 0.72, 0.28, 0.3)
+	phase_style.set_border_width_all(1)
+	phase_style.set_corner_radius_all(4)
+	phase_style.set_content_margin_all(6)
+	phase_container.add_theme_stylebox_override("panel", phase_style)
+	phase_label = Label.new(); phase_label.text = "Player Phase  —  Turn 1"
+	phase_label.add_theme_font_size_override("font_size", 14)
+	phase_label.add_theme_color_override("font_color", Color(0.82, 0.76, 0.30))
+	phase_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	phase_container.add_child(phase_label)
+	root.add_child(phase_container)
+
+	root.add_child(_spacer(6))
+
+	# Info panel (RichTextLabel in a card)
+	var info_card = PanelContainer.new()
+	var info_style = StyleBoxFlat.new()
+	info_style.bg_color = Color(0.06, 0.06, 0.09, 0.7)
+	info_style.border_color = Color(0.18, 0.18, 0.22)
+	info_style.set_border_width_all(1)
+	info_style.set_corner_radius_all(5)
+	info_style.set_content_margin_all(10)
+	info_card.add_theme_stylebox_override("panel", info_style)
+	info_rtl = RichTextLabel.new()
+	info_rtl.bbcode_enabled = true
+	info_rtl.scroll_active = false
+	info_rtl.fit_content = true
+	info_rtl.custom_minimum_size = Vector2(428, 140)
+	info_rtl.add_theme_font_size_override("normal_font_size", 13)
+	info_rtl.add_theme_color_override("default_color", Color(0.80, 0.80, 0.80))
+	info_card.add_child(info_rtl)
+	root.add_child(info_card)
+	_set_info_text("Select a unit.")
 
 	root.add_child(_spacer(4))
 
-	# Info
-	info_label = Label.new(); info_label.text = "Select a unit."
-	info_label.custom_minimum_size = Vector2(452, 180)
-	info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	info_label.add_theme_font_size_override("font_size", 13)
-	info_label.add_theme_color_override("font_color", Color(0.82,0.82,0.82))
-	root.add_child(info_label)
-
-	root.add_child(_divider(Color(0.85, 0.14, 0.28, 0.25)))
-
-	# Kip speech
+	# Kip speech (styled)
 	kip_label = Label.new(); kip_label.text = ""
-	kip_label.custom_minimum_size = Vector2(452, 46)
+	kip_label.custom_minimum_size = Vector2(448, 36)
 	kip_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	kip_label.add_theme_font_size_override("font_size", 13)
+	kip_label.add_theme_font_size_override("font_size", 12)
 	kip_label.add_theme_color_override("font_color", Color(0.50, 0.82, 1.0))
 	root.add_child(kip_label)
 
 	# Combat log
 	log_label = Label.new(); log_label.text = ""
-	log_label.custom_minimum_size = Vector2(452, 28)
+	log_label.custom_minimum_size = Vector2(448, 24)
 	log_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	log_label.add_theme_font_size_override("font_size", 12)
-	log_label.add_theme_color_override("font_color", Color(0.95, 0.75, 0.35))
+	log_label.add_theme_color_override("font_color", Color(0.95, 0.78, 0.38))
 	root.add_child(log_label)
 
-	root.add_child(_divider(Color(0.85, 0.14, 0.28, 0.25)))
+	root.add_child(_divider(Color(0.85, 0.14, 0.28, 0.2)))
 
 	# ── Action Menu ───────────────────────────────────────────────────────────
 	action_box = VBoxContainer.new()
-	action_box.custom_minimum_size = Vector2(452, 0)
+	action_box.custom_minimum_size = Vector2(448, 0)
+	action_box.add_theme_constant_override("separation", 4)
 	action_box.visible = false
 	root.add_child(action_box)
 
 	# ── Forecast ─────────────────────────────────────────────────────────────
 	forecast_box = VBoxContainer.new()
-	forecast_box.custom_minimum_size = Vector2(452, 0)
+	forecast_box.custom_minimum_size = Vector2(448, 0)
 	forecast_box.visible = false
-	forecast_label = Label.new()
-	forecast_label.add_theme_font_size_override("font_size", 13)
-	forecast_label.add_theme_color_override("font_color", Color(0.88,0.88,0.88))
-	forecast_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	forecast_box.add_child(forecast_label)
+	var fc_card = PanelContainer.new()
+	var fc_style = StyleBoxFlat.new()
+	fc_style.bg_color = Color(0.06, 0.06, 0.09, 0.7)
+	fc_style.border_color = Color(0.18, 0.18, 0.22)
+	fc_style.set_border_width_all(1)
+	fc_style.set_corner_radius_all(5)
+	fc_style.set_content_margin_all(10)
+	fc_card.add_theme_stylebox_override("panel", fc_style)
+	forecast_rtl = RichTextLabel.new()
+	forecast_rtl.bbcode_enabled = true
+	forecast_rtl.scroll_active = false
+	forecast_rtl.fit_content = true
+	forecast_rtl.custom_minimum_size = Vector2(420, 80)
+	forecast_rtl.add_theme_font_size_override("normal_font_size", 13)
+	forecast_rtl.add_theme_color_override("default_color", Color(0.80, 0.80, 0.80))
+	fc_card.add_child(forecast_rtl)
+	forecast_box.add_child(fc_card)
 	root.add_child(forecast_box)
 
 	# ── Items ─────────────────────────────────────────────────────────────────
 	items_box = VBoxContainer.new()
-	items_box.custom_minimum_size = Vector2(452, 0)
+	items_box.custom_minimum_size = Vector2(448, 0)
 	items_box.visible = false
 	root.add_child(items_box)
 
 	root.add_child(_spacer(6))
 
-	# End Turn
+	# End Turn button (prominent)
 	end_turn_btn = Button.new()
-	end_turn_btn.text = "END TURN →"
-	end_turn_btn.custom_minimum_size = Vector2(452, 46)
+	end_turn_btn.text = "END TURN"
+	end_turn_btn.custom_minimum_size = Vector2(448, 44)
+	end_turn_btn.add_theme_font_size_override("font_size", 15)
 	end_turn_btn.pressed.connect(_on_end_turn_pressed)
+	var et_style = StyleBoxFlat.new()
+	et_style.bg_color = Color(0.55, 0.09, 0.16)
+	et_style.border_color = Color(0.85, 0.14, 0.28)
+	et_style.set_border_width_all(1)
+	et_style.set_corner_radius_all(5)
+	et_style.set_content_margin_all(8)
+	end_turn_btn.add_theme_stylebox_override("normal", et_style)
+	var et_hover = StyleBoxFlat.new()
+	et_hover.bg_color = Color(0.65, 0.12, 0.20)
+	et_hover.border_color = Color(0.95, 0.25, 0.35)
+	et_hover.set_border_width_all(1)
+	et_hover.set_corner_radius_all(5)
+	et_hover.set_content_margin_all(8)
+	end_turn_btn.add_theme_stylebox_override("hover", et_hover)
+	var et_pressed = StyleBoxFlat.new()
+	et_pressed.bg_color = Color(0.75, 0.15, 0.22)
+	et_pressed.border_color = Color(1.0, 0.3, 0.4)
+	et_pressed.set_border_width_all(1)
+	et_pressed.set_corner_radius_all(5)
+	et_pressed.set_content_margin_all(8)
+	end_turn_btn.add_theme_stylebox_override("pressed", et_pressed)
+	var et_disabled = StyleBoxFlat.new()
+	et_disabled.bg_color = Color(0.12, 0.08, 0.10)
+	et_disabled.border_color = Color(0.22, 0.15, 0.18)
+	et_disabled.set_border_width_all(1)
+	et_disabled.set_corner_radius_all(5)
+	et_disabled.set_content_margin_all(8)
+	end_turn_btn.add_theme_stylebox_override("disabled", et_disabled)
+	end_turn_btn.add_theme_color_override("font_disabled_color", Color(0.3, 0.2, 0.22))
 	root.add_child(end_turn_btn)
 
 	# Legend
-	root.add_child(_spacer(4))
+	root.add_child(_spacer(6))
 	var leg = Label.new()
-	leg.text = "Click unit → move/action  |  ESC = cancel\n△=Archer  ○=Mage  ▷=Rogue  +=Healer  ★=Warden\nDot = Kip element  Ring = Deployed  Gold = Awakened"
+	leg.text = "Click unit  >  move/action   |   ESC = cancel\nShapes: Square=Soldier  Diamond=Archer  Circle=Mage\nTriangle=Rogue  Cross=Healer  Star=Warden"
 	leg.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	leg.add_theme_font_size_override("font_size", 11)
-	leg.add_theme_color_override("font_color", Color(0.35,0.35,0.35))
+	leg.add_theme_font_size_override("font_size", 10)
+	leg.add_theme_color_override("font_color", Color(0.28, 0.28, 0.30))
 	root.add_child(leg)
 
 func _hide_all_panels():
@@ -875,11 +1030,147 @@ func _set_end_turn_visible(v: bool):
 	end_turn_btn.visible  = v
 	end_turn_btn.disabled = not BattleState.is_player_phase
 
-func _divider(col: Color = Color(0.85, 0.14, 0.28, 0.5)) -> Control:
+func _divider(col: Color = Color(0.85, 0.14, 0.28, 0.4)) -> Control:
 	var d = ColorRect.new()
-	d.color = col; d.custom_minimum_size = Vector2(452, 1)
+	d.color = col; d.custom_minimum_size = Vector2(448, 1)
 	return d
 
 func _spacer(h: int) -> Control:
 	var s = Control.new(); s.custom_minimum_size = Vector2(0, h)
 	return s
+
+# ─── Info Display Helpers ─────────────────────────────────────────────────────
+
+func _set_info_text(text: String):
+	info_rtl.clear()
+	info_rtl.append_text(text)
+
+func _set_info_bbcode(unit):
+	info_rtl.clear()
+
+	# Unit name (big, team-colored)
+	var name_col = "#5588ee" if unit.is_player_unit else "#ee4433"
+	info_rtl.push_color(Color(name_col))
+	info_rtl.push_font_size(16)
+	info_rtl.append_text(unit.unit_name)
+	info_rtl.pop(); info_rtl.pop()
+	info_rtl.append_text("\n")
+
+	# Class + Element
+	info_rtl.push_color(Color(0.55, 0.55, 0.55))
+	info_rtl.append_text(unit.unit_class)
+	info_rtl.pop()
+	if unit.element != "":
+		info_rtl.append_text("  ")
+		info_rtl.push_color(_elem_ui_color(unit.element))
+		info_rtl.append_text(unit.element.to_upper())
+		info_rtl.pop()
+	info_rtl.append_text("\n\n")
+
+	# HP with color
+	var hpr = float(unit.stats.hp) / float(unit.stats.max_hp)
+	var hp_col = Color(0.2, 0.88, 0.2) if hpr > 0.5 else (Color(0.92, 0.6, 0.12) if hpr > 0.25 else Color(0.92, 0.15, 0.15))
+	info_rtl.push_color(Color(0.5, 0.5, 0.5))
+	info_rtl.append_text("HP ")
+	info_rtl.pop()
+	info_rtl.push_color(hp_col)
+	info_rtl.append_text("%d" % unit.stats.hp)
+	info_rtl.pop()
+	info_rtl.push_color(Color(0.4, 0.4, 0.4))
+	info_rtl.append_text("/%d" % unit.stats.max_hp)
+	info_rtl.pop()
+	info_rtl.push_color(Color(0.5, 0.5, 0.5))
+	info_rtl.append_text("   MOV ")
+	info_rtl.pop()
+	info_rtl.push_color(Color(0.8, 0.8, 0.8))
+	info_rtl.append_text("%d\n" % unit.stats.movement)
+	info_rtl.pop()
+
+	# Stats in compact grid
+	var stats_text = "STR %2d   MAG %2d   SKL %2d\nSPD %2d   DEF %2d   RES %2d" % [
+		unit.stats.strength, unit.stats.magic, unit.stats.skill,
+		unit.stats.speed, unit.stats.defense, unit.stats.resistance]
+	info_rtl.push_color(Color(0.65, 0.65, 0.65))
+	info_rtl.append_text(stats_text + "\n")
+	info_rtl.pop()
+
+	# Weapon
+	if unit.weapon:
+		info_rtl.append_text("\n")
+		info_rtl.push_color(Color(0.85, 0.14, 0.28, 0.6))
+		info_rtl.append_text("────────────────────────────\n")
+		info_rtl.pop()
+		info_rtl.push_color(Color(0.88, 0.82, 0.68))
+		info_rtl.append_text(unit.weapon.weapon_name)
+		info_rtl.pop()
+		if unit.weapon.element != "":
+			info_rtl.append_text("  ")
+			info_rtl.push_color(_elem_ui_color(unit.weapon.element))
+			info_rtl.append_text(unit.weapon.element.to_upper())
+			info_rtl.pop()
+		info_rtl.append_text("\n")
+		info_rtl.push_color(Color(0.55, 0.55, 0.55))
+		info_rtl.append_text("Atk %d  Hit %d%%  Crit %d%%  Range %d-%d\n" % [
+			unit.weapon.attack, unit.weapon.hit, unit.weapon.crit,
+			unit.weapon.min_range, unit.weapon.max_range])
+		info_rtl.pop()
+
+	# Items
+	if not unit.items.is_empty():
+		info_rtl.push_color(Color(0.5, 0.5, 0.5))
+		for it in unit.items:
+			info_rtl.append_text("%s (%d) " % [it.item_name, it.uses])
+		info_rtl.pop()
+		info_rtl.append_text("\n")
+
+	# Kip info
+	if unit.bonded_kip:
+		var k = unit.bonded_kip
+		info_rtl.append_text("\n")
+		info_rtl.push_color(Color(0.85, 0.14, 0.28, 0.6))
+		info_rtl.append_text("────────────────────────────\n")
+		info_rtl.pop()
+		info_rtl.push_color(_elem_ui_color(k.element))
+		info_rtl.append_text(k.kip_name)
+		info_rtl.pop()
+		var phases = ["Companion", "Deployed", "Awakened"]
+		info_rtl.push_color(Color(0.5, 0.5, 0.5))
+		info_rtl.append_text("  %s  HP %d/%d" % [phases[k.current_phase], k.hp, k.max_hp])
+		if k.is_exhausted:
+			info_rtl.push_color(Color(0.65, 0.35, 0.35))
+			info_rtl.append_text("  EXHAUSTED")
+			info_rtl.pop()
+		info_rtl.pop()
+
+func _make_styled_btn(label: String, col: Color, height: int = 40) -> Button:
+	var btn = Button.new()
+	btn.text = label
+	btn.custom_minimum_size = Vector2(440, height)
+	btn.add_theme_font_size_override("font_size", 14)
+	var style = StyleBoxFlat.new()
+	style.bg_color = col.darkened(0.5)
+	style.border_color = col.darkened(0.1)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(4)
+	style.set_content_margin_all(8)
+	btn.add_theme_stylebox_override("normal", style)
+	var hover = StyleBoxFlat.new()
+	hover.bg_color = col.darkened(0.3)
+	hover.border_color = col
+	hover.set_border_width_all(1)
+	hover.set_corner_radius_all(4)
+	hover.set_content_margin_all(8)
+	btn.add_theme_stylebox_override("hover", hover)
+	return btn
+
+func _elem_ui_color(elem: String) -> Color:
+	match elem:
+		"blood":    return Color(0.85, 0.15, 0.15)
+		"electric": return Color(0.95, 0.95, 0.15)
+		"void":     return Color(0.55, 0.15, 0.78)
+		"light":    return Color(1.0, 0.95, 0.55)
+		"dark":     return Color(0.5, 0.2, 0.6)
+		"ice":      return Color(0.55, 0.85, 1.0)
+		"plant":    return Color(0.25, 0.82, 0.25)
+		"god":      return Color(1.0, 1.0, 0.9)
+	return Color(0.7, 0.7, 0.7)

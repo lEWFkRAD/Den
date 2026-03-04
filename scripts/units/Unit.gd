@@ -96,10 +96,10 @@ func get_attack_range() -> Array:
 
 func get_display_color() -> Color:
 	if not is_player_unit:
-		return Color(0.80, 0.12, 0.12)
+		return Color(0.82, 0.14, 0.14)
 	if has_acted:
-		return Color(0.22, 0.22, 0.42)
-	return Color(0.15, 0.42, 0.88)
+		return Color(0.18, 0.18, 0.32)
+	return Color(0.18, 0.48, 0.92)
 
 func get_kip_color() -> Color:
 	if bonded_kip == null: return Color(0,0,0,0)

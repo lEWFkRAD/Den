@@ -11,6 +11,7 @@ var grid_height: int = BASE_HEIGHT
 var tiles:       Dictionary = {}
 var highlighted: Dictionary = {}   # Vector2i → Color
 var flash_tiles: Dictionary = {}   # Vector2i → {color, timer}
+var damage_pops: Array      = []   # [{pos, text, color, timer, max_timer}]
 var units_ref:   Array       = []
 var unit_offsets: Dictionary = {}  # Unit → Vector2 (pixel offset for attack animations)
 
@@ -54,6 +55,13 @@ func _draw():
 		var rect = Rect2(rx, ry, TILE_SIZE - 2, TILE_SIZE - 2)
 		draw_rect(rect, tile.get_color())
 
+		# Terrain detail overlay (trees, waves, rubble)
+		_draw_terrain_detail(pos, tile, rx, ry)
+
+		# Subtle tile depth: top highlight, bottom shadow
+		draw_rect(Rect2(rx, ry, TILE_SIZE - 2, 1), Color(1, 1, 1, 0.04))
+		draw_rect(Rect2(rx, ry + TILE_SIZE - 3, TILE_SIZE - 2, 1), Color(0, 0, 0, 0.06))
+
 		# Elemental flash overlay
 		if flash_tiles.has(pos):
 			draw_rect(rect, flash_tiles[pos]["color"])
@@ -63,16 +71,35 @@ func _draw():
 			draw_rect(rect, highlighted[pos])
 
 	# Grid lines
-	var lc = Color(0.06, 0.06, 0.06, 0.45)
+	var lc = Color(0.0, 0.0, 0.0, 0.25)
 	for x in range(grid_width  + 1):
 		draw_line(Vector2(x*TILE_SIZE, 0), Vector2(x*TILE_SIZE, grid_height*TILE_SIZE), lc, 1.0)
 	for y in range(grid_height + 1):
 		draw_line(Vector2(0, y*TILE_SIZE), Vector2(grid_width*TILE_SIZE, y*TILE_SIZE), lc, 1.0)
 
+	# Unit shadows (drawn first, behind everything)
+	for unit in units_ref:
+		if unit.is_alive():
+			_draw_unit_shadow(unit)
+
 	# Units
 	for unit in units_ref:
 		if unit.is_alive():
 			_draw_unit(unit, font)
+
+	# Floating damage numbers
+	for pop in damage_pops:
+		var alpha = clampf(pop.timer / pop.max_timer * 1.5, 0.0, 1.0)
+		var rise  = (1.0 - pop.timer / pop.max_timer) * 18.0
+		var px    = pop.pos.x * TILE_SIZE + TILE_SIZE / 2 - 8
+		var py    = pop.pos.y * TILE_SIZE - rise
+		var col   = pop.color
+		col.a     = alpha
+		# Shadow
+		draw_string(font, Vector2(px + 1, py + 1), pop.text,
+			HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color(0, 0, 0, alpha * 0.7))
+		draw_string(font, Vector2(px, py), pop.text,
+			HORIZONTAL_ALIGNMENT_LEFT, -1, 15, col)
 
 func _draw_unit(unit, font):
 	var p   = unit.grid_position
@@ -133,13 +160,18 @@ func _draw_unit(unit, font):
 				pts.append(Vector2(cx + cos(angle)*r, cy + sin(angle)*r))
 			draw_colored_polygon(pts, col)
 
-	# HP bar
+	# HP bar (improved with border and gradient)
 	var hpr  = float(unit.stats.hp) / float(unit.stats.max_hp)
 	var bw   = TILE_SIZE - pad*2
-	var by   = uy + TILE_SIZE - 8
-	draw_rect(Rect2(ux+pad, by, bw, 4), Color(0.1,0.1,0.1))
-	var bc = Color(0.1,0.85,0.1) if hpr > 0.5 else (Color(0.9,0.55,0.1) if hpr > 0.25 else Color(0.9,0.1,0.1))
-	draw_rect(Rect2(ux+pad, by, int(bw*hpr), 4), bc)
+	var bh   = 5
+	var by   = uy + TILE_SIZE - bh - 5
+	draw_rect(Rect2(ux+pad-1, by-1, bw+2, bh+2), Color(0, 0, 0, 0.6))
+	draw_rect(Rect2(ux+pad, by, bw, bh), Color(0.06, 0.06, 0.06))
+	var bc = Color(0.15, 0.88, 0.15) if hpr > 0.5 else (Color(0.92, 0.58, 0.1) if hpr > 0.25 else Color(0.92, 0.12, 0.12))
+	var fill_w = int(bw * hpr)
+	if fill_w > 0:
+		draw_rect(Rect2(ux+pad, by, fill_w, bh), bc)
+		draw_rect(Rect2(ux+pad, by, fill_w, int(bh / 2)), Color(1, 1, 1, 0.15))
 
 	# Kip indicator
 	if unit.bonded_kip != null:
@@ -157,6 +189,90 @@ func _draw_unit(unit, font):
 	draw_string(font, Vector2(ux+TILE_SIZE/2-5, uy+TILE_SIZE/2+5),
 		unit.unit_name.substr(0,1).to_upper(),
 		HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(1,1,1,0.9))
+
+# ─── Terrain Detail Drawing ───────────────────────────────────────────────────
+
+func _draw_terrain_detail(pos: Vector2i, tile: Tile, rx: int, ry: int):
+	if tile.elemental_state != Tile.ElementalState.NEUTRAL: return
+	var seed_val = pos.x * 7919 + pos.y * 4391
+
+	match tile.terrain_type:
+		Tile.TerrainType.FOREST:
+			var dark = Color(0.06, 0.24, 0.04, 0.6)
+			for i in 3:
+				var ox = ((seed_val + i * 2917) % 26) + 5
+				var oy = ((seed_val + i * 1723) % 22) + 6
+				var sz = 5 + ((seed_val + i * 3571) % 4)
+				var pts = PackedVector2Array([
+					Vector2(rx + ox, ry + oy),
+					Vector2(rx + ox - sz / 2, ry + oy + sz),
+					Vector2(rx + ox + sz / 2, ry + oy + sz)
+				])
+				draw_colored_polygon(pts, dark)
+
+		Tile.TerrainType.WATER:
+			var wave_col = Color(0.22, 0.38, 0.70, 0.25)
+			for w in 2:
+				var base_y = ry + 14 + w * 14
+				var points = PackedVector2Array()
+				for seg in 9:
+					var px = rx + seg * 5
+					var py = base_y + sin(float(seg + seed_val % 6) * 1.2) * 3.0
+					points.append(Vector2(px, py))
+				if points.size() > 1:
+					draw_polyline(points, wave_col, 1.5)
+
+		Tile.TerrainType.RUINS:
+			var rubble = Color(0.44, 0.38, 0.30, 0.45)
+			for i in 4:
+				var ox = ((seed_val + i * 3137) % 28) + 5
+				var oy = ((seed_val + i * 2269) % 28) + 5
+				var sw = 3 + ((seed_val + i * 1093) % 5)
+				var sh = 2 + ((seed_val + i * 2741) % 4)
+				draw_rect(Rect2(rx + ox, ry + oy, sw, sh), rubble)
+
+func _draw_unit_shadow(unit):
+	var p = unit.grid_position
+	var offset = unit_offsets.get(unit, Vector2.ZERO)
+	var ux = p.x * TILE_SIZE + int(offset.x) + 2
+	var uy = p.y * TILE_SIZE + int(offset.y) + 2
+	var pad = 6
+	var sc = Color(0, 0, 0, 0.25)
+	var shape = unit.get_class_shape()
+
+	match shape:
+		"square":
+			draw_rect(Rect2(ux + pad, uy + pad, TILE_SIZE - pad * 2, TILE_SIZE - pad * 2), sc)
+		"square_thick":
+			draw_rect(Rect2(ux + pad - 2, uy + pad - 2, TILE_SIZE - pad * 2 + 4, TILE_SIZE - pad * 2 + 4), sc)
+		"diamond":
+			var cx = ux + TILE_SIZE / 2; var cy = uy + TILE_SIZE / 2
+			var pts = PackedVector2Array([
+				Vector2(cx, uy + pad), Vector2(ux + TILE_SIZE - pad, cy),
+				Vector2(cx, uy + TILE_SIZE - pad), Vector2(ux + pad, cy)])
+			draw_colored_polygon(pts, sc)
+		"circle":
+			draw_circle(Vector2(ux + TILE_SIZE / 2, uy + TILE_SIZE / 2), TILE_SIZE / 2 - pad, sc)
+		"triangle":
+			var cx = ux + TILE_SIZE / 2
+			var pts = PackedVector2Array([
+				Vector2(cx, uy + pad),
+				Vector2(ux + TILE_SIZE - pad, uy + TILE_SIZE - pad),
+				Vector2(ux + pad, uy + TILE_SIZE - pad)])
+			draw_colored_polygon(pts, sc)
+		"cross":
+			var t = 10; var cx = ux + TILE_SIZE / 2; var cy = uy + TILE_SIZE / 2
+			draw_rect(Rect2(cx - t / 2, uy + pad, t, TILE_SIZE - pad * 2), sc)
+			draw_rect(Rect2(ux + pad, cy - t / 2, TILE_SIZE - pad * 2, t), sc)
+		"star":
+			var cx = ux + TILE_SIZE / 2; var cy = uy + TILE_SIZE / 2
+			var ro = TILE_SIZE / 2 - pad; var ri = ro * 0.45
+			var pts = PackedVector2Array()
+			for i in 10:
+				var angle = PI / 2 + i * TAU / 10
+				var r = ro if i % 2 == 0 else ri
+				pts.append(Vector2(cx + cos(angle) * r, cy + sin(angle) * r))
+			draw_colored_polygon(pts, sc)
 
 # ─── Highlights ───────────────────────────────────────────────────────────────
 
@@ -188,16 +304,33 @@ func clear_highlights():
 func flash(pos: Vector2i, color: Color, duration: float = 0.4):
 	flash_tiles[pos] = {"color": color, "timer": duration}
 
+func pop_damage(pos: Vector2i, text: String, color: Color = Color(1, 1, 1), duration: float = 0.9):
+	damage_pops.append({"pos": pos, "text": text, "color": color, "timer": duration, "max_timer": duration})
+
 func _process(delta: float):
-	if flash_tiles.is_empty(): return
-	var expired: Array = []
-	for pos in flash_tiles:
-		flash_tiles[pos]["timer"] -= delta
-		flash_tiles[pos]["color"].a = clampf(flash_tiles[pos]["timer"] * 2.5, 0.0, 0.8)
-		if flash_tiles[pos]["timer"] <= 0.0:
-			expired.append(pos)
-	for p in expired: flash_tiles.erase(p)
-	queue_redraw()
+	var needs_redraw = false
+
+	if not flash_tiles.is_empty():
+		var expired: Array = []
+		for pos in flash_tiles:
+			flash_tiles[pos]["timer"] -= delta
+			flash_tiles[pos]["color"].a = clampf(flash_tiles[pos]["timer"] * 2.5, 0.0, 0.8)
+			if flash_tiles[pos]["timer"] <= 0.0:
+				expired.append(pos)
+		for p in expired: flash_tiles.erase(p)
+		needs_redraw = true
+
+	if not damage_pops.is_empty():
+		var i = damage_pops.size() - 1
+		while i >= 0:
+			damage_pops[i].timer -= delta
+			if damage_pops[i].timer <= 0.0:
+				damage_pops.remove_at(i)
+			i -= 1
+		needs_redraw = true
+
+	if needs_redraw:
+		queue_redraw()
 
 # ─── Movement Range (Dijkstra) ────────────────────────────────────────────────
 

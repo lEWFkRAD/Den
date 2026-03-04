@@ -55,8 +55,8 @@ func get_color() -> Color:
 		ElementalState.RADIANT:    return Color(0.95, 0.90, 0.55)
 		ElementalState.DARKENED:   return Color(0.09, 0.05, 0.14)
 	match terrain_type:
-		TerrainType.FOREST:    return Color(0.12, 0.32, 0.08)
-		TerrainType.WATER:     return Color(0.12, 0.22, 0.50)
-		TerrainType.RUINS:     return Color(0.32, 0.28, 0.22)
-		TerrainType.ELEVATION: return Color(0.48, 0.42, 0.30)
-	return Color(0.18, 0.20, 0.15)
+		TerrainType.FOREST:    return Color(0.10, 0.28, 0.08)
+		TerrainType.WATER:     return Color(0.08, 0.18, 0.42)
+		TerrainType.RUINS:     return Color(0.26, 0.23, 0.18)
+		TerrainType.ELEVATION: return Color(0.40, 0.36, 0.26)
+	return Color(0.14, 0.16, 0.12)
