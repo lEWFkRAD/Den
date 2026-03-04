@@ -51,6 +51,10 @@ var end_turn_btn:    Button
 var hp_bar_bg:       ColorRect
 var hp_bar_fill:     ColorRect
 var hp_bar_label:    Label
+var portrait_tex:    TextureRect
+var kip_portrait_tex: TextureRect
+var portrait_cache:  Dictionary = {}  # name_lower → Texture2D
+var kip_portrait_cache: Dictionary = {}  # kip_name_lower → Texture2D
 
 # Speech timer
 var speech_timer:   float = 0.0
@@ -61,10 +65,23 @@ var log_queue:      Array = []
 
 func _ready():
 	_setup_camera()
+	_load_portraits()
 	_build_ui()
 	_start_battle()
 	BattleState.kip_speaks.connect(_on_kip_speaks)
 	BattleState.unit_died.connect(_on_unit_died)
+
+func _load_portraits():
+	var char_names = ["aldric", "mira", "voss", "seren", "bram", "corvin", "yael", "lorn"]
+	for cname in char_names:
+		var path = "res://assets/portraits/%s.png" % cname
+		if ResourceLoader.exists(path):
+			portrait_cache[cname] = load(path)
+	var kip_names = ["scar", "thorn", "bolt", "null", "sleet", "dusk", "solen", "the_first"]
+	for kname in kip_names:
+		var path = "res://assets/kips/%s.png" % kname
+		if ResourceLoader.exists(path):
+			kip_portrait_cache[kname] = load(path)
 
 func _setup_camera():
 	camera = Camera2D.new()
@@ -896,6 +913,28 @@ func _build_ui():
 
 	root.add_child(_spacer(6))
 
+	# Portrait row (character + kip side by side)
+	var portrait_row = HBoxContainer.new()
+	portrait_row.custom_minimum_size = Vector2(448, 0)
+	portrait_row.add_theme_constant_override("separation", 8)
+
+	portrait_tex = TextureRect.new()
+	portrait_tex.custom_minimum_size = Vector2(110, 100)
+	portrait_tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	portrait_tex.expand_mode = TextureRect.EXPAND_FIT_WIDTH
+	portrait_tex.visible = false
+	portrait_row.add_child(portrait_tex)
+
+	kip_portrait_tex = TextureRect.new()
+	kip_portrait_tex.custom_minimum_size = Vector2(80, 80)
+	kip_portrait_tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	kip_portrait_tex.expand_mode = TextureRect.EXPAND_FIT_WIDTH
+	kip_portrait_tex.visible = false
+	portrait_row.add_child(kip_portrait_tex)
+
+	root.add_child(portrait_row)
+	root.add_child(_spacer(4))
+
 	# Info panel (RichTextLabel in a card)
 	var info_card = PanelContainer.new()
 	var info_style = StyleBoxFlat.new()
@@ -1044,9 +1083,31 @@ func _spacer(h: int) -> Control:
 func _set_info_text(text: String):
 	info_rtl.clear()
 	info_rtl.append_text(text)
+	portrait_tex.visible = false
+	kip_portrait_tex.visible = false
 
 func _set_info_bbcode(unit):
 	info_rtl.clear()
+
+	# Show portrait
+	var pkey = unit.unit_name.to_lower()
+	if portrait_cache.has(pkey):
+		portrait_tex.texture = portrait_cache[pkey]
+		portrait_tex.visible = true
+	else:
+		portrait_tex.visible = false
+
+	# Show kip portrait
+	if unit.bonded_kip:
+		var kip_key = unit.bonded_kip.kip_name.to_lower().replace(" ", "_")
+		# Handle "Null" kip → file is "null.png"
+		if kip_portrait_cache.has(kip_key):
+			kip_portrait_tex.texture = kip_portrait_cache[kip_key]
+			kip_portrait_tex.visible = true
+		else:
+			kip_portrait_tex.visible = false
+	else:
+		kip_portrait_tex.visible = false
 
 	# Unit name (big, team-colored)
 	var name_col = "#5588ee" if unit.is_player_unit else "#ee4433"

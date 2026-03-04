@@ -14,13 +14,30 @@ var flash_tiles: Dictionary = {}   # Vector2i → {color, timer}
 var damage_pops: Array      = []   # [{pos, text, color, timer, max_timer}]
 var units_ref:   Array       = []
 var unit_offsets: Dictionary = {}  # Unit → Vector2 (pixel offset for attack animations)
+var sprite_cache: Dictionary = {}  # unit_name_lower → Texture2D
+var kip_sprite_cache: Dictionary = {}  # kip_name_lower → Texture2D
 
 func initialize(unit_count: int, _kip_count: int = 0):
 	grid_width  = BASE_WIDTH  + unit_count * TILES_PER_UNIT
 	grid_height = BASE_HEIGHT + unit_count * TILES_PER_UNIT
 	_build_tiles()
 	_scatter_terrain()
+	_load_sprites()
 	queue_redraw()
+
+func _load_sprites():
+	# Player character sprites
+	var char_names = ["aldric", "mira", "voss", "seren", "bram", "corvin", "yael", "lorn"]
+	for cname in char_names:
+		var path = "res://assets/portraits/%s_small.png" % cname
+		if ResourceLoader.exists(path):
+			sprite_cache[cname] = load(path)
+	# Kip sprites
+	var kip_names = ["scar", "thorn", "bolt", "null", "sleet", "dusk", "solen", "the_first"]
+	for kname in kip_names:
+		var path = "res://assets/kips/%s_small.png" % kname
+		if ResourceLoader.exists(path):
+			kip_sprite_cache[kname] = load(path)
 
 func _build_tiles():
 	tiles.clear()
@@ -107,9 +124,61 @@ func _draw_unit(unit, font):
 	var ux  = p.x * TILE_SIZE + int(offset.x)
 	var uy  = p.y * TILE_SIZE + int(offset.y)
 	var pad = 6
-	var col = unit.get_display_color()
-	var shape = unit.get_class_shape()
 
+	# Try sprite-based rendering first
+	var sprite_key = unit.unit_name.to_lower()
+	var tex = sprite_cache.get(sprite_key, null)
+
+	if tex != null:
+		# Draw sprite scaled into tile with small padding
+		var sp = 2  # sprite padding
+		var sprite_rect = Rect2(ux + sp, uy + sp, TILE_SIZE - sp * 2, TILE_SIZE - sp * 2)
+		# Dim if acted
+		if unit.has_acted and unit.is_player_unit:
+			draw_texture_rect(tex, sprite_rect, false, Color(0.5, 0.5, 0.6, 0.7))
+		else:
+			draw_texture_rect(tex, sprite_rect, false)
+		# Team color border
+		var border_col = Color(0.18, 0.48, 0.92, 0.7) if unit.is_player_unit else Color(0.82, 0.14, 0.14, 0.7)
+		if unit.has_acted and unit.is_player_unit:
+			border_col = Color(0.3, 0.3, 0.4, 0.5)
+		draw_rect(sprite_rect, border_col, false, 1.5)
+	else:
+		# Fallback: shape-based rendering for enemies / missing sprites
+		var col = unit.get_display_color()
+		var shape = unit.get_class_shape()
+		_draw_unit_shape(ux, uy, pad, col, shape)
+		# Unit initial (only for shape-rendered units)
+		draw_string(font, Vector2(ux+TILE_SIZE/2-5, uy+TILE_SIZE/2+5),
+			unit.unit_name.substr(0,1).to_upper(),
+			HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(1,1,1,0.9))
+
+	# HP bar (improved with border and gradient)
+	var hpr  = float(unit.stats.hp) / float(unit.stats.max_hp)
+	var bw   = TILE_SIZE - pad*2
+	var bh   = 5
+	var by   = uy + TILE_SIZE - bh - 3
+	draw_rect(Rect2(ux+pad-1, by-1, bw+2, bh+2), Color(0, 0, 0, 0.7))
+	draw_rect(Rect2(ux+pad, by, bw, bh), Color(0.06, 0.06, 0.06))
+	var bc = Color(0.15, 0.88, 0.15) if hpr > 0.5 else (Color(0.92, 0.58, 0.1) if hpr > 0.25 else Color(0.92, 0.12, 0.12))
+	var fill_w = int(bw * hpr)
+	if fill_w > 0:
+		draw_rect(Rect2(ux+pad, by, fill_w, bh), bc)
+		draw_rect(Rect2(ux+pad, by, fill_w, int(bh / 2)), Color(1, 1, 1, 0.15))
+
+	# Kip indicator
+	if unit.bonded_kip != null:
+		var kip     = unit.bonded_kip
+		var dot_pos = Vector2(ux+TILE_SIZE-pad-1, uy+pad+2)
+		draw_circle(dot_pos, 5, unit.get_kip_color())
+		draw_circle(dot_pos, 5, Color(0,0,0,0.5), false)
+		if kip.current_phase == Kip.Phase.DEPLOYED:
+			draw_circle(dot_pos, 7, Color(1,1,1,0.55), false)
+		elif kip.current_phase == Kip.Phase.AWAKENED:
+			draw_circle(dot_pos, 8,  Color(1.0,0.9,0.2,0.9),  false)
+			draw_circle(dot_pos, 11, Color(1.0,0.6,0.1,0.45), false)
+
+func _draw_unit_shape(ux: int, uy: int, pad: int, col: Color, shape: String):
 	match shape:
 		"square":
 			var r = Rect2(ux+pad, uy+pad, TILE_SIZE-pad*2, TILE_SIZE-pad*2)
@@ -122,7 +191,6 @@ func _draw_unit(unit, font):
 		"diamond":
 			var cx = ux + TILE_SIZE/2
 			var cy = uy + TILE_SIZE/2
-			var half = TILE_SIZE/2 - pad
 			var pts = PackedVector2Array([
 				Vector2(cx, uy+pad),
 				Vector2(ux+TILE_SIZE-pad, cy),
@@ -159,36 +227,6 @@ func _draw_unit(unit, font):
 				var r = ro if i%2==0 else ri
 				pts.append(Vector2(cx + cos(angle)*r, cy + sin(angle)*r))
 			draw_colored_polygon(pts, col)
-
-	# HP bar (improved with border and gradient)
-	var hpr  = float(unit.stats.hp) / float(unit.stats.max_hp)
-	var bw   = TILE_SIZE - pad*2
-	var bh   = 5
-	var by   = uy + TILE_SIZE - bh - 5
-	draw_rect(Rect2(ux+pad-1, by-1, bw+2, bh+2), Color(0, 0, 0, 0.6))
-	draw_rect(Rect2(ux+pad, by, bw, bh), Color(0.06, 0.06, 0.06))
-	var bc = Color(0.15, 0.88, 0.15) if hpr > 0.5 else (Color(0.92, 0.58, 0.1) if hpr > 0.25 else Color(0.92, 0.12, 0.12))
-	var fill_w = int(bw * hpr)
-	if fill_w > 0:
-		draw_rect(Rect2(ux+pad, by, fill_w, bh), bc)
-		draw_rect(Rect2(ux+pad, by, fill_w, int(bh / 2)), Color(1, 1, 1, 0.15))
-
-	# Kip indicator
-	if unit.bonded_kip != null:
-		var kip     = unit.bonded_kip
-		var dot_pos = Vector2(ux+TILE_SIZE-pad-1, uy+pad+2)
-		draw_circle(dot_pos, 5, unit.get_kip_color())
-		draw_circle(dot_pos, 5, Color(0,0,0,0.5), false)
-		if kip.current_phase == Kip.Phase.DEPLOYED:
-			draw_circle(dot_pos, 7, Color(1,1,1,0.55), false)
-		elif kip.current_phase == Kip.Phase.AWAKENED:
-			draw_circle(dot_pos, 8,  Color(1.0,0.9,0.2,0.9),  false)
-			draw_circle(dot_pos, 11, Color(1.0,0.6,0.1,0.45), false)
-
-	# Unit initial
-	draw_string(font, Vector2(ux+TILE_SIZE/2-5, uy+TILE_SIZE/2+5),
-		unit.unit_name.substr(0,1).to_upper(),
-		HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(1,1,1,0.9))
 
 # ─── Terrain Detail Drawing ───────────────────────────────────────────────────
 
@@ -238,41 +276,16 @@ func _draw_unit_shadow(unit):
 	var uy = p.y * TILE_SIZE + int(offset.y) + 2
 	var pad = 6
 	var sc = Color(0, 0, 0, 0.25)
-	var shape = unit.get_class_shape()
 
-	match shape:
-		"square":
-			draw_rect(Rect2(ux + pad, uy + pad, TILE_SIZE - pad * 2, TILE_SIZE - pad * 2), sc)
-		"square_thick":
-			draw_rect(Rect2(ux + pad - 2, uy + pad - 2, TILE_SIZE - pad * 2 + 4, TILE_SIZE - pad * 2 + 4), sc)
-		"diamond":
-			var cx = ux + TILE_SIZE / 2; var cy = uy + TILE_SIZE / 2
-			var pts = PackedVector2Array([
-				Vector2(cx, uy + pad), Vector2(ux + TILE_SIZE - pad, cy),
-				Vector2(cx, uy + TILE_SIZE - pad), Vector2(ux + pad, cy)])
-			draw_colored_polygon(pts, sc)
-		"circle":
-			draw_circle(Vector2(ux + TILE_SIZE / 2, uy + TILE_SIZE / 2), TILE_SIZE / 2 - pad, sc)
-		"triangle":
-			var cx = ux + TILE_SIZE / 2
-			var pts = PackedVector2Array([
-				Vector2(cx, uy + pad),
-				Vector2(ux + TILE_SIZE - pad, uy + TILE_SIZE - pad),
-				Vector2(ux + pad, uy + TILE_SIZE - pad)])
-			draw_colored_polygon(pts, sc)
-		"cross":
-			var t = 10; var cx = ux + TILE_SIZE / 2; var cy = uy + TILE_SIZE / 2
-			draw_rect(Rect2(cx - t / 2, uy + pad, t, TILE_SIZE - pad * 2), sc)
-			draw_rect(Rect2(ux + pad, cy - t / 2, TILE_SIZE - pad * 2, t), sc)
-		"star":
-			var cx = ux + TILE_SIZE / 2; var cy = uy + TILE_SIZE / 2
-			var ro = TILE_SIZE / 2 - pad; var ri = ro * 0.45
-			var pts = PackedVector2Array()
-			for i in 10:
-				var angle = PI / 2 + i * TAU / 10
-				var r = ro if i % 2 == 0 else ri
-				pts.append(Vector2(cx + cos(angle) * r, cy + sin(angle) * r))
-			draw_colored_polygon(pts, sc)
+	# Sprite units get a simple rect shadow
+	var sprite_key = unit.unit_name.to_lower()
+	if sprite_cache.has(sprite_key):
+		var sp = 2
+		draw_rect(Rect2(ux + sp, uy + sp, TILE_SIZE - sp * 2, TILE_SIZE - sp * 2), sc)
+		return
+
+	var shape = unit.get_class_shape()
+	_draw_unit_shape(ux, uy, pad, sc, shape)
 
 # ─── Highlights ───────────────────────────────────────────────────────────────
 
