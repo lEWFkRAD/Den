@@ -1,0 +1,63 @@
+{
+  "pieces": {
+    "ground_flat":        { "footprint": [1, 1], "tags": ["ground"],               "blocks_movement": false, "blocks_los": false, "cover": false, "height_mod": 0 },
+    "ground_slope_n":     { "footprint": [1, 1], "tags": ["ground", "slope"],       "blocks_movement": false, "blocks_los": false, "cover": false, "height_mod": 0 },
+    "ground_slope_e":     { "footprint": [1, 1], "tags": ["ground", "slope"],       "blocks_movement": false, "blocks_los": false, "cover": false, "height_mod": 0 },
+    "ground_slope_s":     { "footprint": [1, 1], "tags": ["ground", "slope"],       "blocks_movement": false, "blocks_los": false, "cover": false, "height_mod": 0 },
+    "ground_slope_w":     { "footprint": [1, 1], "tags": ["ground", "slope"],       "blocks_movement": false, "blocks_los": false, "cover": false, "height_mod": 0 },
+    "wall_straight":      { "footprint": [1, 1], "tags": ["wall", "structure"],     "blocks_movement": true,  "blocks_los": true,  "cover": false, "height_mod": 2 },
+    "wall_corner":        { "footprint": [1, 1], "tags": ["wall", "structure"],     "blocks_movement": true,  "blocks_los": true,  "cover": false, "height_mod": 2 },
+    "wall_t_junction":    { "footprint": [1, 1], "tags": ["wall", "structure"],     "blocks_movement": true,  "blocks_los": true,  "cover": false, "height_mod": 2 },
+    "wall_endcap":        { "footprint": [1, 1], "tags": ["wall", "structure"],     "blocks_movement": true,  "blocks_los": true,  "cover": false, "height_mod": 2 },
+    "wall_broken":        { "footprint": [1, 1], "tags": ["wall", "ruins", "cover"],"blocks_movement": false, "blocks_los": false, "cover": true,  "height_mod": 1 },
+    "gate_closed":        { "footprint": [1, 1], "tags": ["gate", "wall"],          "blocks_movement": true,  "blocks_los": true,  "cover": false, "height_mod": 2 },
+    "gate_open":          { "footprint": [1, 1], "tags": ["gate"],                  "blocks_movement": false, "blocks_los": false, "cover": false, "height_mod": 2 },
+    "tower_1x1":          { "footprint": [1, 1], "tags": ["tower", "structure"],    "blocks_movement": true,  "blocks_los": true,  "cover": false, "height_mod": 3 },
+    "tower_2x2":          { "footprint": [2, 2], "tags": ["tower", "structure", "boss"], "blocks_movement": true, "blocks_los": true, "cover": false, "height_mod": 4 },
+    "bridge_straight":    { "footprint": [1, 1], "tags": ["bridge"],                "blocks_movement": false, "blocks_los": false, "cover": false, "height_mod": 0 },
+    "bridge_endcap":      { "footprint": [1, 1], "tags": ["bridge"],                "blocks_movement": false, "blocks_los": false, "cover": false, "height_mod": 0 },
+    "bridge_post":        { "footprint": [1, 1], "tags": ["bridge", "cover"],       "blocks_movement": false, "blocks_los": false, "cover": true,  "height_mod": 1 },
+    "pillar_broken":      { "footprint": [1, 1], "tags": ["ruins", "cover"],        "blocks_movement": false, "blocks_los": false, "cover": true,  "height_mod": 1 },
+    "statue_broken":      { "footprint": [1, 1], "tags": ["ruins", "cover"],        "blocks_movement": false, "blocks_los": false, "cover": true,  "height_mod": 1 },
+    "rubble_pile":        { "footprint": [1, 1], "tags": ["ruins", "cover"],        "blocks_movement": false, "blocks_los": false, "cover": true,  "height_mod": 0 },
+    "banner_torn":        { "footprint": [1, 1], "tags": ["ruins", "decor"],        "blocks_movement": false, "blocks_los": false, "cover": false, "height_mod": 0 },
+    "crate":              { "footprint": [1, 1], "tags": ["cover", "interior"],     "blocks_movement": false, "blocks_los": false, "cover": true,  "height_mod": 0 },
+    "barrel":             { "footprint": [1, 1], "tags": ["cover", "interior"],     "blocks_movement": false, "blocks_los": false, "cover": true,  "height_mod": 0 },
+    "rock_small":         { "footprint": [1, 1], "tags": ["natural", "cover"],      "blocks_movement": false, "blocks_los": false, "cover": true,  "height_mod": 0 },
+    "rock_large":         { "footprint": [1, 1], "tags": ["natural"],               "blocks_movement": true,  "blocks_los": true,  "cover": false, "height_mod": 1 },
+    "tree_pine":          { "footprint": [1, 1], "tags": ["natural", "tree"],       "blocks_movement": true,  "blocks_los": true,  "cover": false, "height_mod": 0 },
+    "tree_dead":          { "footprint": [1, 1], "tags": ["natural", "tree"],       "blocks_movement": true,  "blocks_los": false, "cover": false, "height_mod": 0 }
+  },
+  "biome_palettes": {
+    "snow": {
+      "wall_style": "wall_straight",
+      "cover_props": ["rock_small", "rock_large", "tree_dead"],
+      "scatter_props": ["banner_torn", "rubble_pile"],
+      "ruin_props": ["pillar_broken", "wall_broken", "rubble_pile"]
+    },
+    "forest": {
+      "wall_style": "wall_straight",
+      "cover_props": ["rock_small", "tree_pine", "crate"],
+      "scatter_props": ["tree_pine", "rock_small", "barrel"],
+      "ruin_props": ["pillar_broken", "wall_broken", "statue_broken"]
+    },
+    "ruins": {
+      "wall_style": "wall_straight",
+      "cover_props": ["rubble_pile", "pillar_broken", "crate"],
+      "scatter_props": ["rubble_pile", "banner_torn", "statue_broken"],
+      "ruin_props": ["wall_broken", "rubble_pile", "pillar_broken", "statue_broken"]
+    },
+    "desert": {
+      "wall_style": "wall_straight",
+      "cover_props": ["rock_small", "rock_large", "crate"],
+      "scatter_props": ["rock_small", "banner_torn"],
+      "ruin_props": ["pillar_broken", "wall_broken", "rubble_pile"]
+    },
+    "swamp": {
+      "wall_style": "wall_straight",
+      "cover_props": ["rock_small", "tree_dead", "barrel"],
+      "scatter_props": ["tree_dead", "rock_small"],
+      "ruin_props": ["wall_broken", "rubble_pile", "pillar_broken"]
+    }
+  }
+}

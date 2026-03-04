@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://pillar_broken_kit"]
+
+[sub_resource type="StandardMaterial3D" id="1"]
+albedo_color = Color(0.604, 0.557, 0.490, 1.0)
+
+[sub_resource type="CylinderMesh" id="2"]
+top_radius = 0.15
+bottom_radius = 0.15
+height = 0.6
+material = SubResource("1")
+
+[node name="PillarBroken" type="Node3D"]
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9962, 0.0872, 0, -0.0872, 0.9962, 0, 0, 0, 1, 0, 0.3, 0)
+mesh = SubResource("2")

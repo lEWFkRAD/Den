@@ -1,0 +1,52 @@
+{
+  "act": 2,
+  "chapter": 5,
+  "enemy_roster": [
+    {
+      "level": 3,
+      "unit_def": "wand_thorn_bulwark"
+    },
+    {
+      "level": 1,
+      "unit_def": "wand_scout"
+    },
+    {
+      "level": 2,
+      "unit_def": "wand_oathmage"
+    },
+    {
+      "level": 1,
+      "unit_def": "wand_slingman"
+    },
+    {
+      "level": 2,
+      "unit_def": "wand_warden"
+    }
+  ],
+  "faction_attacker": "wanderers",
+  "faction_defender": "free_cities",
+  "id": "ch05_m05",
+  "loot_file": "ch05_m05_loot.json",
+  "map_file": "ch05_m05_map.json",
+  "map_ref": "ch05_m05_map.json",
+  "objective": {
+    "type": "seize"
+  },
+  "region": "thornwild",
+  "rewards": {
+    "gold": 135,
+    "loot_rolls": [
+      {
+        "count": 2,
+        "table": "region_thornwild_act2"
+      },
+      {
+        "count": 1,
+        "table": "faction_wanderers_act2"
+      }
+    ],
+    "xp": 200
+  },
+  "seed": 709537688,
+  "template": "bridge_chokepoint"
+}

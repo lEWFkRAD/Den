@@ -1,0 +1,752 @@
+{
+  "biome": "snow",
+  "height": [
+    [
+      0,
+      0,
+      1,
+      2,
+      2,
+      2,
+      1,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      2,
+      2,
+      2,
+      -1,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      2,
+      2,
+      2,
+      1,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      2,
+      2,
+      2,
+      1,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      2,
+      2,
+      2,
+      1,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      2,
+      2,
+      2,
+      1,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      2,
+      2,
+      2,
+      1,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      2,
+      2,
+      2,
+      1,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      2,
+      2,
+      2,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      2,
+      2,
+      2,
+      1,
+      0,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      2,
+      2,
+      2,
+      -1,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      2,
+      2,
+      2,
+      1,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  ],
+  "id": "6_ch06_m06_map",
+  "objective": {
+    "type": "seize"
+  },
+  "props": [
+    {
+      "pos": [
+        10,
+        8
+      ],
+      "prefab": "bridge_post",
+      "rot": 0
+    },
+    {
+      "pos": [
+        7,
+        9
+      ],
+      "prefab": "bridge_post",
+      "rot": 0
+    },
+    {
+      "pos": [
+        6,
+        8
+      ],
+      "prefab": "bridge_post",
+      "rot": 0
+    },
+    {
+      "pos": [
+        11,
+        10
+      ],
+      "prefab": "rock_large",
+      "rot": 0
+    },
+    {
+      "pos": [
+        5,
+        7
+      ],
+      "prefab": "rock_large",
+      "rot": 0
+    },
+    {
+      "pos": [
+        1,
+        8
+      ],
+      "prefab": "tree_dead",
+      "rot": 0
+    },
+    {
+      "pos": [
+        3,
+        7
+      ],
+      "prefab": "tree_dead",
+      "rot": 0
+    },
+    {
+      "pos": [
+        14,
+        1
+      ],
+      "prefab": "rock_large",
+      "rot": 0
+    },
+    {
+      "pos": [
+        3,
+        6
+      ],
+      "prefab": "rock_small",
+      "rot": 0
+    },
+    {
+      "pos": [
+        12,
+        10
+      ],
+      "prefab": "tree_dead",
+      "rot": 0
+    },
+    {
+      "pos": [
+        12,
+        6
+      ],
+      "prefab": "rock_small",
+      "rot": 0
+    },
+    {
+      "pos": [
+        3,
+        4
+      ],
+      "prefab": "rubble_pile",
+      "rot": 0
+    },
+    {
+      "pos": [
+        4,
+        5
+      ],
+      "prefab": "rubble_pile",
+      "rot": 0
+    },
+    {
+      "pos": [
+        11,
+        7
+      ],
+      "prefab": "banner_torn",
+      "rot": 0
+    },
+    {
+      "pos": [
+        13,
+        2
+      ],
+      "prefab": "banner_torn",
+      "rot": 0
+    },
+    {
+      "pos": [
+        12,
+        7
+      ],
+      "prefab": "banner_torn",
+      "rot": 0
+    },
+    {
+      "pos": [
+        2,
+        3
+      ],
+      "prefab": "banner_torn",
+      "rot": 0
+    },
+    {
+      "pos": [
+        3,
+        3
+      ],
+      "prefab": "rubble_pile",
+      "rot": 0
+    },
+    {
+      "pos": [
+        11,
+        1
+      ],
+      "prefab": "rubble_pile",
+      "rot": 0
+    }
+  ],
+  "seed": 1379428303,
+  "size": [
+    16,
+    12
+  ],
+  "spawns": {
+    "enemy": [
+      [
+        13,
+        8
+      ],
+      [
+        14,
+        9
+      ],
+      [
+        14,
+        8
+      ],
+      [
+        10,
+        6
+      ],
+      [
+        14,
+        2
+      ],
+      [
+        13,
+        7
+      ],
+      [
+        12,
+        4
+      ],
+      [
+        15,
+        2
+      ]
+    ],
+    "player": [
+      [
+        1,
+        4
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        3,
+        5
+      ],
+      [
+        5,
+        9
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        2,
+        9
+      ],
+      [
+        4,
+        7
+      ]
+    ],
+    "reinforce": []
+  },
+  "template": "bridge_chokepoint",
+  "terrain": [
+    [
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "ice",
+      "ice",
+      "ice",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow"
+    ],
+    [
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "ice",
+      "ice",
+      "ice",
+      "ice",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow"
+    ],
+    [
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "ice",
+      "ice",
+      "ice",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow"
+    ],
+    [
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "ice",
+      "ice",
+      "ice",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow"
+    ],
+    [
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "ice",
+      "ice",
+      "ice",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow"
+    ],
+    [
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "ice",
+      "ice",
+      "ice",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow"
+    ],
+    [
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "ice",
+      "ice",
+      "ice",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow"
+    ],
+    [
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "ice",
+      "ice",
+      "ice",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow"
+    ],
+    [
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "bridge",
+      "bridge",
+      "bridge",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow"
+    ],
+    [
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "ice",
+      "ice",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow"
+    ],
+    [
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "ice",
+      "ice",
+      "ice",
+      "ice",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow"
+    ],
+    [
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "ice",
+      "ice",
+      "ice",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow",
+      "snow"
+    ]
+  ],
+  "tile_states": [
+    {
+      "duration": 99,
+      "pos": [
+        4,
+        6
+      ],
+      "state": "ice"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        5,
+        6
+      ],
+      "state": "ice"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        6,
+        7
+      ],
+      "state": "ice"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        6,
+        8
+      ],
+      "state": "ice"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        12,
+        9
+      ],
+      "state": "ice"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        12,
+        10
+      ],
+      "state": "ice"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        4,
+        9
+      ],
+      "state": "ice"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        3,
+        9
+      ],
+      "state": "ice"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        9,
+        9
+      ],
+      "state": "ice"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        8,
+        9
+      ],
+      "state": "ice"
+    }
+  ]
+}

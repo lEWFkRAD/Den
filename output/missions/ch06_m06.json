@@ -1,0 +1,64 @@
+{
+  "act": 2,
+  "chapter": 6,
+  "enemy_roster": [
+    {
+      "level": 3,
+      "unit_def": "wand_dusk_duelist"
+    },
+    {
+      "level": 1,
+      "unit_def": "wand_scout"
+    },
+    {
+      "level": 2,
+      "unit_def": "wand_oathmage"
+    },
+    {
+      "level": 1,
+      "unit_def": "wand_slingman"
+    },
+    {
+      "level": 2,
+      "unit_def": "wand_oathmage"
+    },
+    {
+      "level": 1,
+      "unit_def": "wand_knife_runner"
+    },
+    {
+      "level": 1,
+      "unit_def": "wand_knife_runner"
+    },
+    {
+      "level": 1,
+      "unit_def": "wand_scout"
+    }
+  ],
+  "faction_attacker": "wanderers",
+  "faction_defender": "covenant",
+  "id": "ch06_m06",
+  "loot_file": "ch06_m06_loot.json",
+  "map_file": "ch06_m06_map.json",
+  "map_ref": "ch06_m06_map.json",
+  "objective": {
+    "type": "seize"
+  },
+  "region": "frostmarch",
+  "rewards": {
+    "gold": 150,
+    "loot_rolls": [
+      {
+        "count": 2,
+        "table": "region_frostmarch_act2"
+      },
+      {
+        "count": 1,
+        "table": "faction_wanderers_act2"
+      }
+    ],
+    "xp": 220
+  },
+  "seed": 112184153,
+  "template": "bridge_chokepoint"
+}

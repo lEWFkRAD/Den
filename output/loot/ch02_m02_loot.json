@@ -1,0 +1,79 @@
+[
+  {
+    "affixes": [
+      {
+        "effect_type": "evasion_on_shadow",
+        "id": "duskward",
+        "params": {
+          "amount": 10.0
+        }
+      }
+    ],
+    "element": "",
+    "faction": "",
+    "id": "ring_iron_thornwild_24",
+    "imprint": null,
+    "material": "iron",
+    "motif": "",
+    "name": "Band",
+    "rarity": "uncommon",
+    "region": "thornwild",
+    "slot": "ring",
+    "stats": {
+      "def": 2,
+      "mov_mod": -1,
+      "res": 0
+    },
+    "tier": 1,
+    "weapon_type": ""
+  },
+  {
+    "affixes": [],
+    "element": "plant",
+    "faction": "",
+    "id": "tome_iron_thornwild_40",
+    "imprint": null,
+    "material": "iron",
+    "motif": "",
+    "name": "Grimoire",
+    "rarity": "common",
+    "region": "thornwild",
+    "slot": "weapon",
+    "stats": {
+      "crit": 5,
+      "hit": 84,
+      "mt": 7,
+      "rng": [
+        1,
+        2
+      ],
+      "wt": 6
+    },
+    "tier": 1,
+    "weapon_type": "tome"
+  },
+  {
+    "affixes": [],
+    "element": "",
+    "faction": "",
+    "id": "lance_iron_thornwild_26",
+    "imprint": null,
+    "material": "iron",
+    "motif": "",
+    "name": "Spear",
+    "rarity": "common",
+    "region": "thornwild",
+    "slot": "weapon",
+    "stats": {
+      "crit": 4,
+      "hit": 80,
+      "mt": 6,
+      "rng": [
+        1
+      ],
+      "wt": 4
+    },
+    "tier": 1,
+    "weapon_type": "lance"
+  }
+]

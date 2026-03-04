@@ -158,6 +158,12 @@ func get_info_text() -> String:
 		kip_info
 	]
 
+## Purge all temporary effects (called by VOID_SCAR tiles)
+func purge_effects() -> void:
+	for stat in temp_boosts:
+		_remove_temp_boost(stat)
+	temp_boosts.clear()
+
 func _remove_temp_boost(stat: String):
 	match stat:
 		"resistance": stats.resistance -= temp_boosts[stat]["amount"]

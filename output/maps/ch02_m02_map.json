@@ -1,0 +1,696 @@
+{
+  "biome": "forest",
+  "height": [
+    [
+      1,
+      1,
+      1,
+      2,
+      2,
+      1,
+      0,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      2,
+      2,
+      1,
+      0,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      2,
+      2,
+      1,
+      0,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      1,
+      1,
+      2,
+      2,
+      1,
+      0,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  ],
+  "id": "2_ch02_m02_map",
+  "objective": {
+    "type": "seize"
+  },
+  "props": [
+    {
+      "pos": [
+        10,
+        6
+      ],
+      "prefab": "bridge_post",
+      "rot": 0
+    },
+    {
+      "pos": [
+        6,
+        6
+      ],
+      "prefab": "bridge_post",
+      "rot": 0
+    },
+    {
+      "pos": [
+        6,
+        9
+      ],
+      "prefab": "tree_pine",
+      "rot": 0
+    },
+    {
+      "pos": [
+        11,
+        1
+      ],
+      "prefab": "rock_small",
+      "rot": 0
+    },
+    {
+      "pos": [
+        13,
+        9
+      ],
+      "prefab": "crate",
+      "rot": 0
+    },
+    {
+      "pos": [
+        13,
+        4
+      ],
+      "prefab": "rock_small",
+      "rot": 0
+    },
+    {
+      "pos": [
+        12,
+        6
+      ],
+      "prefab": "crate",
+      "rot": 0
+    },
+    {
+      "pos": [
+        12,
+        3
+      ],
+      "prefab": "rock_small",
+      "rot": 0
+    },
+    {
+      "pos": [
+        6,
+        7
+      ],
+      "prefab": "tree_pine",
+      "rot": 0
+    },
+    {
+      "pos": [
+        14,
+        6
+      ],
+      "prefab": "rock_small",
+      "rot": 0
+    },
+    {
+      "pos": [
+        5,
+        7
+      ],
+      "prefab": "barrel",
+      "rot": 0
+    },
+    {
+      "pos": [
+        6,
+        2
+      ],
+      "prefab": "barrel",
+      "rot": 0
+    }
+  ],
+  "seed": 1541028229,
+  "size": [
+    16,
+    12
+  ],
+  "spawns": {
+    "enemy": [
+      [
+        14,
+        9
+      ],
+      [
+        13,
+        7
+      ],
+      [
+        12,
+        5
+      ],
+      [
+        15,
+        5
+      ],
+      [
+        12,
+        2
+      ],
+      [
+        14,
+        3
+      ],
+      [
+        15,
+        7
+      ],
+      [
+        12,
+        7
+      ]
+    ],
+    "player": [
+      [
+        4,
+        6
+      ],
+      [
+        0,
+        8
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        0,
+        4
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        1,
+        5
+      ],
+      [
+        2,
+        3
+      ]
+    ],
+    "reinforce": []
+  },
+  "template": "bridge_chokepoint",
+  "terrain": [
+    [
+      "grass",
+      "grass",
+      "grass",
+      "dirt",
+      "dirt",
+      "grass",
+      "grass",
+      "water",
+      "water",
+      "water",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "dirt",
+      "dirt",
+      "grass",
+      "grass",
+      "water",
+      "water",
+      "water",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "dirt",
+      "dirt",
+      "grass",
+      "grass",
+      "water",
+      "water",
+      "water",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "dirt",
+      "dirt",
+      "grass",
+      "grass",
+      "water",
+      "water",
+      "water",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "water",
+      "water",
+      "water",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "bridge",
+      "bridge",
+      "bridge",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "bridge",
+      "bridge",
+      "bridge",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "water",
+      "water",
+      "water",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "water",
+      "water",
+      "water",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "water",
+      "water",
+      "water",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "water",
+      "water",
+      "water",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "water",
+      "water",
+      "water",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ]
+  ],
+  "tile_states": [
+    {
+      "duration": 99,
+      "pos": [
+        4,
+        3
+      ],
+      "state": "plant"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        4,
+        2
+      ],
+      "state": "plant"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        3,
+        3
+      ],
+      "state": "plant"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        6,
+        3
+      ],
+      "state": "plant"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        6,
+        2
+      ],
+      "state": "plant"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        12,
+        7
+      ],
+      "state": "plant"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        11,
+        7
+      ],
+      "state": "plant"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        11,
+        2
+      ],
+      "state": "plant"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        10,
+        2
+      ],
+      "state": "plant"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        11,
+        1
+      ],
+      "state": "plant"
+    }
+  ]
+}

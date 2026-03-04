@@ -1,0 +1,222 @@
+{
+  "id": "campaign_1530",
+  "major_arc": "territorial_war",
+  "minor_arc": "iron_contracts",
+  "missions": [
+    {
+      "act": 1,
+      "chapter": 1,
+      "enemy_roster": [],
+      "faction_attacker": "covenant",
+      "faction_defender": "free_cities",
+      "id": "ch01_m01",
+      "loot_file": "ch01_m01_loot.json",
+      "map_file": "ch01_m01_map.json",
+      "map_ref": "ch01_m01_map.json",
+      "objective": {
+        "type": "seize"
+      },
+      "region": "black_ruins",
+      "rewards": {
+        "gold": 75,
+        "loot_rolls": [
+          {
+            "count": 2,
+            "table": "region_black_ruins_act1"
+          },
+          {
+            "count": 1,
+            "table": "faction_covenant_act1"
+          }
+        ],
+        "xp": 120
+      },
+      "seed": 2031405866,
+      "template": "central_hill"
+    },
+    {
+      "act": 1,
+      "chapter": 2,
+      "enemy_roster": [],
+      "faction_attacker": "wanderers",
+      "faction_defender": "covenant",
+      "id": "ch02_m02",
+      "loot_file": "ch02_m02_loot.json",
+      "map_file": "ch02_m02_map.json",
+      "map_ref": "ch02_m02_map.json",
+      "objective": {
+        "type": "seize"
+      },
+      "region": "frostmarch",
+      "rewards": {
+        "gold": 90,
+        "loot_rolls": [
+          {
+            "count": 2,
+            "table": "region_frostmarch_act1"
+          },
+          {
+            "count": 1,
+            "table": "faction_wanderers_act1"
+          }
+        ],
+        "xp": 140
+      },
+      "seed": 2023653767,
+      "template": "central_hill"
+    },
+    {
+      "act": 1,
+      "chapter": 3,
+      "enemy_roster": [],
+      "faction_attacker": "wanderers",
+      "faction_defender": "free_cities",
+      "id": "ch03_m03",
+      "loot_file": "ch03_m03_loot.json",
+      "map_file": "ch03_m03_map.json",
+      "map_ref": "ch03_m03_map.json",
+      "objective": {
+        "type": "seize"
+      },
+      "region": "thornwild",
+      "rewards": {
+        "gold": 105,
+        "loot_rolls": [
+          {
+            "count": 2,
+            "table": "region_thornwild_act1"
+          },
+          {
+            "count": 1,
+            "table": "faction_wanderers_act1"
+          }
+        ],
+        "xp": 160
+      },
+      "seed": 1230167300,
+      "template": "central_hill"
+    },
+    {
+      "act": 2,
+      "chapter": 4,
+      "enemy_roster": [],
+      "faction_attacker": "covenant",
+      "faction_defender": "free_cities",
+      "id": "ch04_m04",
+      "loot_file": "ch04_m04_loot.json",
+      "map_file": "ch04_m04_map.json",
+      "map_ref": "ch04_m04_map.json",
+      "objective": {
+        "type": "seize"
+      },
+      "region": "black_ruins",
+      "rewards": {
+        "gold": 120,
+        "loot_rolls": [
+          {
+            "count": 2,
+            "table": "region_black_ruins_act2"
+          },
+          {
+            "count": 1,
+            "table": "faction_covenant_act2"
+          }
+        ],
+        "xp": 180
+      },
+      "seed": 453392513,
+      "template": "ruined_city_lanes"
+    },
+    {
+      "act": 2,
+      "chapter": 5,
+      "enemy_roster": [],
+      "faction_attacker": "wanderers",
+      "faction_defender": "covenant",
+      "id": "ch05_m05",
+      "loot_file": "ch05_m05_loot.json",
+      "map_file": "ch05_m05_map.json",
+      "map_ref": "ch05_m05_map.json",
+      "objective": {
+        "type": "seize"
+      },
+      "region": "frostmarch",
+      "rewards": {
+        "gold": 135,
+        "loot_rolls": [
+          {
+            "count": 2,
+            "table": "region_frostmarch_act2"
+          },
+          {
+            "count": 1,
+            "table": "faction_wanderers_act2"
+          }
+        ],
+        "xp": 200
+      },
+      "seed": 717906946,
+      "template": "central_hill"
+    },
+    {
+      "act": 2,
+      "chapter": 6,
+      "enemy_roster": [],
+      "faction_attacker": "wanderers",
+      "faction_defender": "free_cities",
+      "id": "ch06_m06",
+      "loot_file": "ch06_m06_loot.json",
+      "map_file": "ch06_m06_map.json",
+      "map_ref": "ch06_m06_map.json",
+      "objective": {
+        "type": "seize"
+      },
+      "region": "thornwild",
+      "rewards": {
+        "gold": 150,
+        "loot_rolls": [
+          {
+            "count": 2,
+            "table": "region_thornwild_act2"
+          },
+          {
+            "count": 1,
+            "table": "faction_wanderers_act2"
+          }
+        ],
+        "xp": 220
+      },
+      "seed": 1068495755,
+      "template": "central_hill"
+    }
+  ],
+  "regions": [
+    "black_ruins",
+    "frostmarch",
+    "thornwild"
+  ],
+  "seed": 2547381530,
+  "world_state": {
+    "current_chapter": 1,
+    "faction_control": {
+      "black_ruins": {
+        "covenant": 3.0,
+        "free_cities": 2.0,
+        "wanderers": 1.0
+      },
+      "frostmarch": {
+        "covenant": 2.0,
+        "free_cities": 1.0,
+        "wanderers": 3.0
+      },
+      "thornwild": {
+        "covenant": 1.0,
+        "free_cities": 2.0,
+        "wanderers": 3.0
+      }
+    },
+    "kip_activity": 0,
+    "missions_completed": [],
+    "relics_found": 0
+  }
+}

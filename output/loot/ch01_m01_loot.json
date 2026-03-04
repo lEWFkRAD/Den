@@ -1,0 +1,59 @@
+[
+  {
+    "affixes": [
+      {
+        "effect_type": "evasion_on_shadow",
+        "id": "duskward",
+        "params": {
+          "amount": 10.0
+        }
+      },
+      {
+        "effect_type": "status_on_hit",
+        "id": "chilling",
+        "params": {
+          "chance": 0.35,
+          "status": "slow",
+          "turns": 1.0
+        }
+      }
+    ],
+    "element": "",
+    "faction": "",
+    "id": "helm_iron_black_ruins_82",
+    "imprint": null,
+    "material": "iron",
+    "motif": "",
+    "name": "Helm",
+    "rarity": "rare",
+    "region": "black_ruins",
+    "slot": "helm",
+    "stats": {
+      "def": 2,
+      "mov_mod": 0,
+      "res": 1
+    },
+    "tier": 1,
+    "weapon_type": ""
+  },
+  {
+    "affixes": [],
+    "element": "light",
+    "faction": "",
+    "id": "helm_iron_black_ruins_29",
+    "imprint": null,
+    "material": "iron",
+    "motif": "",
+    "name": "Helm",
+    "rarity": "common",
+    "region": "black_ruins",
+    "slot": "helm",
+    "stats": {
+      "def": 2,
+      "mov_mod": -1,
+      "res": 0
+    },
+    "tier": 1,
+    "weapon_type": ""
+  }
+]

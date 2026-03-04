@@ -1,0 +1,960 @@
+{
+  "biome": "ruins",
+  "height": [
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      3,
+      3,
+      3,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      3,
+      3,
+      3,
+      3,
+      3,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      3,
+      3,
+      3,
+      3,
+      3,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      3,
+      3,
+      3,
+      3,
+      3,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      3,
+      3,
+      3,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "id": "4_ch04_m04_map",
+  "objective": {
+    "type": "seize"
+  },
+  "props": [
+    {
+      "pos": [
+        7,
+        5
+      ],
+      "prefab": "wall_corner",
+      "rot": 0
+    },
+    {
+      "pos": [
+        7,
+        6
+      ],
+      "prefab": "wall_straight",
+      "rot": 270
+    },
+    {
+      "pos": [
+        7,
+        7
+      ],
+      "prefab": "wall_straight",
+      "rot": 270
+    },
+    {
+      "pos": [
+        7,
+        8
+      ],
+      "prefab": "wall_straight",
+      "rot": 270
+    },
+    {
+      "pos": [
+        7,
+        9
+      ],
+      "prefab": "wall_corner",
+      "rot": 270
+    },
+    {
+      "pos": [
+        8,
+        5
+      ],
+      "prefab": "wall_straight",
+      "rot": 0
+    },
+    {
+      "pos": [
+        8,
+        9
+      ],
+      "prefab": "wall_straight",
+      "rot": 180
+    },
+    {
+      "pos": [
+        9,
+        5
+      ],
+      "prefab": "wall_straight",
+      "rot": 0
+    },
+    {
+      "pos": [
+        9,
+        9
+      ],
+      "prefab": "gate_open",
+      "rot": 180
+    },
+    {
+      "pos": [
+        10,
+        5
+      ],
+      "prefab": "wall_straight",
+      "rot": 0
+    },
+    {
+      "pos": [
+        10,
+        9
+      ],
+      "prefab": "wall_straight",
+      "rot": 180
+    },
+    {
+      "pos": [
+        11,
+        5
+      ],
+      "prefab": "tower_1x1",
+      "rot": 90
+    },
+    {
+      "pos": [
+        11,
+        6
+      ],
+      "prefab": "wall_straight",
+      "rot": 90
+    },
+    {
+      "pos": [
+        11,
+        7
+      ],
+      "prefab": "wall_straight",
+      "rot": 90
+    },
+    {
+      "pos": [
+        11,
+        8
+      ],
+      "prefab": "wall_straight",
+      "rot": 90
+    },
+    {
+      "pos": [
+        11,
+        9
+      ],
+      "prefab": "tower_1x1",
+      "rot": 180
+    },
+    {
+      "pos": [
+        10,
+        7
+      ],
+      "prefab": "crate",
+      "rot": 0
+    },
+    {
+      "pos": [
+        8,
+        6
+      ],
+      "prefab": "barrel",
+      "rot": 0
+    },
+    {
+      "pos": [
+        5,
+        5
+      ],
+      "prefab": "pillar_broken",
+      "rot": 0
+    },
+    {
+      "pos": [
+        12,
+        5
+      ],
+      "prefab": "rubble_pile",
+      "rot": 0
+    },
+    {
+      "pos": [
+        12,
+        6
+      ],
+      "prefab": "crate",
+      "rot": 0
+    },
+    {
+      "pos": [
+        2,
+        9
+      ],
+      "prefab": "rubble_pile",
+      "rot": 0
+    },
+    {
+      "pos": [
+        9,
+        12
+      ],
+      "prefab": "rubble_pile",
+      "rot": 0
+    },
+    {
+      "pos": [
+        5,
+        2
+      ],
+      "prefab": "pillar_broken",
+      "rot": 0
+    },
+    {
+      "pos": [
+        1,
+        11
+      ],
+      "prefab": "pillar_broken",
+      "rot": 0
+    },
+    {
+      "pos": [
+        3,
+        4
+      ],
+      "prefab": "rubble_pile",
+      "rot": 0
+    },
+    {
+      "pos": [
+        4,
+        9
+      ],
+      "prefab": "pillar_broken",
+      "rot": 0
+    },
+    {
+      "pos": [
+        5,
+        7
+      ],
+      "prefab": "pillar_broken",
+      "rot": 0
+    },
+    {
+      "pos": [
+        16,
+        7
+      ],
+      "prefab": "pillar_broken",
+      "rot": 0
+    },
+    {
+      "pos": [
+        9,
+        11
+      ],
+      "prefab": "crate",
+      "rot": 0
+    },
+    {
+      "pos": [
+        2,
+        2
+      ],
+      "prefab": "statue_broken",
+      "rot": 0
+    },
+    {
+      "pos": [
+        15,
+        7
+      ],
+      "prefab": "rubble_pile",
+      "rot": 0
+    },
+    {
+      "pos": [
+        2,
+        3
+      ],
+      "prefab": "statue_broken",
+      "rot": 0
+    },
+    {
+      "pos": [
+        6,
+        9
+      ],
+      "prefab": "statue_broken",
+      "rot": 0
+    },
+    {
+      "pos": [
+        9,
+        4
+      ],
+      "prefab": "rubble_pile",
+      "rot": 0
+    },
+    {
+      "pos": [
+        1,
+        2
+      ],
+      "prefab": "rubble_pile",
+      "rot": 0
+    }
+  ],
+  "seed": 438907537,
+  "size": [
+    18,
+    14
+  ],
+  "spawns": {
+    "enemy": [
+      [
+        8,
+        6
+      ],
+      [
+        8,
+        7
+      ],
+      [
+        8,
+        8
+      ],
+      [
+        12,
+        7
+      ],
+      [
+        9,
+        7
+      ],
+      [
+        9,
+        8
+      ],
+      [
+        12,
+        8
+      ],
+      [
+        9,
+        6
+      ]
+    ],
+    "player": [
+      [
+        4,
+        12
+      ],
+      [
+        13,
+        12
+      ],
+      [
+        5,
+        11
+      ],
+      [
+        1,
+        13
+      ],
+      [
+        10,
+        11
+      ],
+      [
+        4,
+        13
+      ],
+      [
+        8,
+        12
+      ]
+    ],
+    "reinforce": []
+  },
+  "template": "central_hill",
+  "terrain": [
+    [
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone"
+    ],
+    [
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone"
+    ],
+    [
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone"
+    ],
+    [
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone"
+    ],
+    [
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone"
+    ],
+    [
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "wall",
+      "wall",
+      "wall",
+      "wall",
+      "wall",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone"
+    ],
+    [
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "wall",
+      "stone",
+      "stone",
+      "stone",
+      "wall",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone"
+    ],
+    [
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "wall",
+      "stone",
+      "stone",
+      "stone",
+      "wall",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone"
+    ],
+    [
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "wall",
+      "stone",
+      "stone",
+      "stone",
+      "wall",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone"
+    ],
+    [
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "wall",
+      "wall",
+      "wall",
+      "wall",
+      "wall",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone"
+    ],
+    [
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone"
+    ],
+    [
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone"
+    ],
+    [
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone"
+    ],
+    [
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone",
+      "stone"
+    ]
+  ],
+  "tile_states": [
+    {
+      "duration": 99,
+      "pos": [
+        13,
+        4
+      ],
+      "state": "void"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        13,
+        5
+      ],
+      "state": "void"
+    },
+    {
+      "duration": 99,
+      "pos": [
+        7,
+        4
+      ],
+      "state": "void"
+    }
+  ]
+}

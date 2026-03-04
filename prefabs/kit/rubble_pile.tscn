@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://rubble_pile_kit"]
+
+[sub_resource type="StandardMaterial3D" id="1"]
+albedo_color = Color(0.533, 0.533, 0.533, 1.0)
+
+[sub_resource type="SphereMesh" id="2"]
+radius = 0.35
+height = 0.3
+material = SubResource("1")
+
+[node name="RubblePile" type="Node3D"]
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+mesh = SubResource("2")

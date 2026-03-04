@@ -58,10 +58,11 @@ func _draw():
 func _build_ui():
 	# Center container
 	var center = VBoxContainer.new()
-	center.set_anchors_preset(Control.PRESET_CENTER)
-	center.position = Vector2(490, 180)
 	center.custom_minimum_size = Vector2(300, 400)
+	center.alignment = BoxContainer.ALIGNMENT_CENTER
 	add_child(center)
+	# Position after adding so we know the viewport size
+	center.position = Vector2((1280 - 300) / 2.0, 160)
 
 	# Title
 	var title = Label.new()
@@ -83,6 +84,8 @@ func _build_ui():
 
 	# Menu buttons
 	_add_menu_btn(center, "NEW GAME", Color(0.85, 0.14, 0.28), _on_new_game)
+	_add_menu_btn(center, "START CAMPAIGN", Color(0.55, 0.15, 0.78), _on_start_campaign)
+	_add_menu_btn(center, "SKIRMISH (2.5D)", Color(0.35, 0.35, 0.50), _on_new_game_3d)
 
 	var has_save = FileAccess.file_exists("user://den_save.json")
 	_add_menu_btn(center, "CONTINUE", Color(0.3, 0.5, 0.8), _on_continue, has_save)
@@ -160,6 +163,45 @@ func _on_new_game():
 	GameState.gold = 0
 	GameState.kips_encountered.clear()
 	get_tree().change_scene_to_file("res://scenes/battle/Battle.tscn")
+
+func _on_start_campaign():
+	GameState.chapter = 1
+	GameState.army.clear()
+	GameState.gold = 0
+	GameState.kips_encountered.clear()
+	# Find most recent campaign file
+	var campaign_path: String = _find_latest_campaign()
+	if campaign_path == "":
+		push_warning("No campaign found — falling back to skirmish.")
+		_on_new_game_3d()
+		return
+	if CampaignRunner.start_campaign(campaign_path):
+		CampaignRunner.load_current_mission()
+	else:
+		push_warning("Campaign load failed — falling back to skirmish.")
+		_on_new_game_3d()
+
+func _find_latest_campaign() -> String:
+	# Prefer seed 42 (dev default), then scan for any campaign
+	if FileAccess.file_exists("res://output/campaigns/campaign_0042.json"):
+		return "res://output/campaigns/campaign_0042.json"
+	var dir := DirAccess.open("res://output/campaigns")
+	if dir == null:
+		return ""
+	dir.list_dir_begin()
+	var fname: String = dir.get_next()
+	while fname != "":
+		if fname.ends_with(".json"):
+			return "res://output/campaigns/%s" % fname
+		fname = dir.get_next()
+	return ""
+
+func _on_new_game_3d():
+	GameState.chapter = 1
+	GameState.army.clear()
+	GameState.gold = 0
+	GameState.kips_encountered.clear()
+	get_tree().change_scene_to_file("res://scenes/battle/BattleScene3D.tscn")
 
 func _on_continue():
 	if GameState.load_game():

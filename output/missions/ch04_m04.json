@@ -1,0 +1,56 @@
+{
+  "act": 2,
+  "chapter": 4,
+  "enemy_roster": [
+    {
+      "level": 2,
+      "unit_def": "covenant_templar"
+    },
+    {
+      "level": 2,
+      "unit_def": "covenant_censor_knight"
+    },
+    {
+      "level": 2,
+      "unit_def": "covenant_reliquary_mage"
+    },
+    {
+      "level": 3,
+      "unit_def": "covenant_inquisitor"
+    },
+    {
+      "level": 1,
+      "unit_def": "covenant_acolyte"
+    },
+    {
+      "level": 3,
+      "unit_def": "covenant_inquisitor"
+    }
+  ],
+  "faction_attacker": "covenant",
+  "faction_defender": "free_cities",
+  "id": "ch04_m04",
+  "loot_file": "ch04_m04_loot.json",
+  "map_file": "ch04_m04_map.json",
+  "map_ref": "ch04_m04_map.json",
+  "objective": {
+    "type": "seize"
+  },
+  "region": "black_ruins",
+  "rewards": {
+    "gold": 120,
+    "loot_rolls": [
+      {
+        "count": 2,
+        "table": "region_black_ruins_act2"
+      },
+      {
+        "count": 1,
+        "table": "faction_covenant_act2"
+      }
+    ],
+    "xp": 180
+  },
+  "seed": 1885770211,
+  "template": "central_hill"
+}

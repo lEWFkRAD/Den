@@ -1,0 +1,66 @@
+[
+  {
+    "affixes": [],
+    "element": "light",
+    "faction": "",
+    "id": "sword_iron_frostmarch_72",
+    "imprint": null,
+    "material": "iron",
+    "motif": "",
+    "name": "Blade",
+    "rarity": "common",
+    "region": "frostmarch",
+    "slot": "weapon",
+    "stats": {
+      "crit": 5,
+      "hit": 83,
+      "mt": 5,
+      "rng": [
+        1
+      ],
+      "wt": 6
+    },
+    "tier": 1,
+    "weapon_type": "sword"
+  },
+  {
+    "affixes": [],
+    "element": "light",
+    "faction": "",
+    "id": "body_iron_frostmarch_11",
+    "imprint": null,
+    "material": "iron",
+    "motif": "",
+    "name": "Cuirass",
+    "rarity": "common",
+    "region": "frostmarch",
+    "slot": "body",
+    "stats": {
+      "def": 0,
+      "mov_mod": -1,
+      "res": 0
+    },
+    "tier": 1,
+    "weapon_type": ""
+  },
+  {
+    "affixes": [],
+    "element": "plant",
+    "faction": "",
+    "id": "helm_iron_frostmarch_09",
+    "imprint": null,
+    "material": "iron",
+    "motif": "",
+    "name": "Helm",
+    "rarity": "common",
+    "region": "frostmarch",
+    "slot": "helm",
+    "stats": {
+      "def": 0,
+      "mov_mod": 0,
+      "res": 0
+    },
+    "tier": 1,
+    "weapon_type": ""
+  }
+]

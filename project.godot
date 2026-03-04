@@ -27,6 +27,7 @@ GameState="*res://autoloads/GameState.gd"
 BattleState="*res://autoloads/BattleState.gd"
 CombatResolver="*res://autoloads/CombatResolver.gd"
 CharacterRoster="*res://autoloads/CharacterRoster.gd"
+CampaignRunner="*res://autoloads/CampaignRunner.gd"
 
 [display]
 

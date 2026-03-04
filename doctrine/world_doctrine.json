@@ -1,0 +1,221 @@
+{
+  "version": "0.1",
+  "tone": {
+    "adjectives": ["visceral", "bleak", "reverent", "ancient", "heavy", "moody"],
+    "banned": ["goofy", "chibi", "neon", "cyberpunk", "modern_slang", "cute_kawaii"]
+  },
+  "elements": {
+    "divine_ring": {"light": "dark", "dark": "void", "void": "god", "god": "light"},
+    "mortal_ring": {"blood": "plant", "plant": "ice", "ice": "electric", "electric": "blood"},
+    "cross_rules": [
+      {"attacker": "god", "defender": "blood", "winner": "god", "tags": ["silence_primal"]},
+      {"attacker": "void", "defender": "ice", "winner": "ice", "tags": ["order_resists_nothing"]},
+      {"attacker": "dark", "defender": "electric", "winner": "dark", "tags": ["dark_drinks_storm"]}
+    ]
+  },
+  "progression": {
+    "acts": {
+      "act1": {
+        "chapters": [1, 2, 3],
+        "gates": {
+          "max_enemy_tier": 2,
+          "banned_elements": ["void", "god"],
+          "banned_affix_tags": ["void", "god"]
+        }
+      },
+      "act2": {
+        "chapters": [4, 5, 6],
+        "gates": {
+          "max_enemy_tier": 3,
+          "allowed_elements": ["void"],
+          "banned_elements": ["god"],
+          "banned_affix_tags": ["god"]
+        }
+      }
+    }
+  },
+  "factions": {
+    "covenant": {
+      "display_name": "The Covenant of Seals",
+      "vibe": ["religious", "controlling", "relic_hunting", "hierarchical"],
+      "motifs": ["halos", "scripture_etching", "sealed_vents", "censers", "wax_seals"],
+      "materials": ["white_iron", "sanctified_silver", "relic_glass", "ashcloth"],
+      "elements_bias": ["light", "god"],
+      "spawn_music_tags": ["choir", "bell", "drone"],
+      "enemy_pools_by_tier": {
+        "1": ["covenant_acolyte", "covenant_levy_spearman", "covenant_novice_archer"],
+        "2": ["covenant_templar", "covenant_reliquary_mage", "covenant_censor_knight"],
+        "3": ["covenant_inquisitor", "covenant_sanctum_warden", "covenant_hymnblade"]
+      }
+    },
+    "free_cities": {
+      "display_name": "The Free Cities Compact",
+      "vibe": ["mercantile", "brutal", "extraction", "contract_law"],
+      "motifs": ["hooks", "rivets", "brands", "chains", "coin_stamps"],
+      "materials": ["black_steel", "brass", "chainmail", "tar_leather"],
+      "elements_bias": ["electric", "blood"],
+      "spawn_music_tags": ["drum", "iron", "march"],
+      "enemy_pools_by_tier": {
+        "1": ["cities_cutthroat", "cities_dock_archer", "cities_hired_sword"],
+        "2": ["cities_ironhelm", "cities_hexblade", "cities_shock_pikeman"],
+        "3": ["cities_blood_knight", "cities_void_handler", "cities_siege_captain"]
+      }
+    },
+    "wanderers": {
+      "display_name": "The Oathbound Wanderers",
+      "vibe": ["displaced", "oathbound", "scholars", "survivors"],
+      "motifs": ["oath_knots", "stitched_maps", "travel_charms", "rune_stitching"],
+      "materials": ["weathered_iron", "rune_wood", "woven_leather", "bone_thread"],
+      "elements_bias": ["plant", "ice", "dark"],
+      "spawn_music_tags": ["wind", "strings", "low_chant"],
+      "enemy_pools_by_tier": {
+        "1": ["wand_scout", "wand_slingman", "wand_knife_runner"],
+        "2": ["wand_warden", "wand_oathmage", "wand_vine_guard"],
+        "3": ["wand_rift_scholar", "wand_dusk_duelist", "wand_thorn_bulwark"]
+      }
+    }
+  },
+  "regions": {
+    "frostmarch": {
+      "display_name": "Frostmarch",
+      "biome": "snow",
+      "terrain_bias": ["snow", "ice", "ruins"],
+      "kip_bias": ["ice", "light"],
+      "faction_pressure": {"covenant": 2, "free_cities": 1, "wanderers": 3},
+      "map_sizes": [[14, 10], [16, 12]]
+    },
+    "thornwild": {
+      "display_name": "Thornwild",
+      "biome": "forest",
+      "terrain_bias": ["forest", "overgrowth", "ruins"],
+      "kip_bias": ["plant", "blood"],
+      "faction_pressure": {"covenant": 1, "free_cities": 2, "wanderers": 3},
+      "map_sizes": [[14, 10], [16, 12]]
+    },
+    "black_ruins": {
+      "display_name": "The Black Ruins",
+      "biome": "ruins",
+      "terrain_bias": ["ruins", "elevation", "void_scars"],
+      "kip_bias": ["dark", "void"],
+      "faction_pressure": {"covenant": 3, "free_cities": 2, "wanderers": 1},
+      "map_sizes": [[16, 12], [18, 14]]
+    }
+  },
+  "missions": {
+    "objective_types": ["rout", "seize", "assassinate", "survive", "escort"],
+    "templates": [
+      {
+        "id": "bridge_chokepoint",
+        "allowed_biomes": ["snow", "forest", "plains"],
+        "suggested_sizes": [[14, 10], [16, 12]],
+        "objectives_allowed": ["survive", "rout", "seize"],
+        "required_features": ["river", "bridge"],
+        "banned_features": ["too_many_flanks"],
+        "encounter_style": ["frontline", "ranged_backline"],
+        "validator_rules": {
+          "min_paths_player_to_objective": 1,
+          "max_impassable_ratio": 0.18,
+          "require_bridge_count": 1
+        }
+      },
+      {
+        "id": "ruined_city_lanes",
+        "allowed_biomes": ["ruins"],
+        "suggested_sizes": [[16, 12], [18, 14]],
+        "objectives_allowed": ["rout", "assassinate", "seize"],
+        "required_features": ["streets", "cover", "rubble"],
+        "banned_features": ["single_lane_only"],
+        "encounter_style": ["lane_control", "ambush_angles"],
+        "validator_rules": {
+          "min_paths_player_to_objective": 2,
+          "max_impassable_ratio": 0.22,
+          "require_cover_tiles_min": 14
+        }
+      },
+      {
+        "id": "central_hill",
+        "allowed_biomes": ["snow", "forest", "ruins", "plains"],
+        "suggested_sizes": [[14, 10], [16, 12]],
+        "objectives_allowed": ["rout", "survive", "escort"],
+        "required_features": ["high_ground"],
+        "banned_features": [],
+        "encounter_style": ["flanks", "elevation_advantage"],
+        "validator_rules": {
+          "min_paths_player_to_objective": 2,
+          "max_impassable_ratio": 0.20,
+          "require_high_ground_core": true
+        }
+      }
+    ]
+  },
+  "campaign": {
+    "run_length_missions": 6,
+    "regions_per_run": [3, 3],
+    "chapters_per_act": {"act1": 3, "act2": 3},
+    "arcs": {
+      "major": [
+        {
+          "id": "territorial_war",
+          "weight": 60,
+          "mission_bias": {
+            "objectives": {"rout": 40, "seize": 35, "survive": 15, "assassinate": 10},
+            "templates": {"bridge_chokepoint": 35, "central_hill": 35, "ruined_city_lanes": 30}
+          },
+          "world_state_effects": {"control_shift_on_win": 1, "pressure_shift": 1}
+        },
+        {
+          "id": "relic_hunt",
+          "weight": 40,
+          "mission_bias": {
+            "objectives": {"seize": 40, "escort": 30, "assassinate": 20, "rout": 10},
+            "templates": {"ruined_city_lanes": 55, "central_hill": 25, "bridge_chokepoint": 20}
+          },
+          "world_state_effects": {"relic_sites_spawn": 1, "kip_activity_increase": 1}
+        }
+      ],
+      "minor": [
+        {"id": "plague_of_thorns", "weight": 35, "tags": ["plant", "corruption"]},
+        {"id": "winter_knives", "weight": 35, "tags": ["ice", "scarcity"]},
+        {"id": "iron_contracts", "weight": 30, "tags": ["electric", "blood", "industry"]}
+      ]
+    }
+  },
+  "loot": {
+    "stat_budgets_by_tier": {
+      "1": {"weapon_mt": [5, 7], "weapon_hit": [70, 85], "weapon_crit": [0, 5], "weapon_wt": [4, 7], "armor_def": [0, 2], "armor_res": [0, 1], "armor_mov_mod": [0, -1]},
+      "2": {"weapon_mt": [7, 10], "weapon_hit": [75, 90], "weapon_crit": [0, 10], "weapon_wt": [5, 9], "armor_def": [1, 4], "armor_res": [0, 2], "armor_mov_mod": [0, -1]},
+      "3": {"weapon_mt": [10, 13], "weapon_hit": [80, 95], "weapon_crit": [5, 15], "weapon_wt": [6, 11], "armor_def": [3, 6], "armor_res": [1, 4], "armor_mov_mod": [-1, -2]}
+    },
+    "rarities": {
+      "common": {"weight": 60, "affix_rolls": 0},
+      "uncommon": {"weight": 30, "affix_rolls": 1},
+      "rare": {"weight": 10, "affix_rolls": 2}
+    },
+    "weapon_types": ["sword", "axe", "lance", "bow", "staff", "tome", "dagger"],
+    "armor_slots": ["body", "helm", "boots", "ring"],
+    "affixes": {
+      "sanctified": {"tags": ["light"], "allowed_weapon_types": ["sword", "lance", "staff"], "effect": {"type": "bonus_vs_element", "vs": "void", "amount": 2}},
+      "chilling": {"tags": ["ice"], "allowed_weapon_types": ["sword", "lance", "tome", "dagger"], "effect": {"type": "status_on_hit", "status": "slow", "turns": 1, "chance": 0.35}},
+      "ravenous": {"tags": ["blood"], "allowed_weapon_types": ["axe", "dagger", "sword"], "effect": {"type": "lifesteal_pct", "pct": 0.10}},
+      "stormbound": {"tags": ["electric"], "allowed_weapon_types": ["tome", "lance", "bow"], "effect": {"type": "chain_on_wet", "extra_hits": 1, "radius": 1}},
+      "duskward": {"tags": ["dark"], "allowed_weapon_types": ["tome", "dagger", "bow"], "effect": {"type": "evasion_on_shadow", "amount": 10}},
+      "null": {"tags": ["void"], "allowed_weapon_types": ["tome", "dagger"], "effect": {"type": "purge_tile_states_on_hit", "radius": 1}}
+    },
+    "tables": {
+      "region_frostmarch_act1": {"rolls": [{"kind": "material", "id": "rune_wood", "weight": 15}, {"kind": "armor", "tier": 1, "weight": 40}, {"kind": "weapon", "tier": 1, "weight": 45}]},
+      "region_thornwild_act1": {"rolls": [{"kind": "material", "id": "woven_leather", "weight": 15}, {"kind": "armor", "tier": 1, "weight": 40}, {"kind": "weapon", "tier": 1, "weight": 45}]},
+      "region_black_ruins_act1": {"rolls": [{"kind": "material", "id": "relic_glass", "weight": 20}, {"kind": "armor", "tier": 1, "weight": 35}, {"kind": "weapon", "tier": 1, "weight": 45}]},
+      "faction_covenant_act1": {"rolls": [{"kind": "weapon", "tier": 1, "bias_tags": ["light"], "weight": 55}, {"kind": "armor", "tier": 1, "bias_tags": ["light"], "weight": 45}]},
+      "faction_free_cities_act1": {"rolls": [{"kind": "weapon", "tier": 1, "bias_tags": ["electric", "blood"], "weight": 60}, {"kind": "armor", "tier": 1, "bias_tags": ["electric"], "weight": 40}]},
+      "faction_wanderers_act1": {"rolls": [{"kind": "weapon", "tier": 1, "bias_tags": ["plant", "ice", "dark"], "weight": 55}, {"kind": "armor", "tier": 1, "bias_tags": ["ice", "plant"], "weight": 45}]},
+      "region_black_ruins_act2": {"rolls": [{"kind": "weapon", "tier": 2, "bias_tags": ["dark", "void"], "weight": 55}, {"kind": "armor", "tier": 2, "bias_tags": ["dark"], "weight": 35}, {"kind": "affix", "id": "null", "weight": 10}]}
+    }
+  },
+  "hard_constraints": [
+    {"id": "gate_void_until_act2", "rule": "void_affixes_allowed_act >= 2"},
+    {"id": "gate_god_until_future", "rule": "god_element_allowed_act >= 999"},
+    {"id": "biome_element_sanity", "rule": "snow_biome_avoids_blood_bias = true"},
+    {"id": "template_bridge_one_bridge", "rule": "bridge_chokepoint.bridge_count == 1"},
+    {"id": "maps_must_be_solvable", "rule": "objective_reachable = true"}
+  ]
+}

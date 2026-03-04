@@ -133,10 +133,16 @@ func _run_enemy_ai(enemy: Unit):
 	if best_target != null:
 		grid.flash(enemy.grid_position,      Color(0.9, 0.1, 0.1, 0.7), 0.4)
 		grid.flash(best_target.grid_position, Color(0.9, 0.1, 0.1, 0.8), 0.4)
-		var log = CombatResolver.resolve_combat(enemy, best_target)
+		var h_diff: float = _get_height_diff(enemy, best_target)
+		var log = CombatResolver.resolve_combat(enemy, best_target, h_diff)
 		for entry in log: combat_log_entry.emit(entry)
 		if not best_target.is_alive():
 			grid.tiles[best_target.grid_position].occupant = null
+
+func _get_height_diff(a, b) -> float:
+	if grid and grid.has_method("get_tile_height"):
+		return grid.get_tile_height(a.grid_position) - grid.get_tile_height(b.grid_position)
+	return 0.0
 
 # ─── AI Scoring ──────────────────────────────────────────────────────────────
 
@@ -145,7 +151,8 @@ func _score_attack(enemy: Unit, target: Unit, from_tile: Vector2i) -> float:
 	# Temporarily move enemy to candidate tile for accurate forecast
 	var original_pos = enemy.grid_position
 	enemy.grid_position = from_tile
-	var fc = CombatResolver.get_forecast(enemy, target)
+	var h_diff: float = _get_height_diff(enemy, target)
+	var fc = CombatResolver.get_forecast(enemy, target, h_diff)
 	enemy.grid_position = original_pos
 
 	# Can we kill? Highest priority

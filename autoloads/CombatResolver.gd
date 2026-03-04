@@ -11,24 +11,50 @@ const WEAPON_TRIANGLE: Dictionary = {
 	"SWORD_LANCE": -1,
 }
 
+# ─── Elevation Constants ─────────────────────────────────────────────────────
+# height_diff = attacker_height - defender_height (in world units, HEIGHT_STEP=0.5)
+const ELEV_HIT_PER_STEP: int  = 10    # +10 hit per elevation step above defender
+const ELEV_DMG_THRESHOLD: int = 2     # Need 2+ steps above for damage bonus
+const ELEV_DMG_BONUS: int     = 1     # +1 damage when above by threshold
+const HEIGHT_STEP: float      = 0.5   # Must match Grid3D.HEIGHT_STEP
+
 # ─── Hit / Damage / Crit Calculation ─────────────────────────────────────────
 
-func get_hit(attacker, weapon: Weapon, defender) -> int:
+## Get tile cover bonuses for a unit's current position.
+## Returns {avoid: int, defense: int} including elemental state bonuses.
+func _get_tile_cover(unit) -> Dictionary:
+	var tile = BattleState.get_tile_at(unit.grid_position)
+	if tile == null:
+		return {"avoid": 0, "defense": 0}
+	return {"avoid": tile.get_effective_avoid(), "defense": tile.get_effective_defense()}
+
+func get_hit(attacker, weapon: Weapon, defender, height_diff: float = 0.0) -> int:
 	if weapon == null: return 0
 	var base_hit = attacker.stats.skill * 2 + attacker.stats.luck / 2 + weapon.hit
 	var evade    = defender.stats.speed * 2 + defender.stats.luck / 2
 	var triangle = _get_triangle_bonus(weapon, defender.weapon)
-	return clampi(base_hit - evade + triangle * 15, 0, 100)
+	# Elevation: +/- hit per step of height difference
+	var elev_steps: int = int(height_diff / HEIGHT_STEP)
+	var elev_mod: int = elev_steps * ELEV_HIT_PER_STEP
+	# Tile cover: defender's avoid bonus reduces hit
+	var cover = _get_tile_cover(defender)
+	return clampi(base_hit - evade + triangle * 15 + elev_mod - cover["avoid"], 0, 100)
 
-func get_damage(attacker, weapon: Weapon, defender) -> int:
+func get_damage(attacker, weapon: Weapon, defender, height_diff: float = 0.0) -> int:
 	if weapon == null: return 0
 	var raw: int
+	# Tile cover: defender's defense bonus adds to effective defense
+	var cover = _get_tile_cover(defender)
 	if weapon.damage_type == Weapon.DamageType.MAGICAL:
-		raw = attacker.stats.magic + weapon.attack - defender.stats.resistance
+		raw = attacker.stats.magic + weapon.attack - defender.stats.resistance - cover["defense"]
 	else:
-		raw = attacker.stats.strength + weapon.attack - defender.stats.defense
+		raw = attacker.stats.strength + weapon.attack - defender.stats.defense - cover["defense"]
 	# Weapon triangle gives +1/-1 damage
 	raw += _get_triangle_bonus(weapon, defender.weapon)
+	# Elevation: +1 damage when 2+ steps above defender
+	var elev_steps: int = int(height_diff / HEIGHT_STEP)
+	if elev_steps >= ELEV_DMG_THRESHOLD:
+		raw += ELEV_DMG_BONUS
 	# Element multiplier
 	var atk_elem = weapon.element if weapon.element != "" else attacker.element
 	raw = ElementRegistry.calculate_damage(raw, atk_elem, defender.element)
@@ -50,7 +76,7 @@ func can_counter(defender, attacker_pos: Vector2i) -> bool:
 
 # ─── Full Combat Forecast ─────────────────────────────────────────────────────
 
-func get_forecast(attacker, defender) -> Dictionary:
+func get_forecast(attacker, defender, height_diff: float = 0.0) -> Dictionary:
 	var w_atk = attacker.weapon
 	var w_def = defender.weapon
 	var dist  = (attacker.grid_position - defender.grid_position).length()
@@ -60,20 +86,22 @@ func get_forecast(attacker, defender) -> Dictionary:
 		"def_name":    defender.unit_name,
 		"atk_weapon":  w_atk.weapon_name if w_atk else "—",
 		"def_weapon":  w_def.weapon_name if w_def else "—",
-		"atk_damage":  get_damage(attacker, w_atk, defender),
+		"atk_damage":  get_damage(attacker, w_atk, defender, height_diff),
 		"def_damage":  0,
-		"atk_hit":     get_hit(attacker, w_atk, defender),
+		"atk_hit":     get_hit(attacker, w_atk, defender, height_diff),
 		"def_hit":     0,
 		"atk_crit":    get_crit(attacker, w_atk, defender),
 		"def_crit":    0,
 		"atk_double":  can_double(attacker, defender),
 		"def_double":  false,
-		"def_can_counter": can_counter(defender, attacker.grid_position)
+		"def_can_counter": can_counter(defender, attacker.grid_position),
+		"height_diff": height_diff,
 	}
 
+	# Defender counter uses negative height_diff (they attack back uphill/downhill)
 	if fc["def_can_counter"] and w_def != null:
-		fc["def_damage"]  = get_damage(defender, w_def, attacker)
-		fc["def_hit"]     = get_hit(defender, w_def, attacker)
+		fc["def_damage"]  = get_damage(defender, w_def, attacker, -height_diff)
+		fc["def_hit"]     = get_hit(defender, w_def, attacker, -height_diff)
 		fc["def_crit"]    = get_crit(defender, w_def, attacker)
 		fc["def_double"]  = can_double(defender, attacker)
 
@@ -81,43 +109,43 @@ func get_forecast(attacker, defender) -> Dictionary:
 
 # ─── Combat Resolution ────────────────────────────────────────────────────────
 
-func resolve_combat(attacker, defender) -> Array:
+func resolve_combat(attacker, defender, height_diff: float = 0.0) -> Array:
 	var log: Array = []
-	var fc = get_forecast(attacker, defender)
+	var fc = get_forecast(attacker, defender, height_diff)
 
-	# Attacker strikes first
-	_strike(attacker, attacker.weapon, defender, log)
+	# Attacker strikes first (positive height_diff = attacker above)
+	_strike(attacker, attacker.weapon, defender, log, height_diff)
 	if not defender.is_alive(): return log
 
-	# Defender counters
+	# Defender counters (negative height_diff = defender below, attacking up)
 	if fc["def_can_counter"]:
-		_strike(defender, defender.weapon, attacker, log)
+		_strike(defender, defender.weapon, attacker, log, -height_diff)
 		if not attacker.is_alive(): return log
 
 	# Follow-up: attacker doubles
 	if fc["atk_double"]:
-		_strike(attacker, attacker.weapon, defender, log)
+		_strike(attacker, attacker.weapon, defender, log, height_diff)
 		if not defender.is_alive(): return log
 
 	# Follow-up: defender doubles
 	if fc["def_double"] and fc["def_can_counter"]:
-		_strike(defender, defender.weapon, attacker, log)
+		_strike(defender, defender.weapon, attacker, log, -height_diff)
 
 	return log
 
-func _strike(attacker, weapon: Weapon, defender, log: Array):
+func _strike(attacker, weapon: Weapon, defender, log: Array, height_diff: float = 0.0):
 	if weapon == null:
 		log.append("%s has no weapon!" % attacker.unit_name)
 		return
 
 	var hit_roll = randi() % 100
-	var hit_chance = get_hit(attacker, weapon, defender)
+	var hit_chance = get_hit(attacker, weapon, defender, height_diff)
 
 	if hit_roll >= hit_chance:
 		log.append("%s missed %s." % [attacker.unit_name, defender.unit_name])
 		return
 
-	var damage = get_damage(attacker, weapon, defender)
+	var damage = get_damage(attacker, weapon, defender, height_diff)
 	var crit_roll = randi() % 100
 	var is_crit = crit_roll < get_crit(attacker, weapon, defender)
 

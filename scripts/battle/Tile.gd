@@ -15,6 +15,9 @@ var is_passable: bool = true
 var defense_bonus: int = 0
 var avoid_bonus:   int = 0
 var heal_bonus:    int = 0   # HP restored per turn when standing on this tile
+var blocks_los:    bool = false    # Blocks line of sight for ranged attacks
+var object_hp:     int = 0        # Destructible HP (0 = indestructible or no object)
+var object_max_hp: int = 0
 
 func set_terrain(type_str: String):
 	match type_str:
@@ -38,21 +41,42 @@ func set_object(obj_str: String):
 		"tree_pine":     terrain_object = TerrainObject.TREE_PINE
 		"tree_oak":      terrain_object = TerrainObject.TREE_OAK
 		"tree_dead":     terrain_object = TerrainObject.TREE_DEAD
-		"bush":          terrain_object = TerrainObject.BUSH
-		"house":         terrain_object = TerrainObject.HOUSE;   defense_bonus += 1; avoid_bonus += 10
-		"tower":         terrain_object = TerrainObject.TOWER;   defense_bonus += 2; avoid_bonus += 15
-		"church":        terrain_object = TerrainObject.CHURCH;  defense_bonus += 1; heal_bonus += 2
+		"bush":          terrain_object = TerrainObject.BUSH;    defense_bonus += 1; avoid_bonus += 5
+		"house":         terrain_object = TerrainObject.HOUSE;   defense_bonus += 1; avoid_bonus += 10; blocks_los = true
+		"tower":         terrain_object = TerrainObject.TOWER;   defense_bonus += 2; avoid_bonus += 15; blocks_los = true
+		"church":        terrain_object = TerrainObject.CHURCH;  defense_bonus += 1; heal_bonus += 2; blocks_los = true
 		"well":          terrain_object = TerrainObject.WELL;    heal_bonus += 1
-		"fence_h":       terrain_object = TerrainObject.FENCE_H
-		"fence_v":       terrain_object = TerrainObject.FENCE_V
+		"fence_h":       terrain_object = TerrainObject.FENCE_H; defense_bonus += 1
+		"fence_v":       terrain_object = TerrainObject.FENCE_V; defense_bonus += 1
 		"signpost":      terrain_object = TerrainObject.SIGNPOST
-		"barrel":        terrain_object = TerrainObject.BARREL
-		"crate":         terrain_object = TerrainObject.CRATE
+		"barrel":        terrain_object = TerrainObject.BARREL;  _set_destructible(1)
+		"crate":         terrain_object = TerrainObject.CRATE;   _set_destructible(2)
 		"bridge_h":      terrain_object = TerrainObject.BRIDGE_H; is_passable = true
 		"bridge_v":      terrain_object = TerrainObject.BRIDGE_V; is_passable = true
-		"ruins_pillar":  terrain_object = TerrainObject.RUINS_PILLAR; defense_bonus += 1
+		"ruins_pillar":  terrain_object = TerrainObject.RUINS_PILLAR; defense_bonus += 1; blocks_los = true
 		"ruins_arch":    terrain_object = TerrainObject.RUINS_ARCH;   avoid_bonus += 5
-		"statue":        terrain_object = TerrainObject.STATUE
+		"statue":        terrain_object = TerrainObject.STATUE;  blocks_los = true
+
+func _set_destructible(hp: int) -> void:
+	object_hp = hp
+	object_max_hp = hp
+	defense_bonus += 1  # Destructible objects provide light cover
+
+func is_destructible() -> bool:
+	return object_max_hp > 0 and object_hp > 0
+
+## Damage the object on this tile. Returns true if the object was destroyed.
+func damage_object(amount: int = 1) -> bool:
+	if not is_destructible():
+		return false
+	object_hp = max(0, object_hp - amount)
+	if object_hp == 0:
+		# Object destroyed — revert bonuses
+		terrain_object = TerrainObject.NONE
+		defense_bonus = max(0, defense_bonus - 1)
+		blocks_los = false
+		return true
+	return false
 
 func set_elemental_state(elem: String, duration: int = 3):
 	match elem:
@@ -98,7 +122,53 @@ func get_movement_cost(unit_element: String = "") -> int:
 			cost = 1 if unit_element == "plant" else cost + 1
 		ElementalState.CHARGED:
 			cost = 1 if unit_element == "electric" else cost
+		ElementalState.VOIDED:
+			cost = 1 if unit_element == "void" else cost + 1
+		ElementalState.DARKENED:
+			cost = 1 if unit_element == "dark" else cost + 1
 	return cost
+
+## Get effective cover bonuses including elemental state bonuses.
+## OVERGROWN tiles grant cover (avoid + defense).
+func get_effective_avoid() -> int:
+	var total: int = avoid_bonus
+	if elemental_state == ElementalState.OVERGROWN:
+		total += 15  # Overgrown provides cover
+	return total
+
+func get_effective_defense() -> int:
+	var total: int = defense_bonus
+	if elemental_state == ElementalState.OVERGROWN:
+		total += 1   # Light defense from overgrowth
+	return total
+
+## Returns on-entry effects for a unit stepping onto this tile.
+## Called by Battle3D when a unit moves.
+func get_entry_effects(unit_element: String = "") -> Dictionary:
+	var effects: Dictionary = {
+		"purge": false,       # Remove all buffs/debuffs
+		"damage": 0,          # Damage on entry
+		"heal": heal_bonus,   # Heal on turn start
+		"message": "",        # Log message
+	}
+	match elemental_state:
+		ElementalState.VOIDED:
+			if unit_element != "void":
+				effects["purge"] = true
+				effects["message"] = "VOID SCAR purges all effects!"
+		ElementalState.CHARGED:
+			if unit_element != "electric":
+				effects["damage"] = 3
+				effects["message"] = "Shocked by CHARGED ground!"
+		ElementalState.BLOODSOAKED:
+			if unit_element != "blood":
+				effects["damage"] = 2
+				effects["message"] = "Bloodsoaked ground burns!"
+		ElementalState.FROZEN:
+			pass  # Movement penalty only (already handled)
+		ElementalState.OVERGROWN:
+			pass  # Cover + slow (already handled)
+	return effects
 
 func get_color() -> Color:
 	match elemental_state:

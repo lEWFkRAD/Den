@@ -245,6 +245,33 @@ func get_evolution_progress() -> Dictionary:
 func has_mutation(ability_name: String) -> bool:
 	return is_evolved and mutation_ability == ability_name
 
+func apply_mutations(unit) -> void:
+	if not is_evolved or mutation_ability.is_empty(): return
+	# Per-turn effects from evolved kip's mutation ability
+	match mutation_ability:
+		"fortify":
+			if not unit.temp_boosts.has("kip_fortify"):
+				unit.temp_boosts["kip_fortify"] = {"amount": 2, "turns": 999}
+				unit.stats.defense += 2
+		"empower":
+			if not unit.temp_boosts.has("kip_empower"):
+				unit.temp_boosts["kip_empower"] = {"amount": 2, "turns": 999}
+				unit.stats.strength += 2
+		"swiftness":
+			if not unit.temp_boosts.has("kip_swift"):
+				unit.temp_boosts["kip_swift"] = {"amount": 1, "turns": 999}
+				unit.stats.movement += 1
+		"regenerate":
+			if unit.is_alive():
+				unit.stats.hp = mini(unit.stats.hp + 3, unit.stats.max_hp)
+		"shield":
+			if not unit.temp_boosts.has("kip_shield"):
+				unit.temp_boosts["kip_shield"] = {"amount": 1, "turns": 999}
+				unit.stats.defense += 1
+				unit.stats.resistance += 1
+		_:
+			pass  # Unknown mutation — no effect
+
 # ─── Save / Load Memory ─────────────────────────────────────────────────────
 
 func save_data() -> Dictionary:

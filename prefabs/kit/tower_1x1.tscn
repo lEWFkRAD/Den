@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://tower_1x1_kit"]
+
+[sub_resource type="StandardMaterial3D" id="1"]
+albedo_color = Color(0.353, 0.314, 0.271, 1.0)
+
+[sub_resource type="CylinderMesh" id="2"]
+top_radius = 0.35
+bottom_radius = 0.35
+height = 1.2
+material = SubResource("1")
+
+[node name="Tower1x1" type="Node3D"]
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+mesh = SubResource("2")

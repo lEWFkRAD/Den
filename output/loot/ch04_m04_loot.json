@@ -1,0 +1,47 @@
+[
+  {
+    "affixes": [],
+    "element": "dark",
+    "faction": "",
+    "id": "body_iron_black_ruins_08",
+    "imprint": null,
+    "material": "iron",
+    "motif": "",
+    "name": "Cuirass",
+    "rarity": "common",
+    "region": "black_ruins",
+    "slot": "body",
+    "stats": {
+      "def": 2,
+      "mov_mod": -1,
+      "res": 0
+    },
+    "tier": 2,
+    "weapon_type": ""
+  },
+  {
+    "affixes": [],
+    "element": "void",
+    "faction": "",
+    "id": "tome_iron_black_ruins_23",
+    "imprint": null,
+    "material": "iron",
+    "motif": "",
+    "name": "Grimoire",
+    "rarity": "common",
+    "region": "black_ruins",
+    "slot": "weapon",
+    "stats": {
+      "crit": 2,
+      "hit": 83,
+      "mt": 8,
+      "rng": [
+        1,
+        2
+      ],
+      "wt": 6
+    },
+    "tier": 2,
+    "weapon_type": "tome"
+  }
+]

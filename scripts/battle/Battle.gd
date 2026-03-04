@@ -1413,8 +1413,8 @@ func _set_info_bbcode(unit):
 				info_rtl.push_color(Color(0.45, 0.40, 0.55))
 				var done_count = 0
 				var total_count = progress.size()
-				for pkey in progress:
-					var p = progress[pkey]
+				for evo_key in progress:
+					var p = progress[evo_key]
 					if p["complete"]: done_count += 1
 				info_rtl.append_text("Evolution: %d/%d" % [done_count, total_count])
 				info_rtl.pop()
