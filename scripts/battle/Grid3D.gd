@@ -290,11 +290,51 @@ func _create_tile_mesh(pos: Vector2i):
 	plane.size = Vector2(TILE_SCALE * 0.95, TILE_SCALE * 0.95)  # Slight gap between tiles
 	mi.mesh = plane
 
-	# Material
+	# Material — variant-aware with terrain-specific roughness/metallic
 	var mat = StandardMaterial3D.new()
-	mat.albedo_color = tile.get_color()
-	mat.roughness = 0.85
-	mat.metallic = 0.05
+	var base_color: Color = tile.get_color()
+	# For terrain types without built-in variant colors, apply a small offset
+	var v: int = tile.terrain_variant
+	match tile.terrain_type:
+		Tile.TerrainType.FOREST, Tile.TerrainType.WATER, Tile.TerrainType.RUINS, \
+		Tile.TerrainType.ELEVATION, Tile.TerrainType.WALL, Tile.TerrainType.FORT, \
+		Tile.TerrainType.BRIDGE, Tile.TerrainType.VILLAGE, Tile.TerrainType.THRONE, \
+		Tile.TerrainType.SAND, Tile.TerrainType.LAVA, Tile.TerrainType.RIVER, \
+		Tile.TerrainType.ROAD:
+			# These don't have variant arrays in get_color(), add subtle variation
+			var offset: float = (v - 2) * 0.015
+			base_color = Color(
+				clampf(base_color.r + offset, 0.0, 1.0),
+				clampf(base_color.g + offset * 0.8, 0.0, 1.0),
+				clampf(base_color.b + offset * 0.6, 0.0, 1.0)
+			)
+	mat.albedo_color = base_color
+	# Terrain-specific roughness and metallic
+	match tile.terrain_type:
+		Tile.TerrainType.DIRT, Tile.TerrainType.SAND:
+			mat.roughness = 0.95
+			mat.metallic = 0.0
+		Tile.TerrainType.ICE:
+			mat.roughness = 0.15
+			mat.metallic = 0.35
+		Tile.TerrainType.WATER, Tile.TerrainType.RIVER:
+			mat.roughness = 0.2
+			mat.metallic = 0.1
+		Tile.TerrainType.STONE, Tile.TerrainType.ROCK:
+			mat.roughness = 0.9
+			mat.metallic = 0.02
+		Tile.TerrainType.SNOW:
+			mat.roughness = 0.75
+			mat.metallic = 0.08
+		Tile.TerrainType.LAVA:
+			mat.roughness = 0.4
+			mat.metallic = 0.0
+			mat.emission_enabled = true
+			mat.emission = Color(0.55, 0.12, 0.02)
+			mat.emission_energy_multiplier = 0.4
+		_:
+			mat.roughness = 0.85
+			mat.metallic = 0.05
 	mi.material_override = mat
 
 	mi.position = Vector3(pos.x * TILE_SCALE, h, pos.y * TILE_SCALE)
@@ -302,12 +342,47 @@ func _create_tile_mesh(pos: Vector2i):
 	tiles_root.add_child(mi)
 	tile_meshes[pos] = mi
 
+	# Road auto-tiling: curbs along non-road edges
+	if tile.terrain_type == Tile.TerrainType.ROAD:
+		# Override road surface material for smoother path look
+		mat.roughness = 0.7
+		mat.albedo_color = base_color.lightened(0.08)  # Slightly lighter gray-brown
+		var road_dirs = [
+			[Vector2i(0, -1), Vector3(0.0, 0.0, -0.45), 0.0],   # -Z edge
+			[Vector2i(0,  1), Vector3(0.0, 0.0,  0.45), 0.0],   # +Z edge
+			[Vector2i(-1, 0), Vector3(-0.45, 0.0, 0.0), PI/2],  # -X edge
+			[Vector2i( 1, 0), Vector3( 0.45, 0.0, 0.0), PI/2],  # +X edge
+		]
+		for rd in road_dirs:
+			if not _is_road_neighbor(pos, rd[0]):
+				var curb = MeshInstance3D.new()
+				var curb_mesh = BoxMesh.new()
+				curb_mesh.size = Vector3(TILE_SCALE * 0.95, 0.04, 0.06)
+				curb.mesh = curb_mesh
+				var curb_mat = StandardMaterial3D.new()
+				curb_mat.albedo_color = base_color.darkened(0.2)
+				curb_mat.roughness = 0.85
+				curb.material_override = curb_mat
+				curb.position = Vector3(
+					pos.x * TILE_SCALE + rd[1].x * TILE_SCALE,
+					h + 0.02,
+					pos.y * TILE_SCALE + rd[1].z * TILE_SCALE
+				)
+				curb.rotation.y = rd[2]
+				tiles_root.add_child(curb)
+
 	# Side faces only where this tile is higher than its neighbor (clean cliffs)
 	_create_tile_sides(pos, h, tile.get_color())
 
 	# Terrain object 3D representation
 	if tile.terrain_object != Tile.TerrainObject.NONE:
 		_create_terrain_object_3d(pos, tile, h)
+
+	# Building warm lights for structures
+	if tile.terrain_type in [Tile.TerrainType.FORT, Tile.TerrainType.VILLAGE] or \
+		tile.terrain_object in [Tile.TerrainObject.HOUSE, Tile.TerrainObject.TOWER,
+			Tile.TerrainObject.CHURCH]:
+		_add_building_light(pos, h, tile)
 
 func _create_tile_sides(pos: Vector2i, h: float, base_color: Color):
 	var side_color = base_color.darkened(0.35)
@@ -328,21 +403,102 @@ func _create_tile_sides(pos: Vector2i, h: float, base_color: Color):
 		if drop < 0.05:
 			continue
 
-		var side_mat = StandardMaterial3D.new()
-		side_mat.albedo_color = side_color
-		side_mat.roughness = 0.9
-		var side = MeshInstance3D.new()
-		var side_plane = PlaneMesh.new()
-		side_plane.size = Vector2(TILE_SCALE * 0.95, drop)
-		side.mesh = side_plane
-		side.material_override = side_mat
-		side.position = Vector3(
-			pos.x * TILE_SCALE + entry[1].x * TILE_SCALE * 0.95,
-			h - drop * 0.5,
-			pos.y * TILE_SCALE + entry[1].z * TILE_SCALE * 0.95
-		)
-		side.rotation = entry[2]
-		tiles_root.add_child(side)
+		# Get neighbor color for lerping on slopes
+		var n_color: Color = base_color
+		if tiles.has(n_pos):
+			n_color = tiles[n_pos].get_color()
+
+		if drop > 0.05 and drop <= 0.5:
+			# --- SLOPE: gentle height difference → angled plane ---
+			var slope_mat = StandardMaterial3D.new()
+			slope_mat.albedo_color = base_color.lerp(n_color, 0.5).darkened(0.15)
+			slope_mat.roughness = 0.9
+			var slope = MeshInstance3D.new()
+			var slope_plane = PlaneMesh.new()
+			# Slope connects the two heights across the tile edge
+			var slope_length: float = sqrt(drop * drop + (TILE_SCALE * 0.475) * (TILE_SCALE * 0.475))
+			slope_plane.size = Vector2(TILE_SCALE * 0.95, slope_length)
+			slope.mesh = slope_plane
+			slope.material_override = slope_mat
+			# Position at midpoint between the two heights, at the edge
+			slope.position = Vector3(
+				pos.x * TILE_SCALE + entry[1].x * TILE_SCALE * 0.95,
+				h - drop * 0.5,
+				pos.y * TILE_SCALE + entry[1].z * TILE_SCALE * 0.95
+			)
+			# Angle the plane to connect the heights
+			var slope_angle: float = atan2(drop, TILE_SCALE * 0.475)
+			slope.rotation = entry[2]
+			# Adjust rotation to tilt the plane along the slope
+			if entry[0] == Vector2i(0, 1):
+				slope.rotation.x = PI/2 - slope_angle
+			elif entry[0] == Vector2i(0, -1):
+				slope.rotation.x = -(PI/2 - slope_angle)
+			elif entry[0] == Vector2i(1, 0):
+				slope.rotation.z = -(PI/2 - slope_angle)
+			elif entry[0] == Vector2i(-1, 0):
+				slope.rotation.z = PI/2 - slope_angle
+			tiles_root.add_child(slope)
+		else:
+			# --- CLIFF: large drop → vertical face with layered rock ledges ---
+			var side_mat = StandardMaterial3D.new()
+			side_mat.albedo_color = side_color
+			side_mat.roughness = 0.9
+			var side = MeshInstance3D.new()
+			var side_plane = PlaneMesh.new()
+			side_plane.size = Vector2(TILE_SCALE * 0.95, drop)
+			side.mesh = side_plane
+			side.material_override = side_mat
+			side.position = Vector3(
+				pos.x * TILE_SCALE + entry[1].x * TILE_SCALE * 0.95,
+				h - drop * 0.5,
+				pos.y * TILE_SCALE + entry[1].z * TILE_SCALE * 0.95
+			)
+			side.rotation = entry[2]
+			tiles_root.add_child(side)
+
+			# Horizontal ledge lines every 0.25 units for layered rock look
+			var ledge_step: float = 0.25
+			var current_y: float = n_h + ledge_step
+			var v_offset: int = 0
+			while current_y < h - 0.05:
+				var ledge = MeshInstance3D.new()
+				var ledge_mesh = PlaneMesh.new()
+				ledge_mesh.size = Vector2(TILE_SCALE * 0.93, 0.06)
+				ledge.mesh = ledge_mesh
+				var ledge_mat = StandardMaterial3D.new()
+				# Slight variation per ledge
+				var ledge_darken: float = 0.25 + (v_offset % 3) * 0.05
+				ledge_mat.albedo_color = side_color.darkened(ledge_darken)
+				ledge_mat.roughness = 0.95
+				ledge.material_override = ledge_mat
+				ledge.position = Vector3(
+					pos.x * TILE_SCALE + entry[1].x * TILE_SCALE * 0.96,
+					current_y,
+					pos.y * TILE_SCALE + entry[1].z * TILE_SCALE * 0.96
+				)
+				# Orient ledge flat, facing outward slightly
+				ledge.rotation = entry[2]
+				tiles_root.add_child(ledge)
+				current_y += ledge_step
+				v_offset += 1
+
+			# Cliff edge trim: thin darkened strip along the top edge
+			var trim = MeshInstance3D.new()
+			var trim_mesh = PlaneMesh.new()
+			trim_mesh.size = Vector2(TILE_SCALE * 0.95, 0.04)
+			trim.mesh = trim_mesh
+			var trim_mat = StandardMaterial3D.new()
+			trim_mat.albedo_color = base_color.darkened(0.45)
+			trim_mat.roughness = 0.9
+			trim.material_override = trim_mat
+			trim.position = Vector3(
+				pos.x * TILE_SCALE + entry[1].x * TILE_SCALE * 0.95,
+				h - 0.005,
+				pos.y * TILE_SCALE + entry[1].z * TILE_SCALE * 0.95
+			)
+			trim.rotation = entry[2]
+			tiles_root.add_child(trim)
 
 func _create_terrain_object_3d(pos: Vector2i, tile: Tile, h: float):
 	var obj_node = Node3D.new()
@@ -446,7 +602,246 @@ func _create_terrain_object_3d(pos: Vector2i, tile: Tile, h: float):
 			figure.position.y = 0.275
 			obj_node.add_child(figure)
 
+		Tile.TerrainObject.ROCK_SMALL:
+			# 2-3 small rocks at slightly different offsets
+			var rock_offsets = [Vector3(-0.1, 0.0, 0.05), Vector3(0.08, 0.0, -0.06), Vector3(0.0, 0.0, 0.1)]
+			var rock_radii = [0.08, 0.10, 0.12]
+			var rock_count: int = 2 + (tile.terrain_variant % 2)  # 2 or 3
+			for ri in range(rock_count):
+				var rock = MeshInstance3D.new()
+				var rock_mesh = SphereMesh.new()
+				rock_mesh.radius = rock_radii[ri]
+				rock_mesh.height = rock_radii[ri] * 1.6
+				rock.mesh = rock_mesh
+				var rock_mat = StandardMaterial3D.new()
+				rock_mat.albedo_color = Color(0.38 + ri * 0.02, 0.36 + ri * 0.02, 0.34 + ri * 0.01)
+				rock_mat.roughness = 0.92
+				rock.material_override = rock_mat
+				rock.position = rock_offsets[ri]
+				rock.position.y = rock_radii[ri] * 0.6
+				obj_node.add_child(rock)
+
+		Tile.TerrainObject.ROCK_LARGE:
+			var big_rock = MeshInstance3D.new()
+			var big_rock_mesh = SphereMesh.new()
+			big_rock_mesh.radius = 0.25
+			big_rock_mesh.height = 0.3  # Squashed vertically
+			big_rock.mesh = big_rock_mesh
+			var big_rock_mat = StandardMaterial3D.new()
+			big_rock_mat.albedo_color = Color(0.28, 0.26, 0.24)
+			big_rock_mat.roughness = 0.95
+			big_rock.material_override = big_rock_mat
+			big_rock.position.y = 0.15
+			obj_node.add_child(big_rock)
+
+		Tile.TerrainObject.LOG:
+			var log_mi = MeshInstance3D.new()
+			var log_mesh = CylinderMesh.new()
+			log_mesh.top_radius = 0.06
+			log_mesh.bottom_radius = 0.06
+			log_mesh.height = 0.6
+			log_mi.mesh = log_mesh
+			var log_mat = StandardMaterial3D.new()
+			log_mat.albedo_color = Color(0.32, 0.22, 0.10)
+			log_mat.roughness = 0.88
+			log_mi.material_override = log_mat
+			# Rotate to lie flat (horizontal)
+			log_mi.rotation.z = PI / 2
+			log_mi.position.y = 0.07  # Slightly elevated off ground
+			obj_node.add_child(log_mi)
+
+		Tile.TerrainObject.ROOT:
+			# 3-4 thin box pieces radiating from center at ground level
+			var root_count: int = 3 + (tile.terrain_variant % 2)  # 3 or 4
+			var root_angles: Array = [0.0, PI * 0.6, PI * 1.2, PI * 1.7]
+			var root_lengths: Array = [0.25, 0.3, 0.22, 0.18]
+			for ri in range(root_count):
+				var root_piece = MeshInstance3D.new()
+				var root_mesh = BoxMesh.new()
+				root_mesh.size = Vector3(root_lengths[ri], 0.02, 0.03)
+				root_piece.mesh = root_mesh
+				var root_mat = StandardMaterial3D.new()
+				root_mat.albedo_color = Color(0.22, 0.14, 0.06)
+				root_mat.roughness = 0.9
+				root_piece.material_override = root_mat
+				root_piece.position.y = 0.01
+				root_piece.position.x = cos(root_angles[ri]) * root_lengths[ri] * 0.4
+				root_piece.position.z = sin(root_angles[ri]) * root_lengths[ri] * 0.4
+				root_piece.rotation.y = root_angles[ri]
+				obj_node.add_child(root_piece)
+
+		Tile.TerrainObject.RUINS_WALL:
+			# Main wall section
+			var rwall = MeshInstance3D.new()
+			var rwall_mesh = BoxMesh.new()
+			rwall_mesh.size = Vector3(0.7, 0.5, 0.1)
+			rwall.mesh = rwall_mesh
+			var rwall_mat = StandardMaterial3D.new()
+			rwall_mat.albedo_color = Color(0.38, 0.36, 0.32)
+			rwall_mat.roughness = 0.92
+			rwall.material_override = rwall_mat
+			rwall.position.y = 0.25
+			obj_node.add_child(rwall)
+			# Jagged top: 2-3 smaller boxes at different heights
+			var jagged_pieces = [
+				Vector3(-0.2, 0.55, 0.0), Vector3(0.12, 0.52, 0.0), Vector3(0.28, 0.48, 0.0)
+			]
+			var jagged_sizes = [
+				Vector3(0.12, 0.1, 0.1), Vector3(0.15, 0.06, 0.1), Vector3(0.10, 0.08, 0.1)
+			]
+			var jagged_count: int = 2 + (tile.terrain_variant % 2)
+			for ji in range(jagged_count):
+				var jag = MeshInstance3D.new()
+				var jag_mesh = BoxMesh.new()
+				jag_mesh.size = jagged_sizes[ji]
+				jag.mesh = jag_mesh
+				jag.material_override = rwall_mat
+				jag.position = jagged_pieces[ji]
+				obj_node.add_child(jag)
+
+		Tile.TerrainObject.WOOD_WALL:
+			var wwall = MeshInstance3D.new()
+			var wwall_mesh = BoxMesh.new()
+			wwall_mesh.size = Vector3(0.8, 0.6, 0.08)
+			wwall.mesh = wwall_mesh
+			var wwall_mat = StandardMaterial3D.new()
+			wwall_mat.albedo_color = Color(0.42, 0.30, 0.16)
+			wwall_mat.roughness = 0.88
+			wwall.material_override = wwall_mat
+			wwall.position.y = 0.3
+			obj_node.add_child(wwall)
+
+		Tile.TerrainObject.WOOD_CORNER:
+			# Two perpendicular walls meeting at right angle
+			var wc_mat = StandardMaterial3D.new()
+			wc_mat.albedo_color = Color(0.42, 0.30, 0.16)
+			wc_mat.roughness = 0.88
+			# Wall A along X
+			var wc_a = MeshInstance3D.new()
+			var wc_a_mesh = BoxMesh.new()
+			wc_a_mesh.size = Vector3(0.45, 0.6, 0.08)
+			wc_a.mesh = wc_a_mesh
+			wc_a.material_override = wc_mat
+			wc_a.position = Vector3(-0.2, 0.3, -0.2)
+			obj_node.add_child(wc_a)
+			# Wall B along Z
+			var wc_b = MeshInstance3D.new()
+			var wc_b_mesh = BoxMesh.new()
+			wc_b_mesh.size = Vector3(0.08, 0.6, 0.45)
+			wc_b.mesh = wc_b_mesh
+			wc_b.material_override = wc_mat
+			wc_b.position = Vector3(-0.2, 0.3, -0.2)
+			obj_node.add_child(wc_b)
+
+		Tile.TerrainObject.ROOF_PIECE:
+			var roof_p = MeshInstance3D.new()
+			var roof_p_mesh = PrismMesh.new()
+			roof_p_mesh.size = Vector3(TILE_SCALE * 0.85, 0.3, TILE_SCALE * 0.85)
+			roof_p.mesh = roof_p_mesh
+			var roof_p_mat = StandardMaterial3D.new()
+			roof_p_mat.albedo_color = Color(0.48, 0.20, 0.08)
+			roof_p_mat.roughness = 0.85
+			roof_p.material_override = roof_p_mat
+			roof_p.position.y = 0.15
+			obj_node.add_child(roof_p)
+
+		Tile.TerrainObject.DOOR_PIECE:
+			# Door frame
+			var door_frame = MeshInstance3D.new()
+			var door_frame_mesh = BoxMesh.new()
+			door_frame_mesh.size = Vector3(0.3, 0.5, 0.08)
+			door_frame.mesh = door_frame_mesh
+			var door_frame_mat = StandardMaterial3D.new()
+			door_frame_mat.albedo_color = Color(0.38, 0.26, 0.14)
+			door_frame_mat.roughness = 0.85
+			door_frame.material_override = door_frame_mat
+			door_frame.position.y = 0.25
+			obj_node.add_child(door_frame)
+			# Dark center (opening)
+			var door_center = MeshInstance3D.new()
+			var door_center_mesh = BoxMesh.new()
+			door_center_mesh.size = Vector3(0.22, 0.4, 0.085)
+			door_center.mesh = door_center_mesh
+			var door_center_mat = StandardMaterial3D.new()
+			door_center_mat.albedo_color = Color(0.06, 0.04, 0.03)
+			door_center_mat.roughness = 0.95
+			door_center.material_override = door_center_mat
+			door_center.position.y = 0.22
+			door_center.position.z = 0.002  # Slightly in front
+			obj_node.add_child(door_center)
+
+		Tile.TerrainObject.WINDOW_PIECE:
+			# Window frame
+			var win_frame = MeshInstance3D.new()
+			var win_frame_mesh = BoxMesh.new()
+			win_frame_mesh.size = Vector3(0.25, 0.25, 0.05)
+			win_frame.mesh = win_frame_mesh
+			var win_frame_mat = StandardMaterial3D.new()
+			win_frame_mat.albedo_color = Color(0.36, 0.28, 0.18)
+			win_frame_mat.roughness = 0.85
+			win_frame.material_override = win_frame_mat
+			win_frame.position.y = 0.3
+			obj_node.add_child(win_frame)
+			# Cross-shaped mullion: vertical bar
+			var mullion_v = MeshInstance3D.new()
+			var mullion_v_mesh = BoxMesh.new()
+			mullion_v_mesh.size = Vector3(0.015, 0.22, 0.055)
+			mullion_v.mesh = mullion_v_mesh
+			mullion_v.material_override = win_frame_mat
+			mullion_v.position.y = 0.3
+			obj_node.add_child(mullion_v)
+			# Cross-shaped mullion: horizontal bar
+			var mullion_h = MeshInstance3D.new()
+			var mullion_h_mesh = BoxMesh.new()
+			mullion_h_mesh.size = Vector3(0.22, 0.015, 0.055)
+			mullion_h.mesh = mullion_h_mesh
+			mullion_h.material_override = win_frame_mat
+			mullion_h.position.y = 0.3
+			obj_node.add_child(mullion_h)
+			# Warm yellow emissive center pane
+			var win_pane = MeshInstance3D.new()
+			var win_pane_mesh = BoxMesh.new()
+			win_pane_mesh.size = Vector3(0.20, 0.20, 0.04)
+			win_pane.mesh = win_pane_mesh
+			var win_pane_mat = StandardMaterial3D.new()
+			win_pane_mat.albedo_color = Color(0.85, 0.70, 0.30)
+			win_pane_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			win_pane_mat.emission_enabled = true
+			win_pane_mat.emission = Color(0.90, 0.72, 0.25)
+			win_pane_mat.emission_energy_multiplier = 0.6
+			win_pane.material_override = win_pane_mat
+			win_pane.position.y = 0.3
+			win_pane.position.z = -0.005  # Behind mullion
+			obj_node.add_child(win_pane)
+
 	tiles_root.add_child(obj_node)
+
+# ─── Road & Building Helpers ─────────────────────────────────────────────────
+
+## Check if the tile in a given direction from pos is a road or bridge (for auto-tiling)
+func _is_road_neighbor(pos: Vector2i, dir: Vector2i) -> bool:
+	var n_pos: Vector2i = pos + dir
+	if not tiles.has(n_pos):
+		return false
+	var n_tile: Tile = tiles[n_pos]
+	return n_tile.terrain_type == Tile.TerrainType.ROAD or n_tile.terrain_type == Tile.TerrainType.BRIDGE
+
+## Add a warm point light for building/structure tiles
+func _add_building_light(pos: Vector2i, h: float, tile: Tile) -> void:
+	var light = OmniLight3D.new()
+	light.light_color = Color(1.0, 0.85, 0.55)  # Warm yellow-orange
+	light.omni_range = 1.5
+	light.light_energy = 0.4
+	# Slightly higher energy for larger structures
+	if tile.terrain_object == Tile.TerrainObject.TOWER:
+		light.light_energy = 0.5
+		light.omni_range = 2.0
+	elif tile.terrain_object == Tile.TerrainObject.CHURCH:
+		light.light_energy = 0.45
+		light.omni_range = 1.8
+	light.position = Vector3(pos.x * TILE_SCALE, h + 0.5, pos.y * TILE_SCALE)
+	light.name = "BuildingLight_%d_%d" % [pos.x, pos.y]
+	tiles_root.add_child(light)
 
 # ─── Tile Updates ────────────────────────────────────────────────────────────
 

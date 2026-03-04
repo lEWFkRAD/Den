@@ -109,5 +109,72 @@
 		"objects": [
 			{ "offset": [0, 0], "object": "tower" }
 		]
+	},
+	"small_house": {
+		"name": "Small House",
+		"objects": [
+			{ "offset": [0, 0], "object": "wood_wall" },
+			{ "offset": [1, 0], "object": "door" },
+			{ "offset": [0, 1], "object": "wood_wall" },
+			{ "offset": [1, 1], "object": "window" },
+			{ "offset": [0, -1], "object": "roof" },
+			{ "offset": [1, -1], "object": "roof" }
+		]
+	},
+	"large_house": {
+		"name": "Large House",
+		"objects": [
+			{ "offset": [0, 0], "object": "wood_wall" },
+			{ "offset": [1, 0], "object": "wood_wall" },
+			{ "offset": [2, 0], "object": "wood_wall" },
+			{ "offset": [0, 1], "object": "wood_wall" },
+			{ "offset": [1, 1], "object": "door" },
+			{ "offset": [2, 1], "object": "window" },
+			{ "offset": [0, 2], "object": "wood_wall" },
+			{ "offset": [1, 2], "object": "window" },
+			{ "offset": [2, 2], "object": "wood_corner" },
+			{ "offset": [0, -1], "object": "roof" },
+			{ "offset": [1, -1], "object": "roof" },
+			{ "offset": [2, -1], "object": "roof" }
+		]
+	},
+	"guard_post": {
+		"name": "Guard Post",
+		"objects": [
+			{ "offset": [0, 0], "object": "wood_wall" },
+			{ "offset": [1, 0], "object": "wood_corner" },
+			{ "offset": [0, 1], "object": "wood_corner" },
+			{ "offset": [1, 1], "object": "window" }
+		]
+	},
+	"ruined_shrine": {
+		"name": "Ruined Shrine",
+		"objects": [
+			{ "offset": [0, 0], "object": "ruins_wall" },
+			{ "offset": [1, 0], "object": "ruins_pillar" },
+			{ "offset": [2, 0], "object": "ruins_wall" },
+			{ "offset": [0, 1], "object": "ruins_pillar" },
+			{ "offset": [2, 1], "object": "ruins_pillar" },
+			{ "offset": [1, 2], "object": "statue" }
+		]
+	},
+	"rock_cluster": {
+		"name": "Rock Cluster",
+		"objects": [
+			{ "offset": [0, 0], "object": "rock_large" },
+			{ "offset": [1, 0], "object": "rock_small" },
+			{ "offset": [0, 1], "object": "rock_small" },
+			{ "offset": [-1, 0], "object": "rock_small" }
+		]
+	},
+	"fallen_grove": {
+		"name": "Fallen Grove",
+		"objects": [
+			{ "offset": [0, 0], "object": "tree_dead" },
+			{ "offset": [1, 0], "object": "log" },
+			{ "offset": [0, 1], "object": "root" },
+			{ "offset": [1, 1], "object": "bush" },
+			{ "offset": [-1, 0], "object": "root" }
+		]
 	}
 }

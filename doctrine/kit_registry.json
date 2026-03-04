@@ -26,14 +26,29 @@
     "rock_small":         { "footprint": [1, 1], "tags": ["natural", "cover"],      "blocks_movement": false, "blocks_los": false, "cover": true,  "height_mod": 0 },
     "rock_large":         { "footprint": [1, 1], "tags": ["natural"],               "blocks_movement": true,  "blocks_los": true,  "cover": false, "height_mod": 1 },
     "tree_pine":          { "footprint": [1, 1], "tags": ["natural", "tree"],       "blocks_movement": true,  "blocks_los": true,  "cover": false, "height_mod": 0 },
-    "tree_dead":          { "footprint": [1, 1], "tags": ["natural", "tree"],       "blocks_movement": true,  "blocks_los": false, "cover": false, "height_mod": 0 }
+    "tree_dead":          { "footprint": [1, 1], "tags": ["natural", "tree"],       "blocks_movement": true,  "blocks_los": false, "cover": false, "height_mod": 0 },
+    "log":                { "footprint": [1, 1], "tags": ["natural"],               "blocks_movement": false, "blocks_los": false, "cover": true,  "height_mod": 0 },
+    "root":               { "footprint": [1, 1], "tags": ["natural"],               "blocks_movement": false, "blocks_los": false, "cover": false, "height_mod": 0 },
+    "ruins_wall":         { "footprint": [1, 1], "tags": ["ruins", "wall", "cover"],"blocks_movement": false, "blocks_los": true,  "cover": true,  "height_mod": 1 },
+    "wood_wall":          { "footprint": [1, 1], "tags": ["structure", "wall"],     "blocks_movement": true,  "blocks_los": true,  "cover": false, "height_mod": 1 },
+    "wood_corner":        { "footprint": [1, 1], "tags": ["structure", "wall"],     "blocks_movement": true,  "blocks_los": true,  "cover": false, "height_mod": 1 },
+    "roof":               { "footprint": [1, 1], "tags": ["structure"],             "blocks_movement": false, "blocks_los": false, "cover": false, "height_mod": 2 },
+    "door":               { "footprint": [1, 1], "tags": ["structure", "interior"], "blocks_movement": false, "blocks_los": false, "cover": true,  "height_mod": 1 },
+    "window":             { "footprint": [1, 1], "tags": ["structure", "interior"], "blocks_movement": false, "blocks_los": false, "cover": false, "height_mod": 1 },
+    "bush":               { "footprint": [1, 1], "tags": ["natural", "cover"],      "blocks_movement": false, "blocks_los": false, "cover": true,  "height_mod": 0 }
   },
   "biome_palettes": {
     "snow": {
       "wall_style": "wall_straight",
       "cover_props": ["rock_small", "rock_large", "tree_dead"],
-      "scatter_props": ["banner_torn", "rubble_pile"],
+      "scatter_props": ["banner_torn", "rubble_pile", "tree_dead"],
       "ruin_props": ["pillar_broken", "wall_broken", "rubble_pile"]
+    },
+    "ice": {
+      "wall_style": "wall_straight",
+      "cover_props": ["rock_small", "rock_large"],
+      "scatter_props": ["rock_small"],
+      "ruin_props": ["pillar_broken", "rubble_pile"]
     },
     "forest": {
       "wall_style": "wall_straight",
