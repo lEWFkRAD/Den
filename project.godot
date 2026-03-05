@@ -21,6 +21,7 @@ config/features=PackedStringArray("4.6", "Forward Plus")
 
 [autoload]
 
+DebugLogger="*res://autoloads/DebugLogger.gd"
 ElementRegistry="*res://autoloads/ElementRegistry.gd"
 DataLoader="*res://autoloads/DataLoader.gd"
 GameState="*res://autoloads/GameState.gd"

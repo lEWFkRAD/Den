@@ -158,6 +158,7 @@ func _spacer(h: int) -> Control:
 # ─── Callbacks ────────────────────────────────────────────────────────────────
 
 func _on_new_game():
+	DebugLogger.audit("TitleScreen", "NEW GAME pressed — loading 2D battle")
 	GameState.chapter = 1
 	GameState.army.clear()
 	GameState.gold = 0
@@ -165,6 +166,7 @@ func _on_new_game():
 	get_tree().change_scene_to_file("res://scenes/battle/Battle.tscn")
 
 func _on_start_campaign():
+	DebugLogger.audit("TitleScreen", "START CAMPAIGN pressed")
 	GameState.chapter = 1
 	GameState.army.clear()
 	GameState.gold = 0
@@ -172,13 +174,14 @@ func _on_start_campaign():
 	# Find most recent campaign file
 	var campaign_path: String = _find_latest_campaign()
 	if campaign_path == "":
-		push_warning("No campaign found — falling back to skirmish.")
+		DebugLogger.warn("TitleScreen", "No campaign found — falling back to skirmish")
 		_on_new_game_3d()
 		return
+	DebugLogger.audit("TitleScreen", "Campaign found", {"path": campaign_path})
 	if CampaignRunner.start_campaign(campaign_path):
 		CampaignRunner.load_current_mission()
 	else:
-		push_warning("Campaign load failed — falling back to skirmish.")
+		DebugLogger.err("TitleScreen", "Campaign start failed — falling back to skirmish")
 		_on_new_game_3d()
 
 func _find_latest_campaign() -> String:
@@ -197,6 +200,7 @@ func _find_latest_campaign() -> String:
 	return ""
 
 func _on_new_game_3d():
+	DebugLogger.audit("TitleScreen", "SKIRMISH (2.5D) — loading BattleScene3D")
 	GameState.chapter = 1
 	GameState.army.clear()
 	GameState.gold = 0

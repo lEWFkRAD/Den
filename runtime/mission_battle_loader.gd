@@ -69,17 +69,41 @@ const OUTPUT_ROOT: String = "res://output"
 ## Returns: {ok: bool, units: Array[Unit], mission: Dictionary,
 ##           loot_items: Array, objective: String, error: String}
 func load_mission_into_battle(mission_path: String, grid, player_char_ids: Array) -> Dictionary:
+	DebugLogger.checkpoint_start("mbl_load", "MissionBattleLoader", "Load mission into battle")
+	DebugLogger.audit("MissionBattleLoader", "Starting load", {"path": mission_path, "players": player_char_ids.size()})
+
+	# Verify file exists
+	if not FileAccess.file_exists(mission_path):
+		DebugLogger.err("MissionBattleLoader", "Mission file does not exist", {"path": mission_path})
+		DebugLogger.checkpoint_end("mbl_load", false, "File not found: %s" % mission_path)
+		return {"ok": false, "error": "File not found: '%s'" % mission_path, "units": [], "mission": {}, "loot_items": [], "objective": "rout"}
+
 	# 1. Load the mission bundle
+	DebugLogger.checkpoint_start("mbl_bundle", "MissionLoader", "Load mission bundle")
 	var ml := MissionLoader.new()
 	var bundle: Dictionary = ml.load_mission_bundle(mission_path, OUTPUT_ROOT)
 	if bundle.is_empty():
+		DebugLogger.checkpoint_end("mbl_bundle", false, "Bundle is empty")
+		DebugLogger.checkpoint_end("mbl_load", false, "Failed to load bundle")
 		return {"ok": false, "error": "Failed to load mission bundle from '%s'" % mission_path, "units": [], "mission": {}, "loot_items": [], "objective": "rout"}
+	DebugLogger.checkpoint_end("mbl_bundle", true)
 
 	var mission: Dictionary = bundle["mission"]
 	var map_data: Dictionary = bundle["map_data"]
 	var loot_items: Array = bundle["loot_items"]
 
+	DebugLogger.audit("MissionBattleLoader", "Bundle loaded", {
+		"mission_id": str(mission.get("id", "?")),
+		"map_width": map_data.get("width", 0),
+		"map_height": map_data.get("height", 0),
+		"has_terrain": map_data.has("terrain_data"),
+		"has_height_map": map_data.has("height_map"),
+		"has_props": map_data.has("props_raw"),
+		"loot_count": loot_items.size(),
+	})
+
 	if map_data.is_empty():
+		DebugLogger.checkpoint_end("mbl_load", false, "Map data is empty")
 		return {"ok": false, "error": "Map data is empty for mission '%s'" % mission.get("id", "?"), "units": [], "mission": mission, "loot_items": loot_items, "objective": "rout"}
 
 	# 2. Build grid terrain
@@ -169,6 +193,15 @@ func load_mission_into_battle(mission_path: String, grid, player_char_ids: Array
 		objective = obj_raw
 	else:
 		objective = "rout"
+
+	DebugLogger.audit("MissionBattleLoader", "Battle assembled", {
+		"units": units.size(),
+		"player": units.filter(func(u): return u.is_player_unit).size(),
+		"enemy": units.filter(func(u): return not u.is_player_unit).size(),
+		"objective": objective,
+		"tiles": grid.tiles.size(),
+	})
+	DebugLogger.checkpoint_end("mbl_load", true)
 
 	return {
 		"ok": true,

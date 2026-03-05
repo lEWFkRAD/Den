@@ -50,6 +50,7 @@ var forecast_labels: Dictionary = {}   # Vector2i → Label3D
 # ─── Initialization ──────────────────────────────────────────────────────────
 
 func initialize(unit_count: int, _kip_count: int = 0):
+	DebugLogger.checkpoint_start("grid3d_init", "Grid3D", "Grid3D.initialize()")
 	grid_width  = 12 + unit_count
 	grid_height = 12 + unit_count
 	_setup_containers()
@@ -58,6 +59,8 @@ func initialize(unit_count: int, _kip_count: int = 0):
 	_generate_height_map()
 	_load_sprites()
 	_render_all_tiles()
+	DebugLogger.checkpoint_end("grid3d_init", tiles.size() > 0, "" if tiles.size() > 0 else "No tiles created")
+	DebugLogger.audit("Grid3D", "Initialized", {"size": "%dx%d" % [grid_width, grid_height], "tiles": tiles.size()})
 
 func _setup_containers():
 	tiles_root = Node3D.new()
@@ -149,21 +152,30 @@ func _generate_height_map():
 			height_map[pos] = h
 
 func load_chapter_terrain(terrain_data: Array, width: int, height: int):
+	DebugLogger.checkpoint_start("grid3d_chapter", "Grid3D", "Load chapter terrain %dx%d" % [width, height])
 	grid_width = width
 	grid_height = height
 	tiles.clear()
 	if tiles_root == null:
 		_setup_containers()
 	_load_sprites()
+	var terrain_misses: int = 0
 	for x in range(width):
 		for z in range(height):
 			var t = Tile.new()
 			t.grid_pos = Vector2i(x, z)
 			if z < terrain_data.size() and x < terrain_data[z].size():
 				t.set_terrain(terrain_data[z][x])
+			else:
+				terrain_misses += 1
 			tiles[Vector2i(x, z)] = t
+	if terrain_misses > 0:
+		DebugLogger.warn("Grid3D", "Terrain data gaps", {"misses": terrain_misses, "expected": width * height, "data_rows": terrain_data.size()})
 	_generate_height_map()
+	DebugLogger.audit("Grid3D", "Height map generated", {"entries": height_map.size()})
 	_render_all_tiles()
+	DebugLogger.checkpoint_end("grid3d_chapter", tiles.size() > 0, "" if tiles.size() > 0 else "No tiles after load")
+	DebugLogger.audit("Grid3D", "Chapter terrain loaded", {"tiles": tiles.size(), "tile_meshes": tile_meshes.size()})
 
 ## Overrides the auto-generated height map with procedural data.
 ## data: Dictionary[Vector2i → float] from DoctrineMapLoader.
@@ -186,7 +198,7 @@ func place_terrain_object(pos: Vector2i, obj_str: String):
 		tiles[pos].set_object(obj_str)
 
 func place_object_template(origin: Vector2i, template_id: String):
-	var tpl = DataLoader.terrain_objects_data.get(template_id, {})
+	var tpl: Dictionary = DataLoader.terrain_objects_data.get(template_id, {})
 	var objects: Array = tpl.get("objects", [])
 	for obj in objects:
 		var off = obj.get("offset", [0, 0])
@@ -1521,7 +1533,7 @@ func get_movement_range(start: Vector2i, move_range: int, unit_element: String =
 	return reachable
 
 ## Reconstruct shortest path from start to target using stored prev_map
-func get_path_to(target: Vector2i) -> Array:
+func get_tile_path_to(target: Vector2i) -> Array:
 	if not move_prev_map.has(target):
 		return []
 	var path: Array = [target]

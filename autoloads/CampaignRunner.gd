@@ -30,9 +30,12 @@ signal campaign_completed(campaign_id: String)
 ## Starts a campaign from a campaign JSON file.
 ## Resets state and loads the first mission.
 func start_campaign(campaign_path: String) -> bool:
+	DebugLogger.checkpoint_start("campaign_start", "CampaignRunner", "Start campaign")
+	DebugLogger.audit("CampaignRunner", "Loading campaign", {"path": campaign_path})
 	var data: Dictionary = _read_json(campaign_path)
 	if data.is_empty():
-		push_error("CampaignRunner: Failed to load campaign from '%s'" % campaign_path)
+		DebugLogger.err("CampaignRunner", "Failed to load campaign JSON", {"path": campaign_path})
+		DebugLogger.checkpoint_end("campaign_start", false, "JSON load failed: %s" % campaign_path)
 		return false
 
 	campaign = data
@@ -42,11 +45,13 @@ func start_campaign(campaign_path: String) -> bool:
 	is_campaign_active = true
 
 	if missions.is_empty():
-		push_error("CampaignRunner: Campaign '%s' has no missions." % campaign_id)
+		DebugLogger.err("CampaignRunner", "Campaign has no missions", {"id": campaign_id})
+		DebugLogger.checkpoint_end("campaign_start", false, "No missions in campaign")
 		is_campaign_active = false
 		return false
 
-	print("CampaignRunner: Starting campaign '%s' with %d missions." % [campaign_id, missions.size()])
+	DebugLogger.checkpoint_end("campaign_start", true)
+	DebugLogger.info("CampaignRunner", "Campaign started", {"id": campaign_id, "missions": missions.size()})
 	return true
 
 
@@ -54,16 +59,24 @@ func start_campaign(campaign_path: String) -> bool:
 ## Call after start_campaign() or after advancing to a new mission.
 func load_current_mission() -> void:
 	if not is_campaign_active or mission_index >= missions.size():
-		push_error("CampaignRunner: No active mission to load.")
+		DebugLogger.err("CampaignRunner", "No active mission to load", {"active": is_campaign_active, "index": mission_index, "total": missions.size()})
 		return
 
 	var mission_entry: Dictionary = missions[mission_index] if missions[mission_index] is Dictionary else {}
 	var mission_id: String = str(mission_entry.get("id", ""))
 	current_mission_path = _resolve_mission_path(mission_entry)
 
-	print("CampaignRunner: Briefing mission %d/%d — '%s'" % [mission_index + 1, missions.size(), mission_id])
+	DebugLogger.audit("CampaignRunner", "Loading mission", {"index": mission_index, "id": mission_id, "path": current_mission_path})
+
+	# Verify mission file exists
+	if current_mission_path != "" and not FileAccess.file_exists(current_mission_path):
+		DebugLogger.err("CampaignRunner", "Mission file NOT FOUND", {"path": current_mission_path})
+	elif current_mission_path == "":
+		DebugLogger.err("CampaignRunner", "Mission path is empty", {"entry": str(mission_entry)})
+
 	mission_started.emit(mission_index, mission_id)
 
+	DebugLogger.audit("CampaignRunner", "Transitioning to MissionBrief")
 	# Show Mission Brief screen — player presses DEPLOY to continue to battle
 	get_tree().change_scene_to_file("res://scenes/ui/MissionBrief.tscn")
 
@@ -71,7 +84,7 @@ func load_current_mission() -> void:
 ## Called by MissionBrief when the player presses DEPLOY.
 ## Actually transitions to the 3D battle scene.
 func launch_current_mission() -> void:
-	print("CampaignRunner: Launching battle for mission %d/%d" % [mission_index + 1, missions.size()])
+	DebugLogger.audit("CampaignRunner", "Launching battle scene", {"mission_index": mission_index, "path": current_mission_path})
 	get_tree().change_scene_to_file("res://scenes/battle/BattleScene3D.tscn")
 
 

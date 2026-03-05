@@ -108,21 +108,38 @@ var mission_data: Dictionary = {}
 # ─── Ready ────────────────────────────────────────────────────────────────────
 
 func _ready():
+	DebugLogger.checkpoint_start("battle3d_ready", "Battle3D", "Battle3D._ready()")
+	DebugLogger.audit("Battle3D", "Scene entered", {"mission_path": mission_path, "campaign_active": CampaignRunner.is_campaign_active})
+
+	DebugLogger.checkpoint_start("b3d_env", "Battle3D", "3D environment setup")
 	_setup_3d_environment()
+	DebugLogger.checkpoint_end("b3d_env", true)
+
+	DebugLogger.checkpoint_start("b3d_cam", "Battle3D", "Camera setup")
 	_setup_camera()
+	DebugLogger.checkpoint_end("b3d_cam", camera != null, "" if camera != null else "Camera is null")
+
 	_load_portraits()
+
+	DebugLogger.checkpoint_start("b3d_ui", "Battle3D", "UI build")
 	_build_ui()
 	_build_pause_menu()
 	_build_combat_closeup()
+	DebugLogger.checkpoint_end("b3d_ui", true)
+
 	# Check CampaignRunner for a mission path if we don't already have one
 	if mission_path == "" and CampaignRunner.is_campaign_active:
 		mission_path = CampaignRunner.current_mission_path
+		DebugLogger.audit("Battle3D", "Got mission path from CampaignRunner", {"path": mission_path})
 	if mission_path != "":
+		DebugLogger.audit("Battle3D", "Starting MISSION battle", {"path": mission_path})
 		_start_mission_battle()
 	else:
+		DebugLogger.audit("Battle3D", "Starting DEFAULT battle (no mission path)")
 		_start_battle()
 	BattleState.kip_speaks.connect(_on_kip_speaks)
 	BattleState.unit_died.connect(_on_unit_died)
+	DebugLogger.checkpoint_end("battle3d_ready", true)
 
 # ─── 3D Environment Setup ───────────────────────────────────────────────────
 
@@ -225,6 +242,7 @@ func _setup_camera():
 	camera.far = 100.0
 	camera.near = 0.1
 	add_child(camera)
+	camera.make_current()
 
 func _center_camera_on_grid():
 	var cx = grid.grid_width * Grid3D.TILE_SCALE * 0.5
@@ -250,16 +268,21 @@ func _update_camera_position():
 # ─── Mission Battle Startup ──────────────────────────────────────────────────
 
 func _start_mission_battle():
+	DebugLogger.checkpoint_start("mission_battle", "Battle3D", "Mission battle startup")
+
+	DebugLogger.audit("Battle3D", "Creating Grid3D")
 	grid = Grid3D.new()
 	grid.name = "Grid3D"
 	add_child(grid)
 	BattleState.grid = grid
 
+	DebugLogger.checkpoint_start("mission_load", "MissionLoader", "Load mission bundle")
 	var loader := _MissionBattleLoader.new()
 	var result: Dictionary = loader.load_mission_into_battle(mission_path, grid, player_characters)
+	DebugLogger.checkpoint_end("mission_load", result.get("ok", false), result.get("error", ""))
 
 	if not result.get("ok", false):
-		push_warning("Mission load failed: %s — falling back to default battle." % result.get("error", "unknown"))
+		DebugLogger.err("Battle3D", "Mission load failed — falling back to default", {"error": result.get("error", "unknown"), "path": mission_path})
 		remove_child(grid)
 		grid.queue_free()
 		_start_battle()
@@ -270,15 +293,29 @@ func _start_mission_battle():
 	mission_loot = result["loot_items"]
 	current_objective = result["objective"]
 
+	DebugLogger.audit("Battle3D", "Mission loaded", {
+		"id": str(mission_data.get("id", "?")),
+		"grid": "%dx%d" % [grid.grid_width, grid.grid_height],
+		"units": units.size(),
+		"objective": current_objective,
+		"tiles": grid.tiles.size(),
+	})
+
+	DebugLogger.checkpoint_start("render_units", "Battle3D", "Render units")
 	grid.render_units()
+	DebugLogger.checkpoint_end("render_units", true)
+
 	_center_camera_on_grid()
+	DebugLogger.audit("Battle3D", "Camera centered", {"target": str(cam_target)})
 
 	# Apply biome lighting based on mission region
 	var region: String = str(mission_data.get("region", ""))
 	if region != "":
 		_apply_biome_lighting(region)
+		DebugLogger.audit("Battle3D", "Biome lighting applied", {"region": region})
 
 	# Turn Manager
+	DebugLogger.checkpoint_start("turn_mgr", "Battle3D", "Turn manager setup")
 	turn_manager = TurnManager.new()
 	turn_manager.units = units
 	turn_manager.grid = grid
@@ -290,8 +327,10 @@ func _start_mission_battle():
 	turn_manager.combat_log_entry.connect(_push_log)
 	add_child(turn_manager)
 	turn_manager.start()
+	DebugLogger.checkpoint_end("turn_mgr", true)
 
-	print("Mission '%s' loaded: %dx%d, %d units, objective=%s, region=%s" % [
+	DebugLogger.checkpoint_end("mission_battle", true)
+	DebugLogger.info("Battle3D", "Mission '%s' loaded: %dx%d, %d units, objective=%s, region=%s" % [
 		mission_data.get("id", "?"),
 		grid.grid_width, grid.grid_height,
 		units.size(), current_objective, region
@@ -301,6 +340,7 @@ func _start_mission_battle():
 # ─── Default Battle Startup ─────────────────────────────────────────────────
 
 func _start_battle():
+	DebugLogger.checkpoint_start("default_battle", "Battle3D", "Default battle startup")
 	var player_units = ["aldric", "mira", "voss", "seren", "bram", "corvin", "yael"]
 	var unit_count = player_units.size()
 
@@ -309,13 +349,22 @@ func _start_battle():
 	BattleState.grid = grid
 
 	# Use map generator for a random map
+	DebugLogger.checkpoint_start("map_gen", "MapGenerator", "Generate random map")
 	map_gen = MapGenerator.new()
-	var map_data = map_gen.generate_map(randi(), 14 + unit_count, 12 + unit_count, MapGenerator.random_template())
+	var template = MapGenerator.random_template()
+	DebugLogger.audit("MapGenerator", "Using template", {"template": template})
+	var map_data = map_gen.generate_map(randi(), 14 + unit_count, 12 + unit_count, template)
+	DebugLogger.checkpoint_end("map_gen", not map_data.is_empty(), "generate_map returned empty" if map_data.is_empty() else "")
+
+	DebugLogger.checkpoint_start("load_terrain", "Grid3D", "Load chapter terrain")
 	grid.load_chapter_terrain(map_data["terrain"], map_data["width"], map_data["height"])
+	DebugLogger.checkpoint_end("load_terrain", grid.tiles.size() > 0, "" if grid.tiles.size() > 0 else "No tiles created")
+	DebugLogger.audit("Grid3D", "Terrain loaded", {"tiles": grid.tiles.size(), "size": "%dx%d" % [grid.grid_width, grid.grid_height]})
 
 	# Place terrain objects from generator
 	for obj in map_data["objects"]:
 		grid.place_terrain_object(obj["pos"], obj["object"])
+	DebugLogger.audit("Grid3D", "Objects placed", {"count": map_data["objects"].size()})
 
 	add_child(grid)
 
@@ -337,6 +386,8 @@ func _start_battle():
 			_register_unit(u)
 
 	grid.units_ref = units
+	DebugLogger.audit("Battle3D", "Units spawned", {"player": units.filter(func(u): return u.is_player_unit).size(), "enemy": units.filter(func(u): return not u.is_player_unit).size()})
+
 	grid.render_units()
 	_center_camera_on_grid()
 
@@ -352,6 +403,7 @@ func _start_battle():
 	turn_manager.combat_log_entry.connect(_push_log)
 	add_child(turn_manager)
 	turn_manager.start()
+	DebugLogger.checkpoint_end("default_battle", true)
 
 func _register_unit(u: Unit):
 	if grid.tiles.has(u.grid_position):
@@ -890,7 +942,7 @@ func _update_hover(pos: Vector2i) -> void:
 	# ── Path preview when a unit is selected and tile is in range ──
 	if state == State.UNIT_SELECTED and selected_unit != null:
 		if pos in movement_tiles:
-			var path: Array = grid.get_path_to(pos)
+			var path: Array = grid.get_tile_path_to(pos)
 			var cost: int = grid.get_move_cost(pos)
 			if path.size() >= 2 and cost >= 0:
 				grid.show_path_preview(path, cost)

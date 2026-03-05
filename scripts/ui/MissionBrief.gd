@@ -9,9 +9,16 @@ var particles: Array = []
 var ready_to_launch: bool = false
 
 func _ready():
+	DebugLogger.checkpoint_start("mission_brief", "MissionBrief", "MissionBrief._ready()")
+	DebugLogger.audit("MissionBrief", "Scene entered", {
+		"campaign_active": CampaignRunner.is_campaign_active,
+		"mission_path": CampaignRunner.current_mission_path,
+		"mission_index": CampaignRunner.mission_index,
+	})
 	for i in 25:
 		_spawn_particle()
 	_build_ui()
+	DebugLogger.checkpoint_end("mission_brief", true)
 
 func _spawn_particle():
 	particles.append({
@@ -289,6 +296,7 @@ func _on_deploy():
 	if ready_to_launch:
 		return
 	ready_to_launch = true
+	DebugLogger.audit("MissionBrief", "DEPLOY pressed — launching battle")
 	# Transition to the battle
 	CampaignRunner.launch_current_mission()
 
