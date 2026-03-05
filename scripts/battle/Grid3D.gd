@@ -27,6 +27,8 @@ var highlight_meshes: Dictionary = {}  # Vector2i → MeshInstance3D
 var unit_sprites:     Dictionary = {}  # Unit → Sprite3D
 var sprite_cache:     Dictionary = {}  # name_lower → Texture2D
 var kip_sprite_cache: Dictionary = {}  # kip_name_lower → Texture2D
+var terrain_tex_cache: Dictionary = {} # terrain_key → Texture2D
+var enemy_sprite_cache: Dictionary = {} # enemy_id_lower → Texture2D
 var hp_bar_meshes:    Dictionary = {}  # Unit → MeshInstance3D
 var prop_nodes:       Dictionary = {}  # Vector2i → Node3D (instanced prefab scenes)
 var prop_scene_cache: Dictionary = {}  # scene_path → PackedScene
@@ -87,6 +89,27 @@ func _load_sprites():
 		var path = "res://assets/kips/%s_small.png" % kname
 		if ResourceLoader.exists(path):
 			kip_sprite_cache[kname] = load(path)
+	# Enemy sprites — load by enemy type ID and also map display names
+	var enemy_ids = ["grunt", "archer", "heavy", "mage", "rogue", "blood_knight",
+		"void_warden", "commander", "priest", "paladin", "assassin", "golem",
+		"siege_mage", "covenant_captain", "warden_corrupted", "varek_final"]
+	for eid in enemy_ids:
+		var path = "res://assets/enemies/%s_small.png" % eid
+		if ResourceLoader.exists(path):
+			var tex = load(path)
+			enemy_sprite_cache[eid] = tex
+			# Also map the display name (from DataLoader) so unit_name lookups work
+			var edata: Dictionary = DataLoader.enemies_data.get(eid, {})
+			var display_name: String = edata.get("name", "").to_lower()
+			if display_name != "":
+				enemy_sprite_cache[display_name] = tex
+	# Terrain tile textures
+	var terrain_tiles = ["grass", "dirt", "stone", "sand", "snow", "water",
+		"lava", "void", "ice", "ruins", "road", "forest"]
+	for tname in terrain_tiles:
+		var path = "res://assets/tiles/%s.png" % tname
+		if ResourceLoader.exists(path):
+			terrain_tex_cache[tname] = load(path)
 
 # ─── Tile Data ────────────────────────────────────────────────────────────────
 
@@ -292,6 +315,38 @@ func _render_all_tiles():
 	for pos in tiles:
 		_create_tile_mesh(pos)
 
+func _terrain_type_to_tex_key(tt) -> String:
+	match tt:
+		Tile.TerrainType.GRASS, Tile.TerrainType.OPEN:
+			return "grass"
+		Tile.TerrainType.DIRT:
+			return "dirt"
+		Tile.TerrainType.STONE, Tile.TerrainType.ROCK:
+			return "stone"
+		Tile.TerrainType.SAND:
+			return "sand"
+		Tile.TerrainType.SNOW:
+			return "snow"
+		Tile.TerrainType.WATER, Tile.TerrainType.RIVER:
+			return "water"
+		Tile.TerrainType.LAVA:
+			return "lava"
+		Tile.TerrainType.ICE:
+			return "ice"
+		Tile.TerrainType.RUINS:
+			return "ruins"
+		Tile.TerrainType.ROAD:
+			return "road"
+		Tile.TerrainType.FOREST:
+			return "forest"
+		Tile.TerrainType.ELEVATION, Tile.TerrainType.WALL:
+			return "stone"
+		Tile.TerrainType.FORT, Tile.TerrainType.VILLAGE, Tile.TerrainType.THRONE:
+			return "stone"
+		Tile.TerrainType.BRIDGE:
+			return "dirt"
+	return ""
+
 func _create_tile_mesh(pos: Vector2i):
 	var tile = tiles[pos]
 	var h = height_map.get(pos, 0.0)
@@ -302,25 +357,31 @@ func _create_tile_mesh(pos: Vector2i):
 	plane.size = Vector2(TILE_SCALE * 0.95, TILE_SCALE * 0.95)  # Slight gap between tiles
 	mi.mesh = plane
 
-	# Material — variant-aware with terrain-specific roughness/metallic
+	# Material — use terrain texture if available, fallback to flat color
 	var mat = StandardMaterial3D.new()
 	var base_color: Color = tile.get_color()
-	# For terrain types without built-in variant colors, apply a small offset
-	var v: int = tile.terrain_variant
-	match tile.terrain_type:
-		Tile.TerrainType.FOREST, Tile.TerrainType.WATER, Tile.TerrainType.RUINS, \
-		Tile.TerrainType.ELEVATION, Tile.TerrainType.WALL, Tile.TerrainType.FORT, \
-		Tile.TerrainType.BRIDGE, Tile.TerrainType.VILLAGE, Tile.TerrainType.THRONE, \
-		Tile.TerrainType.SAND, Tile.TerrainType.LAVA, Tile.TerrainType.RIVER, \
-		Tile.TerrainType.ROAD:
-			# These don't have variant arrays in get_color(), add subtle variation
-			var offset: float = (v - 2) * 0.015
-			base_color = Color(
-				clampf(base_color.r + offset, 0.0, 1.0),
-				clampf(base_color.g + offset * 0.8, 0.0, 1.0),
-				clampf(base_color.b + offset * 0.6, 0.0, 1.0)
-			)
-	mat.albedo_color = base_color
+	var tex_key: String = _terrain_type_to_tex_key(tile.terrain_type)
+	if tex_key != "" and terrain_tex_cache.has(tex_key):
+		mat.albedo_texture = terrain_tex_cache[tex_key]
+		mat.albedo_color = Color.WHITE  # Let texture show through
+		mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		mat.uv1_scale = Vector3(1, 1, 1)
+	else:
+		# Fallback: flat color with variant offset
+		var v: int = tile.terrain_variant
+		match tile.terrain_type:
+			Tile.TerrainType.FOREST, Tile.TerrainType.WATER, Tile.TerrainType.RUINS, \
+			Tile.TerrainType.ELEVATION, Tile.TerrainType.WALL, Tile.TerrainType.FORT, \
+			Tile.TerrainType.BRIDGE, Tile.TerrainType.VILLAGE, Tile.TerrainType.THRONE, \
+			Tile.TerrainType.SAND, Tile.TerrainType.LAVA, Tile.TerrainType.RIVER, \
+			Tile.TerrainType.ROAD:
+				var offset: float = (v - 2) * 0.015
+				base_color = Color(
+					clampf(base_color.r + offset, 0.0, 1.0),
+					clampf(base_color.g + offset * 0.8, 0.0, 1.0),
+					clampf(base_color.b + offset * 0.6, 0.0, 1.0)
+				)
+		mat.albedo_color = base_color
 	# Terrain-specific roughness and metallic
 	match tile.terrain_type:
 		Tile.TerrainType.DIRT, Tile.TerrainType.SAND:
@@ -895,9 +956,15 @@ func _create_unit_sprite(unit):
 	sprite.shaded = false
 	sprite.alpha_cut = SpriteBase3D.ALPHA_CUT_OPAQUE_PREPASS
 
-	# Try to load sprite texture
+	# Try to load sprite texture — check player cache, then enemy cache (by name and stripped suffix)
 	var sprite_key = unit.unit_name.to_lower()
 	var tex = sprite_cache.get(sprite_key, null)
+	if tex == null:
+		tex = enemy_sprite_cache.get(sprite_key, null)
+	if tex == null:
+		# Strip numeric suffix: "Grunt 1" → "grunt"
+		var stripped = sprite_key.rstrip("0123456789 ")
+		tex = enemy_sprite_cache.get(stripped, null)
 
 	if tex != null:
 		sprite.texture = tex
