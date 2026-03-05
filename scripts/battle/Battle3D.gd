@@ -51,7 +51,7 @@ var hovered_tile: Vector2i = Vector2i(-1, -1)
 var show_elevation: bool = false
 
 # ─── UI Nodes ────────────────────────────────────────────────────────────────
-const PANEL_X: int = 796
+const PANEL_X: int = 960
 var ui_layer:        CanvasLayer
 var ui_panel:        Control
 var phase_label:     Label
@@ -693,7 +693,7 @@ func _show_action_menu():
 func _add_action_btn(label: String, col: Color, callback: Callable, enabled: bool):
 	var btn = Button.new()
 	btn.text = label
-	btn.custom_minimum_size = Vector2(440, 40)
+	btn.custom_minimum_size = Vector2(290, 36)
 	btn.disabled = not enabled
 	btn.pressed.connect(callback)
 	btn.add_theme_font_size_override("font_size", 14)
@@ -794,12 +794,12 @@ func _show_heal_targets():
 				var tgt = u
 				var b = Button.new()
 				b.text = "%s  HP: %d/%d" % [tgt.unit_name, tgt.stats.hp, tgt.stats.max_hp]
-				b.custom_minimum_size = Vector2(440, 36)
+				b.custom_minimum_size = Vector2(290, 32)
 				b.pressed.connect(func(): _heal_target(tgt))
 				items_box.add_child(b)
 	var back_b = Button.new()
 	back_b.text = "Back"
-	back_b.custom_minimum_size = Vector2(440, 36)
+	back_b.custom_minimum_size = Vector2(290, 32)
 	back_b.pressed.connect(_enter_action_menu)
 	items_box.add_child(back_b)
 	grid.clear_highlights()
@@ -888,14 +888,14 @@ func _on_action_items():
 			var item = it
 			var b = Button.new()
 			b.text = "%s  (%d/%d)  — %s" % [item.item_name, item.uses, item.max_uses, item.description]
-			b.custom_minimum_size = Vector2(440, 38)
+			b.custom_minimum_size = Vector2(290, 34)
 			b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			b.disabled = item.uses <= 0
 			b.pressed.connect(func(): _use_item(item))
 			items_box.add_child(b)
 	var back_b = Button.new()
 	back_b.text = "Back"
-	back_b.custom_minimum_size = Vector2(440, 36)
+	back_b.custom_minimum_size = Vector2(290, 32)
 	back_b.pressed.connect(_enter_action_menu)
 	items_box.add_child(back_b)
 	state = State.SELECT_ITEM
@@ -1401,21 +1401,25 @@ func _build_ui():
 	var sep = ColorRect.new()
 	sep.color = Color(0.25, 0.25, 0.3)
 	sep.position = Vector2(px, py)
-	sep.size = Vector2(460, 1)
+	sep.size = Vector2(290, 1)
 	ui_panel.add_child(sep)
 	py += 8
 
 	# Portrait row
 	portrait_tex = TextureRect.new()
 	portrait_tex.position = Vector2(px, py)
-	portrait_tex.size = Vector2(64, 64)
-	portrait_tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	portrait_tex.custom_minimum_size = Vector2(48, 48)
+	portrait_tex.size = Vector2(48, 48)
+	portrait_tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	portrait_tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	ui_panel.add_child(portrait_tex)
 
 	kip_portrait_tex = TextureRect.new()
-	kip_portrait_tex.position = Vector2(px + 70, py)
-	kip_portrait_tex.size = Vector2(40, 40)
-	kip_portrait_tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	kip_portrait_tex.position = Vector2(px + 56, py + 4)
+	kip_portrait_tex.custom_minimum_size = Vector2(36, 36)
+	kip_portrait_tex.size = Vector2(36, 36)
+	kip_portrait_tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	kip_portrait_tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	ui_panel.add_child(kip_portrait_tex)
 	py += 68
 
@@ -1442,7 +1446,7 @@ func _build_ui():
 	# Info
 	info_rtl = RichTextLabel.new()
 	info_rtl.position = Vector2(px, py)
-	info_rtl.size = Vector2(460, 140)
+	info_rtl.size = Vector2(290, 120)
 	info_rtl.bbcode_enabled = true
 	info_rtl.scroll_active = false
 	info_rtl.add_theme_font_size_override("normal_font_size", 13)
@@ -1462,7 +1466,7 @@ func _build_ui():
 	ui_panel.add_child(forecast_box)
 
 	forecast_rtl = RichTextLabel.new()
-	forecast_rtl.size = Vector2(460, 180)
+	forecast_rtl.size = Vector2(290, 160)
 	forecast_rtl.bbcode_enabled = true
 	forecast_rtl.scroll_active = false
 	forecast_rtl.add_theme_font_size_override("normal_font_size", 13)

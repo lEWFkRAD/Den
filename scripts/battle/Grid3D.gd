@@ -354,7 +354,7 @@ func _create_tile_mesh(pos: Vector2i):
 	# Main tile plane
 	var mi = MeshInstance3D.new()
 	var plane = PlaneMesh.new()
-	plane.size = Vector2(TILE_SCALE * 0.95, TILE_SCALE * 0.95)  # Slight gap between tiles
+	plane.size = Vector2(TILE_SCALE * 0.98, TILE_SCALE * 0.98)  # Narrow gap between tiles
 	mi.mesh = plane
 
 	# Material — use terrain texture if available, fallback to flat color
@@ -430,7 +430,7 @@ func _create_tile_mesh(pos: Vector2i):
 			if not _is_road_neighbor(pos, rd[0]):
 				var curb = MeshInstance3D.new()
 				var curb_mesh = BoxMesh.new()
-				curb_mesh.size = Vector3(TILE_SCALE * 0.95, 0.04, 0.06)
+				curb_mesh.size = Vector3(TILE_SCALE * 0.98, 0.04, 0.06)
 				curb.mesh = curb_mesh
 				var curb_mat = StandardMaterial3D.new()
 				curb_mat.albedo_color = base_color.darkened(0.2)
@@ -458,7 +458,7 @@ func _create_tile_mesh(pos: Vector2i):
 		_add_building_light(pos, h, tile)
 
 func _create_tile_sides(pos: Vector2i, h: float, base_color: Color):
-	var side_color = base_color.darkened(0.35)
+	var side_color = base_color.darkened(0.22)
 
 	# Neighbor offsets: direction, face offset, face rotation
 	var neighbors = [
@@ -484,20 +484,20 @@ func _create_tile_sides(pos: Vector2i, h: float, base_color: Color):
 		if drop > 0.05 and drop <= 0.5:
 			# --- SLOPE: gentle height difference → angled plane ---
 			var slope_mat = StandardMaterial3D.new()
-			slope_mat.albedo_color = base_color.lerp(n_color, 0.5).darkened(0.15)
+			slope_mat.albedo_color = base_color.lerp(n_color, 0.5).darkened(0.08)
 			slope_mat.roughness = 0.9
 			var slope = MeshInstance3D.new()
 			var slope_plane = PlaneMesh.new()
 			# Slope connects the two heights across the tile edge
 			var slope_length: float = sqrt(drop * drop + (TILE_SCALE * 0.475) * (TILE_SCALE * 0.475))
-			slope_plane.size = Vector2(TILE_SCALE * 0.95, slope_length)
+			slope_plane.size = Vector2(TILE_SCALE * 0.98, slope_length)
 			slope.mesh = slope_plane
 			slope.material_override = slope_mat
 			# Position at midpoint between the two heights, at the edge
 			slope.position = Vector3(
-				pos.x * TILE_SCALE + entry[1].x * TILE_SCALE * 0.95,
+				pos.x * TILE_SCALE + entry[1].x * TILE_SCALE * 0.98,
 				h - drop * 0.5,
-				pos.y * TILE_SCALE + entry[1].z * TILE_SCALE * 0.95
+				pos.y * TILE_SCALE + entry[1].z * TILE_SCALE * 0.98
 			)
 			# Angle the plane to connect the heights
 			var slope_angle: float = atan2(drop, TILE_SCALE * 0.475)
@@ -519,13 +519,13 @@ func _create_tile_sides(pos: Vector2i, h: float, base_color: Color):
 			side_mat.roughness = 0.9
 			var side = MeshInstance3D.new()
 			var side_plane = PlaneMesh.new()
-			side_plane.size = Vector2(TILE_SCALE * 0.95, drop)
+			side_plane.size = Vector2(TILE_SCALE * 0.98, drop)
 			side.mesh = side_plane
 			side.material_override = side_mat
 			side.position = Vector3(
-				pos.x * TILE_SCALE + entry[1].x * TILE_SCALE * 0.95,
+				pos.x * TILE_SCALE + entry[1].x * TILE_SCALE * 0.98,
 				h - drop * 0.5,
-				pos.y * TILE_SCALE + entry[1].z * TILE_SCALE * 0.95
+				pos.y * TILE_SCALE + entry[1].z * TILE_SCALE * 0.98
 			)
 			side.rotation = entry[2]
 			tiles_root.add_child(side)
@@ -541,7 +541,7 @@ func _create_tile_sides(pos: Vector2i, h: float, base_color: Color):
 				ledge.mesh = ledge_mesh
 				var ledge_mat = StandardMaterial3D.new()
 				# Slight variation per ledge
-				var ledge_darken: float = 0.25 + (v_offset % 3) * 0.05
+				var ledge_darken: float = 0.15 + (v_offset % 3) * 0.04
 				ledge_mat.albedo_color = side_color.darkened(ledge_darken)
 				ledge_mat.roughness = 0.95
 				ledge.material_override = ledge_mat
@@ -559,16 +559,16 @@ func _create_tile_sides(pos: Vector2i, h: float, base_color: Color):
 			# Cliff edge trim: thin darkened strip along the top edge
 			var trim = MeshInstance3D.new()
 			var trim_mesh = PlaneMesh.new()
-			trim_mesh.size = Vector2(TILE_SCALE * 0.95, 0.04)
+			trim_mesh.size = Vector2(TILE_SCALE * 0.98, 0.04)
 			trim.mesh = trim_mesh
 			var trim_mat = StandardMaterial3D.new()
-			trim_mat.albedo_color = base_color.darkened(0.45)
+			trim_mat.albedo_color = base_color.darkened(0.28)
 			trim_mat.roughness = 0.9
 			trim.material_override = trim_mat
 			trim.position = Vector3(
-				pos.x * TILE_SCALE + entry[1].x * TILE_SCALE * 0.95,
+				pos.x * TILE_SCALE + entry[1].x * TILE_SCALE * 0.98,
 				h - 0.005,
-				pos.y * TILE_SCALE + entry[1].z * TILE_SCALE * 0.95
+				pos.y * TILE_SCALE + entry[1].z * TILE_SCALE * 0.98
 			)
 			trim.rotation = entry[2]
 			tiles_root.add_child(trim)
@@ -1072,21 +1072,21 @@ func update_unit_positions():
 
 func highlight_move(tiles_arr: Array):
 	for p in tiles_arr:
-		highlighted[p] = Color(0.20, 0.50, 1.0, 0.5)
+		highlighted[p] = Color(0.20, 0.50, 1.0, 0.35)
 	_refresh_highlights()
 
 func highlight_selected(pos: Vector2i):
-	highlighted[pos] = Color(1.0, 0.85, 0.0, 0.7)
+	highlighted[pos] = Color(1.0, 0.85, 0.0, 0.5)
 	_refresh_highlights()
 
 func highlight_attack(tiles_arr: Array):
 	for p in tiles_arr:
-		highlighted[p] = Color(0.90, 0.15, 0.15, 0.55)
+		highlighted[p] = Color(0.90, 0.15, 0.15, 0.4)
 	_refresh_highlights()
 
 func highlight_heal(tiles_arr: Array):
 	for p in tiles_arr:
-		highlighted[p] = Color(0.20, 1.0, 0.50, 0.5)
+		highlighted[p] = Color(0.20, 1.0, 0.50, 0.35)
 	_refresh_highlights()
 
 func clear_highlights():
